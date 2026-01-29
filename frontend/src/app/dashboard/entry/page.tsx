@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import DashboardLayout from "@/components/layout/DashboardLayout";
-import { RequireAuth } from "@/contexts/AuthContext";
-import { useRoutines, useProductivity } from "@/hooks/useApi";
-import { Save, CheckCircle, AlertCircle } from "lucide-react";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import DashboardLayout from '@/components/layout/DashboardLayout';
+import { RequireAuth } from '@/contexts/AuthContext';
+import { useRoutines, useProductivity } from '@/hooks/useApi';
+import { Save, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface FormData {
   date: string;
@@ -13,7 +13,7 @@ interface FormData {
   sleep_duration_hours: number;
   exercise_minutes: number;
   meditation_minutes: number;
-  breakfast_quality: "poor" | "fair" | "good" | "excellent";
+  breakfast_quality: 'poor' | 'fair' | 'good' | 'excellent';
   morning_mood: number;
   caffeine_intake: number;
   water_intake_ml: number;
@@ -29,12 +29,12 @@ interface FormData {
 }
 
 const initialFormData: FormData = {
-  date: new Date().toISOString().split("T")[0],
-  wake_time: "06:30",
+  date: new Date().toISOString().split('T')[0],
+  wake_time: '06:30',
   sleep_duration_hours: 7,
   exercise_minutes: 0,
   meditation_minutes: 0,
-  breakfast_quality: "good",
+  breakfast_quality: 'good',
   morning_mood: 5,
   caffeine_intake: 0,
   water_intake_ml: 0,
@@ -46,7 +46,7 @@ const initialFormData: FormData = {
   distractions_count: 0,
   energy_level: 5,
   stress_level: 5,
-  notes: "",
+  notes: '',
 };
 
 function ManualEntryContent() {
@@ -60,15 +60,12 @@ function ManualEntryContent() {
   const productivity = useProductivity();
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        type === "number" || type === "range" ? parseFloat(value) || 0 : value,
+      [name]: type === 'number' || type === 'range' ? parseFloat(value) || 0 : value,
     }));
     // Clear success/error on change
     setSuccess(false);
@@ -110,10 +107,7 @@ function ManualEntryContent() {
       };
 
       // Submit both
-      await Promise.all([
-        routines.create(routineData),
-        productivity.create(productivityData),
-      ]);
+      await Promise.all([routines.create(routineData), productivity.create(productivityData)]);
 
       setSuccess(true);
 
@@ -123,7 +117,7 @@ function ManualEntryContent() {
         setSuccess(false);
       }, 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save entry");
+      setError(err instanceof Error ? err.message : 'Failed to save entry');
     } finally {
       setSaving(false);
     }
@@ -134,24 +128,22 @@ function ManualEntryContent() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900">Manual Entry</h1>
-        <p className="text-slate-600 mt-1">
+        <p className="mt-1 text-slate-600">
           Log your morning routine and productivity data manually
         </p>
       </div>
 
       {/* Success Banner */}
       {success && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
+        <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4">
           <CheckCircle className="h-5 w-5 text-green-600" />
-          <p className="text-green-800 font-medium">
-            Entry saved successfully!
-          </p>
+          <p className="font-medium text-green-800">Entry saved successfully!</p>
         </div>
       )}
 
       {/* Error Banner */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+        <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
           <AlertCircle className="h-5 w-5 text-red-600" />
           <p className="text-red-800">{error}</p>
         </div>
@@ -161,10 +153,8 @@ function ManualEntryContent() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Morning Routine Section */}
         <div className="card">
-          <h2 className="text-xl font-semibold text-slate-900 mb-6">
-            Morning Routine
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <h2 className="mb-6 text-xl font-semibold text-slate-900">Morning Routine</h2>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div>
               <label className="label">Date</label>
               <input
@@ -245,9 +235,7 @@ function ManualEntryContent() {
                 max="10"
                 className="w-full"
               />
-              <div className="text-center text-sm text-slate-600">
-                {formData.morning_mood}
-              </div>
+              <div className="text-center text-sm text-slate-600">{formData.morning_mood}</div>
             </div>
             <div>
               <label className="label">Caffeine Intake (mg)</label>
@@ -288,10 +276,8 @@ function ManualEntryContent() {
 
         {/* Productivity Section */}
         <div className="card">
-          <h2 className="text-xl font-semibold text-slate-900 mb-6">
-            Productivity
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <h2 className="mb-6 text-xl font-semibold text-slate-900">Productivity</h2>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div>
               <label className="label">Productivity Score (1-10)</label>
               <input
@@ -363,9 +349,7 @@ function ManualEntryContent() {
                 max="10"
                 className="w-full"
               />
-              <div className="text-center text-sm text-slate-600">
-                {formData.energy_level}
-              </div>
+              <div className="text-center text-sm text-slate-600">{formData.energy_level}</div>
             </div>
             <div>
               <label className="label">Stress Level (1-10)</label>
@@ -378,16 +362,14 @@ function ManualEntryContent() {
                 max="10"
                 className="w-full"
               />
-              <div className="text-center text-sm text-slate-600">
-                {formData.stress_level}
-              </div>
+              <div className="text-center text-sm text-slate-600">{formData.stress_level}</div>
             </div>
           </div>
         </div>
 
         {/* Notes Section */}
         <div className="card">
-          <h2 className="text-xl font-semibold text-slate-900 mb-6">Notes</h2>
+          <h2 className="mb-6 text-xl font-semibold text-slate-900">Notes</h2>
           <textarea
             name="notes"
             value={formData.notes}
@@ -413,10 +395,10 @@ function ManualEntryContent() {
           </button>
           <button type="submit" disabled={saving} className="btn-primary">
             {saving ? (
-              "Saving..."
+              'Saving...'
             ) : (
               <>
-                <Save className="h-4 w-4 mr-2 inline" />
+                <Save className="mr-2 inline h-4 w-4" />
                 Save Entry
               </>
             )}

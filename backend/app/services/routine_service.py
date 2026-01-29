@@ -1,6 +1,7 @@
-from typing import Optional
 from datetime import date
+
 from supabase import Client
+
 from app.models import (
     MorningRoutine,
     MorningRoutineCreate,
@@ -11,18 +12,18 @@ from app.models import (
 
 class RoutineService:
     """Service for managing morning routine data."""
-    
+
     def __init__(self, supabase: Client, user_id: str):
         self.supabase = supabase
         self.user_id = user_id
         self.table = "morning_routines"
-    
+
     def list(
         self,
         page: int = 1,
         page_size: int = 10,
-        start_date: Optional[date] = None,
-        end_date: Optional[date] = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
     ) -> PaginatedResponse[MorningRoutine]:
         """List morning routines with pagination."""
         query = (
@@ -31,19 +32,19 @@ class RoutineService:
             .eq("user_id", self.user_id)
             .order("date", desc=True)
         )
-        
+
         if start_date:
             query = query.gte("date", start_date.isoformat())
         if end_date:
             query = query.lte("date", end_date.isoformat())
-        
+
         # Pagination
         offset = (page - 1) * page_size
         query = query.range(offset, offset + page_size - 1)
-        
+
         response = query.execute()
         total = response.count or 0
-        
+
         return PaginatedResponse(
             data=response.data,
             total=total,
@@ -51,8 +52,8 @@ class RoutineService:
             page_size=page_size,
             total_pages=(total + page_size - 1) // page_size,
         )
-    
-    def get(self, routine_id: str) -> Optional[dict]:
+
+    def get(self, routine_id: str) -> dict | None:
         """Get a single routine by ID."""
         response = (
             self.supabase.table(self.table)
@@ -63,20 +64,20 @@ class RoutineService:
             .execute()
         )
         return response.data
-    
+
     def create(self, data: MorningRoutineCreate) -> dict:
         """Create a new morning routine entry."""
         payload = data.model_dump()
         payload["user_id"] = self.user_id
         payload["date"] = payload["date"].isoformat()
-        
+
         response = self.supabase.table(self.table).insert(payload).execute()
         return response.data[0]
-    
-    def update(self, routine_id: str, data: MorningRoutineUpdate) -> Optional[dict]:
+
+    def update(self, routine_id: str, data: MorningRoutineUpdate) -> dict | None:
         """Update an existing routine."""
         payload = data.model_dump(exclude_unset=True)
-        
+
         response = (
             self.supabase.table(self.table)
             .update(payload)
@@ -84,9 +85,9 @@ class RoutineService:
             .eq("user_id", self.user_id)
             .execute()
         )
-        
+
         return response.data[0] if response.data else None
-    
+
     def delete(self, routine_id: str) -> bool:
         """Delete a routine."""
         response = (

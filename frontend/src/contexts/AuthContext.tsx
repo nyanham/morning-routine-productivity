@@ -1,16 +1,9 @@
-"use client";
+'use client';
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  ReactNode,
-} from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import type { User, Session } from "@supabase/supabase-js";
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+import type { User, Session } from '@supabase/supabase-js';
 
 // ==========================================
 // TYPES
@@ -58,7 +51,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setSession(session);
         setUser(session?.user ?? null);
       } catch (error) {
-        console.error("Error getting session:", error);
+        console.error('Error getting session:', error);
       } finally {
         setLoading(false);
       }
@@ -75,14 +68,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setLoading(false);
 
       // Handle auth events
-      if (event === "SIGNED_IN") {
+      if (event === 'SIGNED_IN') {
         // Redirect to dashboard if on auth pages
-        if (pathname?.startsWith("/auth")) {
-          router.push("/dashboard");
+        if (pathname?.startsWith('/auth')) {
+          router.push('/dashboard');
         }
-      } else if (event === "SIGNED_OUT") {
+      } else if (event === 'SIGNED_OUT') {
         // Redirect to login
-        router.push("/auth/login");
+        router.push('/auth/login');
       }
     });
 
@@ -100,7 +93,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
       if (error) throw error;
     },
-    [supabase],
+    [supabase]
   );
 
   // Sign up
@@ -117,7 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
       if (error) throw error;
     },
-    [supabase],
+    [supabase]
   );
 
   // Sign out
@@ -152,7 +145,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 export function useAuthContext() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuthContext must be used within an AuthProvider");
+    throw new Error('useAuthContext must be used within an AuthProvider');
   }
   return context;
 }
@@ -174,7 +167,7 @@ export function RequireAuth({ children, fallback }: RequireAuthProps) {
   useEffect(() => {
     if (!loading && !user) {
       // Redirect to login with return URL
-      const returnUrl = encodeURIComponent(pathname || "/dashboard");
+      const returnUrl = encodeURIComponent(pathname || '/dashboard');
       router.push(`/auth/login?returnUrl=${returnUrl}`);
     }
   }, [user, loading, router, pathname]);
@@ -182,9 +175,9 @@ export function RequireAuth({ children, fallback }: RequireAuthProps) {
   if (loading) {
     return (
       fallback || (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex min-h-screen items-center justify-center bg-slate-50">
           <div className="flex flex-col items-center gap-4">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+            <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-b-2"></div>
             <p className="text-slate-600">Loading...</p>
           </div>
         </div>

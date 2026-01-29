@@ -45,21 +45,15 @@ export default function StatsCard({
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm font-medium text-slate-500">{title}</p>
-          <p className="text-3xl font-bold text-slate-900 mt-1">{value}</p>
-          {subtitle && (
-            <p className="text-sm text-slate-500 mt-1">{subtitle}</p>
-          )}
+          <p className="mt-1 text-3xl font-bold text-slate-900">{value}</p>
+          {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
         </div>
-        {icon && (
-          <div className="p-3 bg-primary-100 rounded-lg">{icon}</div>
-        )}
+        {icon && <div className="bg-primary-100 rounded-lg p-3">{icon}</div>}
       </div>
       {trend && trendValue && (
-        <div className="flex items-center gap-1 mt-4">
+        <div className="mt-4 flex items-center gap-1">
           {getTrendIcon()}
-          <span className={cn('text-sm font-medium', getTrendColor())}>
-            {trendValue}
-          </span>
+          <span className={cn('text-sm font-medium', getTrendColor())}>{trendValue}</span>
           <span className="text-sm text-slate-500">vs last week</span>
         </div>
       )}

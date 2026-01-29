@@ -1,19 +1,20 @@
-from fastapi import APIRouter, Depends
-from typing import Optional, List
 from datetime import date
+
+from fastapi import APIRouter, Depends
 from supabase import Client
 
 from app.core import get_current_user, get_user_supabase
 from app.models import AnalyticsSummary, ChartDataPoint
 from app.services import AnalyticsService
 
+
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
 
 @router.get("/summary", response_model=AnalyticsSummary)
 async def get_summary(
-    start_date: Optional[date] = None,
-    end_date: Optional[date] = None,
+    start_date: date | None = None,
+    end_date: date | None = None,
     current_user: dict = Depends(get_current_user),
     supabase: Client = Depends(get_user_supabase),
 ):
@@ -22,10 +23,10 @@ async def get_summary(
     return service.get_summary(start_date, end_date)
 
 
-@router.get("/charts", response_model=List[ChartDataPoint])
+@router.get("/charts", response_model=list[ChartDataPoint])
 async def get_chart_data(
-    start_date: Optional[date] = None,
-    end_date: Optional[date] = None,
+    start_date: date | None = None,
+    end_date: date | None = None,
     current_user: dict = Depends(get_current_user),
     supabase: Client = Depends(get_user_supabase),
 ):

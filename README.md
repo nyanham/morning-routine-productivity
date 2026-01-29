@@ -1,8 +1,9 @@
 # Morning Routine & Productivity Tracker
 
-[![CI](https://github.com/nhanham/morning-routine-productivity/actions/workflows/ci.yml/badge.svg)](https://github.com/nhanham/morning-routine-productivity/actions/workflows/ci.yml)
+[![CI](https://github.com/nyanham/morning-routine-productivity/actions/workflows/ci.yml/badge.svg)](https://github.com/nyanham/morning-routine-productivity/actions/workflows/ci.yml)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Python](https://img.shields.io/badge/Python-3.11-green.svg)](https://www.python.org/)
 
 A full-stack application for tracking morning routines and analyzing productivity data with beautiful visualizations.
@@ -62,7 +63,7 @@ morning-routine-productivity/
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 20+
+- [Node.js](https://nodejs.org/) 22+ (LTS)
 - [Python](https://www.python.org/) 3.10+
 - [Poetry](https://python-poetry.org/) (recommended) or pip
 - [Supabase](https://supabase.com/) account (free tier works)
@@ -111,7 +112,21 @@ SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_service_role_key
 ```
 
-### 5. Run the Application
+### 5. Set Up Pre-commit Hooks (Recommended)
+
+```bash
+cd ..
+# Windows
+backend\.venv\Scripts\Activate.ps1
+# Linux/Mac
+source backend/.venv/bin/activate
+
+# Install hooks
+pre-commit install
+pre-commit install --hook-type commit-msg
+```
+
+### 6. Run the Application
 
 **Terminal 1 - Backend:**
 
@@ -150,8 +165,8 @@ docker-compose down
 
 Once the backend is running, visit:
 
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+- **Swagger UI**: <http://localhost:8000/docs>
+- **ReDoc**: <http://localhost:8000/redoc>
 
 ### Main Endpoints
 
@@ -166,14 +181,25 @@ Once the backend is running, visit:
 | `GET`  | `/api/analytics/summary` | Get analytics summary     |
 | `GET`  | `/api/analytics/charts`  | Get chart data            |
 
-## 🧪 Testing
+## 🧪 Testing & Linting
+
+**Pre-commit (Recommended):**
+
+```bash
+# Run all checks on staged files
+pre-commit run
+
+# Run all checks on all files
+pre-commit run --all-files
+```
 
 **Frontend:**
 
 ```bash
 cd frontend
 npm run lint          # ESLint
-npx tsc --noEmit      # TypeScript check
+npm run format:check  # Prettier
+npm run typecheck     # TypeScript check
 ```
 
 **Backend:**
@@ -219,5 +245,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://github.com/YOUR_USERNAME">Rafael Jyo Kondo</a>
+  Made with ❤️ by <a href="https://github.com/nyanham">Rafael Jyo Kondo</a>
 </p>

@@ -3,16 +3,14 @@ from supabase import Client
 
 from app.core import get_current_user, get_user_supabase
 from app.models import (
-    UserProfile,
-    UserProfileUpdate,
-    UserSettings,
-    UserSettingsUpdate,
-    UserGoal,
+    CurrentUser,
     UserGoalCreate,
     UserGoalUpdate,
-    CurrentUser,
+    UserProfileUpdate,
+    UserSettingsUpdate,
 )
 from app.services import UserService
+
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -21,6 +19,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 # CURRENT USER (ME) ENDPOINTS
 # ==========================================
 
+
 @router.get("/me", response_model=CurrentUser)
 async def get_current_user_data(
     current_user: dict = Depends(get_current_user),
@@ -28,17 +27,17 @@ async def get_current_user_data(
 ):
     """Get complete current user data including profile, settings, and goals."""
     service = UserService(supabase, current_user["id"])
-    
+
     profile = service.get_profile()
     settings = service.get_settings()
     goals = service.list_goals(active_only=True)
-    
+
     if not profile:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User profile not found",
         )
-    
+
     return {
         "profile": profile,
         "settings": settings,
@@ -50,6 +49,7 @@ async def get_current_user_data(
 # PROFILE ENDPOINTS
 # ==========================================
 
+
 @router.get("/me/profile")
 async def get_profile(
     current_user: dict = Depends(get_current_user),
@@ -58,13 +58,13 @@ async def get_profile(
     """Get current user's profile."""
     service = UserService(supabase, current_user["id"])
     profile = service.get_profile()
-    
+
     if not profile:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Profile not found",
         )
-    
+
     return profile
 
 
@@ -77,19 +77,20 @@ async def update_profile(
     """Update current user's profile."""
     service = UserService(supabase, current_user["id"])
     profile = service.update_profile(data)
-    
+
     if not profile:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Profile not found",
         )
-    
+
     return profile
 
 
 # ==========================================
 # SETTINGS ENDPOINTS
 # ==========================================
+
 
 @router.get("/me/settings")
 async def get_settings(
@@ -99,13 +100,13 @@ async def get_settings(
     """Get current user's settings."""
     service = UserService(supabase, current_user["id"])
     settings = service.get_settings()
-    
+
     if not settings:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Settings not found",
         )
-    
+
     return settings
 
 
@@ -118,19 +119,20 @@ async def update_settings(
     """Update current user's settings."""
     service = UserService(supabase, current_user["id"])
     settings = service.update_settings(data)
-    
+
     if not settings:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Settings not found",
         )
-    
+
     return settings
 
 
 # ==========================================
 # GOALS ENDPOINTS
 # ==========================================
+
 
 @router.get("/me/goals")
 async def list_goals(
@@ -163,13 +165,13 @@ async def get_goal(
     """Get a specific goal by ID."""
     service = UserService(supabase, current_user["id"])
     goal = service.get_goal(goal_id)
-    
+
     if not goal:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Goal not found",
         )
-    
+
     return goal
 
 
@@ -183,13 +185,13 @@ async def update_goal(
     """Update a goal."""
     service = UserService(supabase, current_user["id"])
     goal = service.update_goal(goal_id, data)
-    
+
     if not goal:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Goal not found",
         )
-    
+
     return goal
 
 
@@ -202,7 +204,7 @@ async def delete_goal(
     """Delete a goal."""
     service = UserService(supabase, current_user["id"])
     deleted = service.delete_goal(goal_id)
-    
+
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

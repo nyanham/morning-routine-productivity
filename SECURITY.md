@@ -76,4 +76,4 @@ We use automated tools to monitor dependencies:
 
 ## Contact
 
-For security-related questions, contact: [your-email@example.com]
+For security-related questions, contact: [rafaeljkey@gmail.com]

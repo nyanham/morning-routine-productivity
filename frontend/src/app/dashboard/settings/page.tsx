@@ -1,19 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import DashboardLayout from "@/components/layout/DashboardLayout";
-import { RequireAuth, useAuthContext } from "@/contexts/AuthContext";
-import { useUserProfile, useUserSettings } from "@/hooks/useApi";
-import {
-  Save,
-  User,
-  Bell,
-  Palette,
-  Globe,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
-import type { UserProfileUpdate, UserSettingsUpdate } from "@/types";
+import { useEffect, useState } from 'react';
+import DashboardLayout from '@/components/layout/DashboardLayout';
+import { RequireAuth, useAuthContext } from '@/contexts/AuthContext';
+import { useUserProfile, useUserSettings } from '@/hooks/useApi';
+import { Save, User, Bell, Palette, Globe, CheckCircle, AlertCircle } from 'lucide-react';
+import type { UserProfileUpdate, UserSettingsUpdate } from '@/types';
 
 function SettingsContent() {
   const { user } = useAuthContext();
@@ -21,21 +13,21 @@ function SettingsContent() {
   const settings = useUserSettings();
 
   const [profileForm, setProfileForm] = useState<UserProfileUpdate>({
-    full_name: "",
-    display_name: "",
-    timezone: "UTC",
-    bio: "",
-    occupation: "",
+    full_name: '',
+    display_name: '',
+    timezone: 'UTC',
+    bio: '',
+    occupation: '',
   });
 
   const [settingsForm, setSettingsForm] = useState<UserSettingsUpdate>({
-    theme: "system",
+    theme: 'system',
     email_notifications: true,
     push_notifications: false,
     weekly_summary_email: true,
-    reminder_time: "07:00",
-    time_format: "12h",
-    start_week_on: "monday",
+    reminder_time: '07:00',
+    time_format: '12h',
+    start_week_on: 'monday',
   });
 
   const [saving, setSaving] = useState(false);
@@ -52,11 +44,11 @@ function SettingsContent() {
   useEffect(() => {
     if (profile.data) {
       setProfileForm({
-        full_name: profile.data.full_name || "",
-        display_name: profile.data.display_name || "",
-        timezone: profile.data.timezone || "UTC",
-        bio: profile.data.bio || "",
-        occupation: profile.data.occupation || "",
+        full_name: profile.data.full_name || '',
+        display_name: profile.data.display_name || '',
+        timezone: profile.data.timezone || 'UTC',
+        bio: profile.data.bio || '',
+        occupation: profile.data.occupation || '',
       });
     }
   }, [profile.data]);
@@ -64,21 +56,19 @@ function SettingsContent() {
   useEffect(() => {
     if (settings.data) {
       setSettingsForm({
-        theme: settings.data.theme || "system",
+        theme: settings.data.theme || 'system',
         email_notifications: settings.data.email_notifications ?? true,
         push_notifications: settings.data.push_notifications ?? false,
         weekly_summary_email: settings.data.weekly_summary_email ?? true,
-        reminder_time: settings.data.reminder_time || "07:00",
-        time_format: settings.data.time_format || "12h",
-        start_week_on: settings.data.start_week_on || "monday",
+        reminder_time: settings.data.reminder_time || '07:00',
+        time_format: settings.data.time_format || '12h',
+        start_week_on: settings.data.start_week_on || 'monday',
       });
     }
   }, [settings.data]);
 
   const handleProfileChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setProfileForm((prev) => ({ ...prev, [name]: value }));
@@ -86,12 +76,9 @@ function SettingsContent() {
     setError(null);
   };
 
-  const handleSettingsChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const handleSettingsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    const newValue =
-      type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+    const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
     setSettingsForm((prev) => ({ ...prev, [name]: newValue }));
     setSuccess(null);
     setError(null);
@@ -104,9 +91,9 @@ function SettingsContent() {
 
     try {
       await profile.update(profileForm);
-      setSuccess("Profile updated successfully!");
+      setSuccess('Profile updated successfully!');
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update profile");
+      setError(err instanceof Error ? err.message : 'Failed to update profile');
     } finally {
       setSaving(false);
     }
@@ -119,11 +106,9 @@ function SettingsContent() {
 
     try {
       await settings.update(settingsForm);
-      setSuccess("Settings updated successfully!");
+      setSuccess('Settings updated successfully!');
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to update settings",
-      );
+      setError(err instanceof Error ? err.message : 'Failed to update settings');
     } finally {
       setSaving(false);
     }
@@ -136,22 +121,20 @@ function SettingsContent() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
-        <p className="text-slate-600 mt-1">
-          Manage your profile and preferences
-        </p>
+        <p className="mt-1 text-slate-600">Manage your profile and preferences</p>
       </div>
 
       {/* Success Banner */}
       {success && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
+        <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4">
           <CheckCircle className="h-5 w-5 text-green-600" />
-          <p className="text-green-800 font-medium">{success}</p>
+          <p className="font-medium text-green-800">{success}</p>
         </div>
       )}
 
       {/* Error Banner */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+        <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
           <AlertCircle className="h-5 w-5 text-red-600" />
           <p className="text-red-800">{error}</p>
         </div>
@@ -159,27 +142,27 @@ function SettingsContent() {
 
       {/* Profile Section */}
       <div className="card">
-        <div className="flex items-center gap-3 mb-6">
-          <User className="h-6 w-6 text-primary-600" />
+        <div className="mb-6 flex items-center gap-3">
+          <User className="text-primary-600 h-6 w-6" />
           <h2 className="text-xl font-semibold text-slate-900">Profile</h2>
         </div>
 
         {isLoading ? (
           <div className="animate-pulse space-y-4">
-            <div className="h-10 bg-slate-200 rounded"></div>
-            <div className="h-10 bg-slate-200 rounded"></div>
-            <div className="h-20 bg-slate-200 rounded"></div>
+            <div className="h-10 rounded bg-slate-200"></div>
+            <div className="h-10 rounded bg-slate-200"></div>
+            <div className="h-20 rounded bg-slate-200"></div>
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
                 <label className="label">Email</label>
                 <input
                   type="email"
-                  value={user?.email || ""}
+                  value={user?.email || ''}
                   disabled
-                  className="input bg-slate-50 cursor-not-allowed"
+                  className="input cursor-not-allowed bg-slate-50"
                 />
               </div>
               <div>
@@ -246,16 +229,12 @@ function SettingsContent() {
               </select>
             </div>
             <div className="flex justify-end">
-              <button
-                onClick={handleSaveProfile}
-                disabled={saving}
-                className="btn-primary"
-              >
+              <button onClick={handleSaveProfile} disabled={saving} className="btn-primary">
                 {saving ? (
-                  "Saving..."
+                  'Saving...'
                 ) : (
                   <>
-                    <Save className="h-4 w-4 mr-2 inline" />
+                    <Save className="mr-2 inline h-4 w-4" />
                     Save Profile
                   </>
                 )}
@@ -267,11 +246,9 @@ function SettingsContent() {
 
       {/* Notifications Section */}
       <div className="card">
-        <div className="flex items-center gap-3 mb-6">
-          <Bell className="h-6 w-6 text-primary-600" />
-          <h2 className="text-xl font-semibold text-slate-900">
-            Notifications
-          </h2>
+        <div className="mb-6 flex items-center gap-3">
+          <Bell className="text-primary-600 h-6 w-6" />
+          <h2 className="text-xl font-semibold text-slate-900">Notifications</h2>
         </div>
 
         <div className="space-y-4">
@@ -281,7 +258,7 @@ function SettingsContent() {
               name="email_notifications"
               checked={settingsForm.email_notifications}
               onChange={handleSettingsChange}
-              className="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+              className="text-primary-600 focus:ring-primary-500 h-4 w-4 rounded border-slate-300"
             />
             <span className="text-slate-700">Email notifications</span>
           </label>
@@ -291,7 +268,7 @@ function SettingsContent() {
               name="weekly_summary_email"
               checked={settingsForm.weekly_summary_email}
               onChange={handleSettingsChange}
-              className="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+              className="text-primary-600 focus:ring-primary-500 h-4 w-4 rounded border-slate-300"
             />
             <span className="text-slate-700">Weekly summary email</span>
           </label>
@@ -310,13 +287,13 @@ function SettingsContent() {
 
       {/* Preferences Section */}
       <div className="card">
-        <div className="flex items-center gap-3 mb-6">
-          <Palette className="h-6 w-6 text-primary-600" />
+        <div className="mb-6 flex items-center gap-3">
+          <Palette className="text-primary-600 h-6 w-6" />
           <h2 className="text-xl font-semibold text-slate-900">Preferences</h2>
         </div>
 
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <label className="label">Theme</label>
               <select
@@ -356,16 +333,12 @@ function SettingsContent() {
             </div>
           </div>
           <div className="flex justify-end">
-            <button
-              onClick={handleSaveSettings}
-              disabled={saving}
-              className="btn-primary"
-            >
+            <button onClick={handleSaveSettings} disabled={saving} className="btn-primary">
               {saving ? (
-                "Saving..."
+                'Saving...'
               ) : (
                 <>
-                  <Save className="h-4 w-4 mr-2 inline" />
+                  <Save className="mr-2 inline h-4 w-4" />
                   Save Preferences
                 </>
               )}

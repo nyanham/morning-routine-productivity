@@ -1,16 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import Optional
 from datetime import date
+
+from fastapi import APIRouter, Depends, HTTPException, status
 from supabase import Client
 
 from app.core import get_current_user, get_user_supabase
 from app.models import (
-    Productivity,
+    PaginatedResponse,
     ProductivityCreate,
     ProductivityUpdate,
-    PaginatedResponse,
 )
 from app.services import ProductivityService
+
 
 router = APIRouter(prefix="/productivity", tags=["productivity"])
 
@@ -19,8 +19,8 @@ router = APIRouter(prefix="/productivity", tags=["productivity"])
 async def list_productivity(
     page: int = 1,
     page_size: int = 10,
-    start_date: Optional[date] = None,
-    end_date: Optional[date] = None,
+    start_date: date | None = None,
+    end_date: date | None = None,
     current_user: dict = Depends(get_current_user),
     supabase: Client = Depends(get_user_supabase),
 ):
@@ -38,13 +38,13 @@ async def get_productivity(
     """Get a specific productivity entry by ID."""
     service = ProductivityService(supabase, current_user["id"])
     entry = service.get(entry_id)
-    
+
     if not entry:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Productivity entry not found",
         )
-    
+
     return entry
 
 
@@ -69,13 +69,13 @@ async def update_productivity(
     """Update an existing productivity entry."""
     service = ProductivityService(supabase, current_user["id"])
     entry = service.update(entry_id, data)
-    
+
     if not entry:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Productivity entry not found",
         )
-    
+
     return entry
 
 
@@ -88,7 +88,7 @@ async def delete_productivity(
     """Delete a productivity entry."""
     service = ProductivityService(supabase, current_user["id"])
     deleted = service.delete(entry_id)
-    
+
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

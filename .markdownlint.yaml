@@ -1,0 +1,23 @@
+# Markdownlint configuration
+# https://github.com/DavidAnson/markdownlint
+
+# MD013 - Line length
+MD013: false
+
+# MD033 - Inline HTML
+MD033: false
+
+# MD041 - First line should be a heading
+MD041: false
+
+# MD024 - Multiple headings with same content
+MD024:
+  siblings_only: true
+
+# MD029 - Ordered list item prefix
+MD029:
+  style: "ordered"
+
+# MD046 - Code block style
+MD046:
+  style: "fenced"

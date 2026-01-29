@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { BarChart3 } from "lucide-react";
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { BarChart3 } from 'lucide-react';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -20,7 +20,7 @@ export default function SignUpPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      router.push("/dashboard");
+      router.push('/dashboard');
     }
   }, [user, router]);
 
@@ -29,12 +29,12 @@ export default function SignUpPage() {
     setError(null);
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError('Passwords do not match');
       return;
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError('Password must be at least 6 characters');
       return;
     }
 
@@ -44,7 +44,7 @@ export default function SignUpPage() {
       await signUp(email, password, fullName);
       setSuccess(true);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Failed to sign up";
+      const message = err instanceof Error ? err.message : 'Failed to sign up';
       setError(message);
     } finally {
       setLoading(false);
@@ -53,15 +53,12 @@ export default function SignUpPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-        <div className="w-full max-w-md card text-center">
-          <h1 className="text-2xl font-bold text-slate-900 mb-4">
-            Check Your Email
-          </h1>
-          <p className="text-slate-600 mb-6">
-            We've sent a confirmation link to{" "}
-            <span className="font-medium">{email}</span>. Please click the link
-            to verify your account.
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+        <div className="card w-full max-w-md text-center">
+          <h1 className="mb-4 text-2xl font-bold text-slate-900">Check Your Email</h1>
+          <p className="mb-6 text-slate-600">
+            We've sent a confirmation link to <span className="font-medium">{email}</span>. Please
+            click the link to verify your account.
           </p>
           <Link href="/auth/login" className="btn-primary">
             Back to Login
@@ -72,26 +69,22 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <BarChart3 className="h-10 w-10 text-primary-600" />
-            <span className="text-2xl font-bold text-slate-900">
-              Productivity Tracker
-            </span>
+            <BarChart3 className="text-primary-600 h-10 w-10" />
+            <span className="text-2xl font-bold text-slate-900">Productivity Tracker</span>
           </Link>
         </div>
 
         {/* Card */}
         <div className="card">
-          <h1 className="text-2xl font-bold text-slate-900 text-center mb-6">
-            Create Account
-          </h1>
+          <h1 className="mb-6 text-center text-2xl font-bold text-slate-900">Create Account</h1>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
               {error}
             </div>
           )}
@@ -144,21 +137,14 @@ export default function SignUpPage() {
               />
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full py-3"
-            >
-              {loading ? "Creating account..." : "Sign Up"}
+            <button type="submit" disabled={loading} className="btn-primary w-full py-3">
+              {loading ? 'Creating account...' : 'Sign Up'}
             </button>
           </form>
 
-          <p className="text-center text-sm text-slate-600 mt-6">
-            Already have an account?{" "}
-            <Link
-              href="/auth/login"
-              className="text-primary-600 hover:underline font-medium"
-            >
+          <p className="mt-6 text-center text-sm text-slate-600">
+            Already have an account?{' '}
+            <Link href="/auth/login" className="text-primary-600 font-medium hover:underline">
               Sign in
             </Link>
           </p>
