@@ -1,24 +1,15 @@
-"use client";
+'use client';
 
-import { useState, useRef } from "react";
-import DashboardLayout from "@/components/layout/DashboardLayout";
-import { RequireAuth } from "@/contexts/AuthContext";
-import { useCSVImport } from "@/hooks/useApi";
-import {
-  FileSpreadsheet,
-  Info,
-  Upload,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-} from "lucide-react";
-import type { CSVImportResult } from "@/types";
+import { useState, useRef } from 'react';
+import DashboardLayout from '@/components/layout/DashboardLayout';
+import { RequireAuth } from '@/contexts/AuthContext';
+import { useCSVImport } from '@/hooks/useApi';
+import { FileSpreadsheet, Info, Upload, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import type { CSVImportResult } from '@/types';
 
 function ImportContent() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewData, setPreviewData] = useState<
-    Record<string, unknown>[] | null
-  >(null);
+  const [previewData, setPreviewData] = useState<Record<string, unknown>[] | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const csvImport = useCSVImport();
@@ -27,8 +18,8 @@ function ImportContent() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.name.endsWith(".csv")) {
-      setParseError("Please select a CSV file");
+    if (!file.name.endsWith('.csv')) {
+      setParseError('Please select a CSV file');
       setSelectedFile(null);
       setPreviewData(null);
       return;
@@ -40,21 +31,21 @@ function ImportContent() {
     // Parse CSV for preview using Papa Parse (already in CSVUploader)
     try {
       const text = await file.text();
-      const lines = text.split("\n").filter((line) => line.trim());
-      const headers = lines[0].split(",").map((h) => h.trim());
+      const lines = text.split('\n').filter((line) => line.trim());
+      const headers = lines[0].split(',').map((h) => h.trim());
 
       const preview = lines.slice(1, 6).map((line) => {
-        const values = line.split(",");
+        const values = line.split(',');
         const row: Record<string, string> = {};
         headers.forEach((header, i) => {
-          row[header] = values[i]?.trim() || "";
+          row[header] = values[i]?.trim() || '';
         });
         return row;
       });
 
       setPreviewData(preview);
     } catch {
-      setParseError("Failed to parse CSV file");
+      setParseError('Failed to parse CSV file');
       setPreviewData(null);
     }
   };
@@ -74,7 +65,7 @@ function ImportContent() {
     setPreviewData(null);
     setParseError(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = '';
     }
   };
 
@@ -83,11 +74,11 @@ function ImportContent() {
 2024-01-01,06:30,7.5,30,10,7,good,100,500,8,5,6,4,7,4,Good productive day
 2024-01-02,07:00,8,45,15,8,excellent,80,750,9,7,8,5,8,3,Felt great after exercise`;
 
-    const blob = new Blob([template], { type: "text/csv" });
+    const blob = new Blob([template], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = "morning_routine_template.csv";
+    a.download = 'morning_routine_template.csv';
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -97,35 +88,32 @@ function ImportContent() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900">Import Data</h1>
-        <p className="text-slate-600 mt-1">
+        <p className="mt-1 text-slate-600">
           Upload a CSV file to import your morning routine and productivity data
         </p>
       </div>
 
       {/* Info Card */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3">
-        <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+      <div className="flex gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4">
+        <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" />
         <div className="text-sm text-blue-800">
-          <p className="font-medium mb-1">Expected CSV Format</p>
+          <p className="mb-1 font-medium">Expected CSV Format</p>
           <p>
-            Your CSV should include columns like: date, wake_time,
-            sleep_duration_hours, exercise_minutes, meditation_minutes,
-            morning_mood, productivity_score, etc.
+            Your CSV should include columns like: date, wake_time, sleep_duration_hours,
+            exercise_minutes, meditation_minutes, morning_mood, productivity_score, etc.
           </p>
         </div>
       </div>
 
       {/* Upload Section */}
       <div className="card">
-        <div className="flex items-center gap-3 mb-6">
-          <FileSpreadsheet className="h-6 w-6 text-primary-600" />
-          <h2 className="text-xl font-semibold text-slate-900">
-            Upload CSV File
-          </h2>
+        <div className="mb-6 flex items-center gap-3">
+          <FileSpreadsheet className="text-primary-600 h-6 w-6" />
+          <h2 className="text-xl font-semibold text-slate-900">Upload CSV File</h2>
         </div>
 
         {/* File Input */}
-        <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-primary-400 transition-colors">
+        <div className="hover:border-primary-400 rounded-xl border-2 border-dashed border-slate-300 p-8 text-center transition-colors">
           <input
             ref={fileInputRef}
             type="file"
@@ -140,22 +128,16 @@ function ImportContent() {
                 <>
                   <Upload className="h-12 w-12 text-slate-400" />
                   <div>
-                    <p className="text-slate-700 font-medium">
-                      Click to upload or drag and drop
-                    </p>
-                    <p className="text-slate-500 text-sm mt-1">
-                      CSV files only
-                    </p>
+                    <p className="font-medium text-slate-700">Click to upload or drag and drop</p>
+                    <p className="mt-1 text-sm text-slate-500">CSV files only</p>
                   </div>
                 </>
               ) : (
                 <>
                   <CheckCircle className="h-12 w-12 text-green-500" />
                   <div>
-                    <p className="text-slate-700 font-medium">
-                      {selectedFile.name}
-                    </p>
-                    <p className="text-slate-500 text-sm mt-1">
+                    <p className="font-medium text-slate-700">{selectedFile.name}</p>
+                    <p className="mt-1 text-sm text-slate-500">
                       {(selectedFile.size / 1024).toFixed(1)} KB
                     </p>
                   </div>
@@ -167,43 +149,40 @@ function ImportContent() {
 
         {/* Parse Error */}
         {parseError && (
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-            <XCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div className="mt-4 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
+            <XCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
             <p className="text-red-700">{parseError}</p>
           </div>
         )}
 
         {/* Import Error */}
         {csvImport.error && (
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-            <XCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div className="mt-4 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
+            <XCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
             <p className="text-red-700">{csvImport.error}</p>
           </div>
         )}
 
         {/* Import Success */}
         {csvImport.data && (
-          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4">
             <div className="flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600" />
               <div>
-                <p className="text-green-800 font-medium">Import Complete!</p>
-                <p className="text-green-700 text-sm mt-1">
+                <p className="font-medium text-green-800">Import Complete!</p>
+                <p className="mt-1 text-sm text-green-700">
                   Successfully imported {csvImport.data.imported_count} records.
                   {csvImport.data.failed_count > 0 && (
-                    <span className="text-yellow-700">
-                      {" "}
-                      {csvImport.data.failed_count} failed.
-                    </span>
+                    <span className="text-yellow-700"> {csvImport.data.failed_count} failed.</span>
                   )}
                 </p>
                 {csvImport.data.errors?.length > 0 && (
                   <div className="mt-2 text-sm text-yellow-700">
-                    <p className="font-medium flex items-center gap-1">
+                    <p className="flex items-center gap-1 font-medium">
                       <AlertTriangle className="h-4 w-4" />
                       Errors:
                     </p>
-                    <ul className="list-disc list-inside mt-1">
+                    <ul className="mt-1 list-inside list-disc">
                       {csvImport.data.errors.slice(0, 5).map((err, i) => (
                         <li key={i}>{err}</li>
                       ))}
@@ -218,18 +197,15 @@ function ImportContent() {
         {/* Preview */}
         {previewData && previewData.length > 0 && !csvImport.data && (
           <div className="mt-6">
-            <h3 className="text-sm font-medium text-slate-700 mb-2">
+            <h3 className="mb-2 text-sm font-medium text-slate-700">
               Preview (first {previewData.length} rows)
             </h3>
-            <div className="overflow-x-auto border border-slate-200 rounded-lg">
+            <div className="overflow-x-auto rounded-lg border border-slate-200">
               <table className="w-full text-sm">
                 <thead className="bg-slate-50">
                   <tr>
                     {Object.keys(previewData[0]).map((header) => (
-                      <th
-                        key={header}
-                        className="text-left py-2 px-3 font-medium text-slate-600"
-                      >
+                      <th key={header} className="px-3 py-2 text-left font-medium text-slate-600">
                         {header}
                       </th>
                     ))}
@@ -239,7 +215,7 @@ function ImportContent() {
                   {previewData.map((row, i) => (
                     <tr key={i} className="border-t border-slate-100">
                       {Object.values(row).map((value, j) => (
-                        <td key={j} className="py-2 px-3 text-slate-700">
+                        <td key={j} className="px-3 py-2 text-slate-700">
                           {String(value)}
                         </td>
                       ))}
@@ -257,14 +233,10 @@ function ImportContent() {
             <button onClick={handleReset} className="btn-secondary">
               Clear
             </button>
-            <button
-              onClick={handleImport}
-              disabled={csvImport.loading}
-              className="btn-primary"
-            >
+            <button onClick={handleImport} disabled={csvImport.loading} className="btn-primary">
               {csvImport.loading
-                ? "Importing..."
-                : `Import ${previewData?.length ? `~${previewData.length}+ ` : ""}Records`}
+                ? 'Importing...'
+                : `Import ${previewData?.length ? `~${previewData.length}+ ` : ''}Records`}
             </button>
           </div>
         )}
@@ -281,10 +253,8 @@ function ImportContent() {
 
       {/* Sample Data Section */}
       <div className="card">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
-          Sample CSV Template
-        </h3>
-        <div className="bg-slate-50 rounded-lg p-4 overflow-x-auto">
+        <h3 className="mb-4 text-lg font-semibold text-slate-900">Sample CSV Template</h3>
+        <div className="overflow-x-auto rounded-lg bg-slate-50 p-4">
           <pre className="text-sm text-slate-600">
             {`date,wake_time,sleep_duration_hours,exercise_minutes,meditation_minutes,morning_mood,productivity_score,tasks_completed
 2024-01-01,06:30,7.5,30,10,7,8,5

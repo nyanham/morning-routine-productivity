@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState, useCallback } from "react";
-import { useAuthContext } from "@/contexts/AuthContext";
-import { api, ApiError } from "@/lib/api";
+import { useState, useCallback } from 'react';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { api, ApiError } from '@/lib/api';
 import type {
   MorningRoutine,
   ProductivityEntry,
@@ -18,7 +18,7 @@ import type {
   UserSettingsUpdate,
   UserGoalCreate,
   UserGoalUpdate,
-} from "@/types";
+} from '@/types';
 
 // ==========================================
 // GENERIC ASYNC STATE HOOK
@@ -63,7 +63,7 @@ export function useCurrentUser() {
   const fetch = useCallback(async () => {
     const token = await getAccessToken();
     if (!token) {
-      state.setError("Not authenticated");
+      state.setError('Not authenticated');
       return;
     }
 
@@ -72,9 +72,7 @@ export function useCurrentUser() {
       const data = await api.users.me(token);
       state.setData(data);
     } catch (err) {
-      state.setError(
-        err instanceof ApiError ? err.detail : "Failed to fetch user",
-      );
+      state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch user');
     }
   }, [getAccessToken]);
 
@@ -94,22 +92,20 @@ export function useUserProfile() {
       const data = await api.users.getProfile(token);
       state.setData(data);
     } catch (err) {
-      state.setError(
-        err instanceof ApiError ? err.detail : "Failed to fetch profile",
-      );
+      state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch profile');
     }
   }, [getAccessToken]);
 
   const update = useCallback(
     async (data: UserProfileUpdate) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       const updated = await api.users.updateProfile(token, data);
       state.setData(updated);
       return updated;
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   return { ...state, fetch, update };
@@ -128,22 +124,20 @@ export function useUserSettings() {
       const data = await api.users.getSettings(token);
       state.setData(data);
     } catch (err) {
-      state.setError(
-        err instanceof ApiError ? err.detail : "Failed to fetch settings",
-      );
+      state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch settings');
     }
   }, [getAccessToken]);
 
   const update = useCallback(
     async (data: UserSettingsUpdate) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       const updated = await api.users.updateSettings(token, data);
       state.setData(updated);
       return updated;
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   return { ...state, fetch, update };
@@ -163,49 +157,45 @@ export function useUserGoals() {
         const data = await api.users.listGoals(token, activeOnly);
         state.setData(data);
       } catch (err) {
-        state.setError(
-          err instanceof ApiError ? err.detail : "Failed to fetch goals",
-        );
+        state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch goals');
       }
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   const create = useCallback(
     async (data: UserGoalCreate) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       const goal = await api.users.createGoal(token, data);
       state.setData([...(state.data || []), goal]);
       return goal;
     },
-    [getAccessToken, state.data],
+    [getAccessToken, state.data]
   );
 
   const update = useCallback(
     async (goalId: string, data: UserGoalUpdate) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       const updated = await api.users.updateGoal(token, goalId, data);
-      state.setData(
-        (state.data || []).map((g) => (g.id === goalId ? updated : g)),
-      );
+      state.setData((state.data || []).map((g) => (g.id === goalId ? updated : g)));
       return updated;
     },
-    [getAccessToken, state.data],
+    [getAccessToken, state.data]
   );
 
   const remove = useCallback(
     async (goalId: string) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       await api.users.deleteGoal(token, goalId);
       state.setData((state.data || []).filter((g) => g.id !== goalId));
     },
-    [getAccessToken, state.data],
+    [getAccessToken, state.data]
   );
 
   return { ...state, fetch, create, update, remove };
@@ -236,47 +226,40 @@ export function useRoutines() {
         const data = await api.routines.list(token, params);
         state.setData(data);
       } catch (err) {
-        state.setError(
-          err instanceof ApiError ? err.detail : "Failed to fetch routines",
-        );
+        state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch routines');
       }
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   const create = useCallback(
-    async (
-      data: Omit<
-        MorningRoutine,
-        "id" | "user_id" | "created_at" | "updated_at"
-      >,
-    ) => {
+    async (data: Omit<MorningRoutine, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       return await api.routines.create(token, data);
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   const update = useCallback(
     async (id: string, data: Partial<MorningRoutine>) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       return await api.routines.update(token, id, data);
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   const remove = useCallback(
     async (id: string) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       await api.routines.delete(token, id);
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   return { ...state, fetch, create, update, remove };
@@ -307,49 +290,40 @@ export function useProductivity() {
         const data = await api.productivity.list(token, params);
         state.setData(data);
       } catch (err) {
-        state.setError(
-          err instanceof ApiError
-            ? err.detail
-            : "Failed to fetch productivity data",
-        );
+        state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch productivity data');
       }
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   const create = useCallback(
-    async (
-      data: Omit<
-        ProductivityEntry,
-        "id" | "user_id" | "created_at" | "updated_at"
-      >,
-    ) => {
+    async (data: Omit<ProductivityEntry, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       return await api.productivity.create(token, data);
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   const update = useCallback(
     async (id: string, data: Partial<ProductivityEntry>) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       return await api.productivity.update(token, id, data);
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   const remove = useCallback(
     async (id: string) => {
       const token = await getAccessToken();
-      if (!token) throw new Error("Not authenticated");
+      if (!token) throw new Error('Not authenticated');
 
       await api.productivity.delete(token, id);
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   return { ...state, fetch, create, update, remove };
@@ -373,12 +347,10 @@ export function useAnalyticsSummary() {
         const data = await api.analytics.summary(token, startDate, endDate);
         state.setData(data);
       } catch (err) {
-        state.setError(
-          err instanceof ApiError ? err.detail : "Failed to fetch summary",
-        );
+        state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch summary');
       }
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   return { ...state, fetch };
@@ -398,12 +370,10 @@ export function useChartData() {
         const data = await api.analytics.charts(token, startDate, endDate);
         state.setData(data);
       } catch (err) {
-        state.setError(
-          err instanceof ApiError ? err.detail : "Failed to fetch chart data",
-        );
+        state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch chart data');
       }
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   return { ...state, fetch };
@@ -421,7 +391,7 @@ export function useCSVImport() {
     async (file: File) => {
       const token = await getAccessToken();
       if (!token) {
-        state.setError("Not authenticated");
+        state.setError('Not authenticated');
         return;
       }
 
@@ -431,12 +401,12 @@ export function useCSVImport() {
         state.setData(result);
         return result;
       } catch (err) {
-        const message = err instanceof ApiError ? err.detail : "Import failed";
+        const message = err instanceof ApiError ? err.detail : 'Import failed';
         state.setError(message);
         throw err;
       }
     },
-    [getAccessToken],
+    [getAccessToken]
   );
 
   return { ...state, importFile };

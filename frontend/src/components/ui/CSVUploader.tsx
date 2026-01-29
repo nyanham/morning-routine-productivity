@@ -10,11 +10,7 @@ interface CSVUploaderProps {
   acceptedFields?: string[];
 }
 
-export default function CSVUploader({
-  onUpload,
-  onError,
-  acceptedFields,
-}: CSVUploaderProps) {
+export default function CSVUploader({ onUpload, onError, acceptedFields }: CSVUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -75,10 +71,10 @@ export default function CSVUploader({
   return (
     <div className="space-y-4">
       <div
-        className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
+        className={`rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
           isDragging
             ? 'border-primary-500 bg-primary-50'
-            : 'border-slate-300 hover:border-primary-400'
+            : 'hover:border-primary-400 border-slate-300'
         }`}
         onDragOver={(e) => {
           e.preventDefault();
@@ -100,12 +96,8 @@ export default function CSVUploader({
               <>
                 <Upload className="h-12 w-12 text-slate-400" />
                 <div>
-                  <p className="text-lg font-medium text-slate-700">
-                    Drop your CSV file here
-                  </p>
-                  <p className="text-sm text-slate-500 mt-1">
-                    or click to browse
-                  </p>
+                  <p className="text-lg font-medium text-slate-700">Drop your CSV file here</p>
+                  <p className="mt-1 text-sm text-slate-500">or click to browse</p>
                 </div>
               </>
             )}
@@ -113,10 +105,8 @@ export default function CSVUploader({
               <>
                 <CheckCircle className="h-12 w-12 text-green-500" />
                 <div>
-                  <p className="text-lg font-medium text-green-700">
-                    File uploaded successfully!
-                  </p>
-                  <p className="text-sm text-slate-500 mt-1">{fileName}</p>
+                  <p className="text-lg font-medium text-green-700">File uploaded successfully!</p>
+                  <p className="mt-1 text-sm text-slate-500">{fileName}</p>
                 </div>
               </>
             )}
@@ -124,10 +114,8 @@ export default function CSVUploader({
               <>
                 <XCircle className="h-12 w-12 text-red-500" />
                 <div>
-                  <p className="text-lg font-medium text-red-700">
-                    Upload failed
-                  </p>
-                  <p className="text-sm text-slate-500 mt-1">
+                  <p className="text-lg font-medium text-red-700">Upload failed</p>
+                  <p className="mt-1 text-sm text-slate-500">
                     Please try again with a valid CSV file
                   </p>
                 </div>
@@ -140,18 +128,13 @@ export default function CSVUploader({
       {/* Preview */}
       {preview && preview.length > 0 && (
         <div className="card">
-          <h4 className="text-sm font-medium text-slate-700 mb-3">
-            Preview (first 5 rows)
-          </h4>
+          <h4 className="mb-3 text-sm font-medium text-slate-700">Preview (first 5 rows)</h4>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200">
                   {Object.keys(preview[0]).map((key) => (
-                    <th
-                      key={key}
-                      className="text-left py-2 px-3 font-medium text-slate-600"
-                    >
+                    <th key={key} className="px-3 py-2 text-left font-medium text-slate-600">
                       {key}
                     </th>
                   ))}
@@ -161,7 +144,7 @@ export default function CSVUploader({
                 {preview.map((row, i) => (
                   <tr key={i} className="border-b border-slate-100">
                     {Object.values(row).map((value: any, j) => (
-                      <td key={j} className="py-2 px-3 text-slate-700">
+                      <td key={j} className="px-3 py-2 text-slate-700">
                         {String(value).substring(0, 30)}
                       </td>
                     ))}

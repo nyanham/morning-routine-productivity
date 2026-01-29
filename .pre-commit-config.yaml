@@ -1,0 +1,127 @@
+# Pre-commit configuration
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+default_language_version:
+  python: python3
+  node: "22.0.0"
+
+# Define hook stages
+default_stages: [pre-commit]
+
+repos:
+  # ===========================================
+  # General hooks for all file types
+  # ===========================================
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      # Prevent giant files from being committed
+      - id: check-added-large-files
+        args: ["--maxkb=1000"]
+      # Check for files that would conflict in case-insensitive filesystems
+      - id: check-case-conflict
+      # Check for merge conflict strings
+      - id: check-merge-conflict
+      # Check that scripts have shebangs
+      - id: check-executables-have-shebangs
+      # Ensure JSON files are valid
+      - id: check-json
+      # Ensure YAML files are valid
+      - id: check-yaml
+        args: ["--unsafe"] # Allow custom tags
+      # Ensure TOML files are valid
+      - id: check-toml
+      # Ensure symlinks point to something
+      - id: check-symlinks
+      # Detect private keys
+      - id: detect-private-key
+      # Ensure files end with a newline
+      - id: end-of-file-fixer
+        exclude: '\.svg$'
+      # Remove trailing whitespace
+      - id: trailing-whitespace
+        exclude: '\.md$'
+      # Check for debugger imports in Python
+      - id: debug-statements
+      # Prevent committing to main/master directly
+      - id: no-commit-to-branch
+        args: ["--branch", "main", "--branch", "master"]
+
+  # ===========================================
+  # Python Backend Hooks
+  # ===========================================
+
+  # Ruff - Fast Python linter and formatter (replaces flake8, isort, black)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.6
+    hooks:
+      # Run the linter
+      - id: ruff
+        args: ["--fix", "--exit-non-zero-on-fix"]
+        files: ^backend/
+      # Run the formatter
+      - id: ruff-format
+        files: ^backend/
+
+  # Bandit - Security linter for Python
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.2
+    hooks:
+      - id: bandit
+
+        files: ^backend/
+        exclude: ^backend/(tests|scripts)/
+
+  # ===========================================
+  # Frontend (TypeScript/JavaScript) Hooks
+  # Using PowerShell commands for Windows compatibility
+  # ===========================================
+  - repo: local
+    hooks:
+      # ESLint - JavaScript/TypeScript linting
+      - id: eslint
+        name: eslint
+        entry: powershell -Command "Push-Location frontend; npm run lint:fix; Pop-Location"
+        language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx)$
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Prettier - Code formatting
+      - id: prettier
+        name: prettier
+        entry: powershell -Command "Push-Location frontend; npx prettier --write src/; Pop-Location"
+        language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|scss|md)$
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # TypeScript type checking
+      - id: typescript
+        name: typescript
+        entry: powershell -Command "Push-Location frontend; npx tsc --noEmit; Pop-Location"
+        language: system
+        files: ^frontend/.*\.(ts|tsx)$
+        pass_filenames: false
+        stages: [pre-commit]
+
+  # ===========================================
+  # Commit Message Linting
+  # ===========================================
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.1.1
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+# CI configuration
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+  autofix_prs: true
+  autoupdate_branch: "develop"
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+  autoupdate_schedule: weekly
+  skip: [eslint, prettier, typescript] # Skip local hooks in CI
+  submodules: false

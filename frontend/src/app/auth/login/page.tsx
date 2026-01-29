@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { BarChart3 } from "lucide-react";
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { BarChart3 } from 'lucide-react';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function LoginPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      const returnUrl = searchParams.get("returnUrl") || "/dashboard";
+      const returnUrl = searchParams.get('returnUrl') || '/dashboard';
       router.push(returnUrl);
     }
   }, [user, router, searchParams]);
@@ -30,10 +30,10 @@ export default function LoginPage() {
 
     try {
       await signIn(email, password);
-      const returnUrl = searchParams.get("returnUrl") || "/dashboard";
+      const returnUrl = searchParams.get('returnUrl') || '/dashboard';
       router.push(returnUrl);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Failed to sign in";
+      const message = err instanceof Error ? err.message : 'Failed to sign in';
       setError(message);
     } finally {
       setLoading(false);
@@ -41,26 +41,22 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <BarChart3 className="h-10 w-10 text-primary-600" />
-            <span className="text-2xl font-bold text-slate-900">
-              Productivity Tracker
-            </span>
+            <BarChart3 className="text-primary-600 h-10 w-10" />
+            <span className="text-2xl font-bold text-slate-900">Productivity Tracker</span>
           </Link>
         </div>
 
         {/* Card */}
         <div className="card">
-          <h1 className="text-2xl font-bold text-slate-900 text-center mb-6">
-            Welcome Back
-          </h1>
+          <h1 className="mb-6 text-center text-2xl font-bold text-slate-900">Welcome Back</h1>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
               {error}
             </div>
           )}
@@ -90,21 +86,14 @@ export default function LoginPage() {
               />
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full py-3"
-            >
-              {loading ? "Signing in..." : "Sign In"}
+            <button type="submit" disabled={loading} className="btn-primary w-full py-3">
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <p className="text-center text-sm text-slate-600 mt-6">
-            Don't have an account?{" "}
-            <Link
-              href="/auth/signup"
-              className="text-primary-600 hover:underline font-medium"
-            >
+          <p className="mt-6 text-center text-sm text-slate-600">
+            Don't have an account?{' '}
+            <Link href="/auth/signup" className="text-primary-600 font-medium hover:underline">
               Sign up
             </Link>
           </p>

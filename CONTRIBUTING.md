@@ -19,7 +19,7 @@ Please be respectful and constructive in all interactions. We're all here to lea
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22+
 - Python 3.10+
 - Poetry (Python package manager)
 - Git
@@ -59,8 +59,23 @@ Please be respectful and constructive in all interactions. We're all here to lea
    # Edit .env with your Supabase credentials
    ```
 
-6. **Set up Database**
-   - Create a Supabase project at https://supabase.com
+6. **Set up Pre-commit Hooks**
+
+   ```bash
+   cd ..
+   # Activate backend virtual environment
+   # Windows:
+   backend\.venv\Scripts\Activate.ps1
+   # Linux/Mac:
+   source backend/.venv/bin/activate
+
+   # Install pre-commit hooks
+   pre-commit install
+   pre-commit install --hook-type commit-msg
+   ```
+
+7. **Set up Database**
+   - Create a Supabase project at <https://supabase.com>
    - Run the SQL scripts in `/database` folder
 
 ## Development Workflow
@@ -154,12 +169,23 @@ def get_user(id):
 
 ### Running Linters
 
+**Using Pre-commit (Recommended):**
+
+```bash
+# Run all checks on staged files
+pre-commit run
+
+# Run all checks on all files
+pre-commit run --all-files
+```
+
 **Frontend:**
 
 ```bash
 cd frontend
 npm run lint
-npx tsc --noEmit
+npm run format:check
+npm run typecheck
 ```
 
 **Backend:**
@@ -169,6 +195,7 @@ cd backend
 poetry run ruff check .
 poetry run ruff format --check .
 ```
+
 
 ## Commit Messages
 
@@ -213,11 +240,14 @@ chore(deps): update fastapi to 0.115.0
 2. **Run all checks locally**
 
    ```bash
-   # Frontend
-   cd frontend && npm run lint && npm run build
+   # Run pre-commit on all files
+   pre-commit run --all-files
 
-   # Backend
-   cd backend && poetry run ruff check . && poetry run pytest
+   # Build frontend
+   cd frontend && npm run build
+
+   # Run backend tests
+   cd ../backend && poetry run pytest
    ```
 
 3. **Push your branch**

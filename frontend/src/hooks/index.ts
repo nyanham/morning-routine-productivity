@@ -1,4 +1,4 @@
-export { useAuth } from "./useAuth";
+export { useAuth } from './useAuth';
 export {
   useCurrentUser,
   useUserProfile,
@@ -9,4 +9,4 @@ export {
   useAnalyticsSummary,
   useChartData,
   useCSVImport,
-} from "./useApi";
+} from './useApi';

@@ -10,28 +10,28 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- Extends Supabase auth.users with application-specific data
 CREATE TABLE IF NOT EXISTS user_profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-    
+
     -- Basic Information
     email VARCHAR(255) NOT NULL,
     full_name VARCHAR(100),
     display_name VARCHAR(50),
     avatar_url TEXT,
-    
+
     -- Personal Details
     date_of_birth DATE,
     gender VARCHAR(20) CHECK (gender IN ('male', 'female', 'non_binary', 'prefer_not_to_say', NULL)),
     timezone VARCHAR(50) DEFAULT 'UTC',
     locale VARCHAR(10) DEFAULT 'en-US',
-    
+
     -- Profile
     bio TEXT,
     occupation VARCHAR(100),
-    
+
     -- Status
     is_active BOOLEAN DEFAULT true,
     email_verified BOOLEAN DEFAULT false,
     onboarding_completed BOOLEAN DEFAULT false,
-    
+
     -- Timestamps
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
@@ -45,34 +45,34 @@ CREATE TABLE IF NOT EXISTS user_profiles (
 CREATE TABLE IF NOT EXISTS user_settings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
-    
+
     -- Appearance
     theme VARCHAR(20) DEFAULT 'system' CHECK (theme IN ('light', 'dark', 'system')),
     accent_color VARCHAR(20) DEFAULT 'blue',
     compact_mode BOOLEAN DEFAULT false,
-    
+
     -- Notifications
     email_notifications BOOLEAN DEFAULT true,
     push_notifications BOOLEAN DEFAULT true,
     weekly_summary_email BOOLEAN DEFAULT true,
     reminder_time TIME DEFAULT '07:00',
-    
+
     -- Privacy
     profile_visibility VARCHAR(20) DEFAULT 'private' CHECK (profile_visibility IN ('public', 'private', 'friends')),
     show_streak_publicly BOOLEAN DEFAULT false,
     allow_data_analytics BOOLEAN DEFAULT true,
-    
+
     -- Dashboard Preferences
     default_date_range INTEGER DEFAULT 30, -- days to show by default
     default_chart_type VARCHAR(20) DEFAULT 'line' CHECK (default_chart_type IN ('line', 'bar', 'area')),
     show_weekend_markers BOOLEAN DEFAULT true,
     start_week_on VARCHAR(10) DEFAULT 'monday' CHECK (start_week_on IN ('monday', 'sunday')),
-    
+
     -- Units & Formats
     time_format VARCHAR(5) DEFAULT '24h' CHECK (time_format IN ('12h', '24h')),
     date_format VARCHAR(20) DEFAULT 'YYYY-MM-DD',
     measurement_system VARCHAR(10) DEFAULT 'metric' CHECK (measurement_system IN ('metric', 'imperial')),
-    
+
     -- Timestamps
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS user_settings (
 CREATE TABLE IF NOT EXISTS user_goals (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-    
+
     -- Goal Definition
     goal_type VARCHAR(30) NOT NULL CHECK (goal_type IN (
         'sleep_duration', 'wake_time', 'exercise_minutes', 'meditation_minutes',
@@ -94,11 +94,11 @@ CREATE TABLE IF NOT EXISTS user_goals (
     )),
     target_value DECIMAL(10,2) NOT NULL,
     target_unit VARCHAR(20), -- 'hours', 'minutes', 'ml', 'mg', 'score', 'count'
-    
+
     -- Goal Settings
     is_active BOOLEAN DEFAULT true,
     reminder_enabled BOOLEAN DEFAULT false,
-    
+
     -- Timestamps
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS morning_routines (
     water_intake_ml INTEGER DEFAULT 0 CHECK (water_intake_ml >= 0),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    
+
     -- Unique constraint: one routine per user per day
     UNIQUE(user_id, date)
 );
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS productivity_entries (
     notes TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    
+
     -- Unique constraint: one entry per user per day
     UNIQUE(user_id, date)
 );
@@ -159,8 +159,8 @@ CREATE INDEX IF NOT EXISTS idx_user_goals_user_id ON user_goals(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_goals_active ON user_goals(user_id, is_active) WHERE is_active = true;
 
 -- Partial unique index: only one active goal per type per user
-CREATE UNIQUE INDEX IF NOT EXISTS idx_user_goals_unique_active 
-    ON user_goals(user_id, goal_type) 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_goals_unique_active
+    ON user_goals(user_id, goal_type)
     WHERE is_active = true;
 
 CREATE INDEX IF NOT EXISTS idx_morning_routines_user_date ON morning_routines(user_id, date DESC);
@@ -223,11 +223,11 @@ BEGIN
         NEW.email,
         COALESCE(NEW.raw_user_meta_data->>'full_name', NULL)
     );
-    
+
     -- Create default settings
     INSERT INTO user_settings (user_id)
     VALUES (NEW.id);
-    
+
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

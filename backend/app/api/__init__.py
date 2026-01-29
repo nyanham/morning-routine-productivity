@@ -1,10 +1,11 @@
 from fastapi import APIRouter
 
-from .routines import router as routines_router
-from .productivity import router as productivity_router
 from .analytics import router as analytics_router
 from .import_data import router as import_router
+from .productivity import router as productivity_router
+from .routines import router as routines_router
 from .users import router as users_router
+
 
 api_router = APIRouter(prefix="/api")
 

@@ -23,26 +23,13 @@ export default function ProductivityChart({
 }: ProductivityChartProps) {
   return (
     <div className="card">
-      <h3 className="text-lg font-semibold text-slate-900 mb-4">{title}</h3>
+      <h3 className="mb-4 text-lg font-semibold text-slate-900">{title}</h3>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-          >
+          <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis
-              dataKey="date"
-              stroke="#64748b"
-              fontSize={12}
-              tickLine={false}
-            />
-            <YAxis
-              stroke="#64748b"
-              fontSize={12}
-              tickLine={false}
-              domain={[0, 10]}
-            />
+            <XAxis dataKey="date" stroke="#64748b" fontSize={12} tickLine={false} />
+            <YAxis stroke="#64748b" fontSize={12} tickLine={false} domain={[0, 10]} />
             <Tooltip
               contentStyle={{
                 backgroundColor: 'white',

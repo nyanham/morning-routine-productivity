@@ -1,24 +1,16 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  BarChart3,
-  Home,
-  Upload,
-  PenLine,
-  Settings,
-  LogOut,
-  User,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useAuthContext } from "@/contexts/AuthContext";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { BarChart3, Home, Upload, PenLine, Settings, LogOut, User } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/dashboard/import", label: "Import Data", icon: Upload },
-  { href: "/dashboard/entry", label: "Manual Entry", icon: PenLine },
-  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+  { href: '/dashboard', label: 'Dashboard', icon: Home },
+  { href: '/dashboard/import', label: 'Import Data', icon: Upload },
+  { href: '/dashboard/entry', label: 'Manual Entry', icon: PenLine },
+  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -26,11 +18,11 @@ export default function Sidebar() {
   const { user, signOut } = useAuthContext();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-900 text-white flex flex-col">
+    <aside className="fixed top-0 left-0 flex h-screen w-64 flex-col bg-slate-900 text-white">
       {/* Logo */}
-      <div className="p-6 border-b border-slate-700">
+      <div className="border-b border-slate-700 p-6">
         <Link href="/dashboard" className="flex items-center gap-3">
-          <BarChart3 className="h-8 w-8 text-primary-400" />
+          <BarChart3 className="text-primary-400 h-8 w-8" />
           <span className="text-lg font-bold">Productivity</span>
         </Link>
       </div>
@@ -46,10 +38,10 @@ export default function Sidebar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+                    'flex items-center gap-3 rounded-lg px-4 py-3 transition-colors',
                     isActive
-                      ? "bg-primary-600 text-white"
-                      : "text-slate-300 hover:bg-slate-800 hover:text-white",
+                      ? 'bg-primary-600 text-white'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                   )}
                 >
                   <Icon className="h-5 w-5" />
@@ -62,14 +54,14 @@ export default function Sidebar() {
       </nav>
 
       {/* User section */}
-      <div className="p-4 border-t border-slate-700">
+      <div className="border-t border-slate-700 p-4">
         <div className="flex items-center gap-3 px-4 py-3 text-slate-300">
           <User className="h-5 w-5" />
-          <span className="text-sm truncate">{user?.email}</span>
+          <span className="truncate text-sm">{user?.email}</span>
         </div>
         <button
           onClick={() => signOut()}
-          className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors w-full"
+          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
         >
           <LogOut className="h-5 w-5" />
           <span>Sign Out</span>

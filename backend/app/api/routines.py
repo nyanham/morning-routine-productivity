@@ -1,16 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import Optional
 from datetime import date
+
+from fastapi import APIRouter, Depends, HTTPException, status
 from supabase import Client
 
 from app.core import get_current_user, get_user_supabase
 from app.models import (
-    MorningRoutine,
     MorningRoutineCreate,
     MorningRoutineUpdate,
     PaginatedResponse,
 )
 from app.services import RoutineService
+
 
 router = APIRouter(prefix="/routines", tags=["routines"])
 
@@ -19,8 +19,8 @@ router = APIRouter(prefix="/routines", tags=["routines"])
 async def list_routines(
     page: int = 1,
     page_size: int = 10,
-    start_date: Optional[date] = None,
-    end_date: Optional[date] = None,
+    start_date: date | None = None,
+    end_date: date | None = None,
     current_user: dict = Depends(get_current_user),
     supabase: Client = Depends(get_user_supabase),
 ):
@@ -38,13 +38,13 @@ async def get_routine(
     """Get a specific morning routine by ID."""
     service = RoutineService(supabase, current_user["id"])
     routine = service.get(routine_id)
-    
+
     if not routine:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Routine not found",
         )
-    
+
     return routine
 
 
@@ -69,13 +69,13 @@ async def update_routine(
     """Update an existing morning routine."""
     service = RoutineService(supabase, current_user["id"])
     routine = service.update(routine_id, data)
-    
+
     if not routine:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Routine not found",
         )
-    
+
     return routine
 
 
@@ -88,7 +88,7 @@ async def delete_routine(
     """Delete a morning routine."""
     service = RoutineService(supabase, current_user["id"])
     deleted = service.delete(routine_id)
-    
+
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

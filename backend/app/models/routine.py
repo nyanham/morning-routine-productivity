@@ -1,10 +1,12 @@
 from datetime import date, datetime
-from typing import Optional, Literal
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
 class MorningRoutineBase(BaseModel):
     """Base model for morning routine data."""
+
     date: date
     wake_time: str = Field(..., description="Wake time in HH:MM format")
     sleep_duration_hours: float = Field(..., ge=0, le=24)
@@ -19,24 +21,27 @@ class MorningRoutineBase(BaseModel):
 
 class MorningRoutineCreate(MorningRoutineBase):
     """Model for creating a new morning routine entry."""
+
     pass
 
 
 class MorningRoutineUpdate(BaseModel):
     """Model for updating a morning routine entry."""
-    wake_time: Optional[str] = None
-    sleep_duration_hours: Optional[float] = Field(default=None, ge=0, le=24)
-    exercise_minutes: Optional[int] = Field(default=None, ge=0)
-    meditation_minutes: Optional[int] = Field(default=None, ge=0)
-    breakfast_quality: Optional[Literal["poor", "fair", "good", "excellent"]] = None
-    morning_mood: Optional[int] = Field(default=None, ge=1, le=10)
-    screen_time_before_bed: Optional[int] = Field(default=None, ge=0)
-    caffeine_intake: Optional[int] = Field(default=None, ge=0)
-    water_intake_ml: Optional[int] = Field(default=None, ge=0)
+
+    wake_time: str | None = None
+    sleep_duration_hours: float | None = Field(default=None, ge=0, le=24)
+    exercise_minutes: int | None = Field(default=None, ge=0)
+    meditation_minutes: int | None = Field(default=None, ge=0)
+    breakfast_quality: Literal["poor", "fair", "good", "excellent"] | None = None
+    morning_mood: int | None = Field(default=None, ge=1, le=10)
+    screen_time_before_bed: int | None = Field(default=None, ge=0)
+    caffeine_intake: int | None = Field(default=None, ge=0)
+    water_intake_ml: int | None = Field(default=None, ge=0)
 
 
 class MorningRoutine(MorningRoutineBase):
     """Full morning routine model with database fields."""
+
     id: str
     user_id: str
     created_at: datetime
