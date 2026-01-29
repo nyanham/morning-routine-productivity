@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { RequireAuth, useAuthContext } from '@/contexts/AuthContext';
 import { useUserProfile, useUserSettings } from '@/hooks/useApi';
-import { Save, User, Bell, Palette, Globe, CheckCircle, AlertCircle } from 'lucide-react';
+import { Save, User, Bell, Palette, CheckCircle, AlertCircle } from 'lucide-react';
 import type { UserProfileUpdate, UserSettingsUpdate } from '@/types';
 
 function SettingsContent() {
