@@ -42,7 +42,7 @@ async def import_csv(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Failed to parse CSV: {e!s}",
-        ) from None
+        ) from e
 
     imported_count = 0
     failed_count = 0

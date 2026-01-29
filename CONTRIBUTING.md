@@ -195,7 +195,7 @@ cd backend
 poetry run ruff check .
 poetry run ruff format --check .
 ```
-```
+
 
 ## Commit Messages
 

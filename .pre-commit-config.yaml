@@ -4,7 +4,7 @@
 
 default_language_version:
   python: python3
-  node: "22.22.0"
+  node: "22.0.0"
 
 # Define hook stages
 default_stages: [pre-commit]
@@ -69,7 +69,7 @@ repos:
     rev: 1.8.2
     hooks:
       - id: bandit
-        args: ["-c", "backend/pyproject.toml"]
+
         files: ^backend/
         exclude: ^backend/(tests|scripts)/
 
