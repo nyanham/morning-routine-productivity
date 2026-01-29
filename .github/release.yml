@@ -1,0 +1,14 @@
+# Frontend changes only
+[changelog "frontend"]
+title = "Frontend"
+directory = "frontend"
+
+# Backend changes only  
+[changelog "backend"]
+title = "Backend"
+directory = "backend"
+
+# Database changes
+[changelog "database"]
+title = "Database"
+directory = "database"

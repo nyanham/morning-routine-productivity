@@ -1,0 +1,43 @@
+# Docker
+Dockerfile
+docker-compose*.yml
+.docker
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv
+env
+.eggs
+*.egg-info
+*.egg
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Local env files
+.env
+.env.*
+
+# Data
+data/
+*.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log

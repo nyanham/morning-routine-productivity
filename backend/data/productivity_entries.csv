@@ -1,0 +1,88 @@
+date,productivity_score,tasks_completed,tasks_planned,focus_hours,distractions_count,energy_level,stress_level,notes
+2025-10-30,5,4,4,4.7,1,6,4,Average day overall.
+2025-10-31,7,3,3,4.3,4,6,5,Productive morning set the tone for the day.
+2025-11-01,9,4,3,4.3,6,7,5,Productive morning set the tone for the day.
+2025-11-02,8,4,5,5.3,0,5,4,
+2025-11-03,7,3,4,4.4,6,8,5,Great flow state today.
+2025-11-04,9,3,6,6.3,4,6,5,
+2025-11-05,7,2,3,4.5,5,6,5,
+2025-11-06,8,4,5,4.1,3,7,4,
+2025-11-07,6,0,1,4.1,7,5,7,Need to better prioritize tomorrow.
+2025-11-08,7,0,1,6.1,7,5,6,
+2025-11-09,9,2,4,5.4,4,8,7,Productive morning set the tone for the day.
+2025-11-10,8,8,8,3.5,4,7,5,"Very focused day, got a lot done!"
+2025-11-11,6,1,3,6.0,9,5,7,Feeling overwhelmed with tasks.
+2025-11-12,7,4,4,4.5,4,8,5,Average day overall.
+2025-11-13,8,7,7,5.9,3,8,4,Great flow state today.
+2025-11-14,7,5,6,5.4,2,5,5,
+2025-11-15,8,4,3,5.6,4,6,4,Finished everything on my list!
+2025-11-16,6,2,2,5.7,9,7,5,Average day overall.
+2025-11-17,7,3,3,6.9,11,5,8,"Very focused day, got a lot done!"
+2025-11-18,6,5,7,5.6,2,4,7,Feeling overwhelmed with tasks.
+2025-11-19,8,2,3,6.0,7,9,3,
+2025-11-20,4,4,8,2.5,9,3,7,Feeling overwhelmed with tasks.
+2025-11-21,7,4,4,7.3,5,4,7,Regular workday.
+2025-11-22,8,4,4,5.4,3,5,6,"All tasks done, feeling accomplished."
+2025-11-23,9,6,6,5.5,2,8,5,"All tasks done, feeling accomplished."
+2025-11-24,6,4,7,4.0,8,6,6,Steady progress on projects.
+2025-11-25,8,6,7,6.5,5,8,4,
+2025-11-26,7,5,6,6.0,6,5,6,
+2025-11-27,5,4,6,3.4,5,6,8,Deadline pressure building up.
+2025-11-28,8,6,7,7.8,3,7,8,Productive morning set the tone for the day.
+2025-11-30,10,4,3,6.0,5,8,1,"All tasks done, feeling accomplished."
+2025-12-01,7,6,8,4.0,2,7,5,
+2025-12-02,8,4,4,4.5,6,6,9,"All tasks done, feeling accomplished."
+2025-12-03,7,2,4,6.4,7,9,7,
+2025-12-04,5,3,5,5.9,6,7,6,
+2025-12-05,7,5,7,4.5,3,5,3,Deep work session was very effective.
+2025-12-06,7,2,4,6.5,6,6,6,Regular workday.
+2025-12-07,10,3,2,6.0,6,8,8,"Very focused day, got a lot done!"
+2025-12-08,8,4,4,4.5,3,6,3,Clean sweep today!
+2025-12-09,10,6,5,4.8,1,9,3,Productive morning set the tone for the day.
+2025-12-10,6,3,4,3.7,1,4,6,Steady progress on projects.
+2025-12-11,5,5,7,3.0,6,4,7,Feeling overwhelmed with tasks.
+2025-12-12,8,5,6,7.6,2,6,4,"Very focused day, got a lot done!"
+2025-12-13,6,1,2,5.1,4,4,6,
+2025-12-14,9,3,4,5.8,0,6,5,"Very focused day, got a lot done!"
+2025-12-15,8,6,9,4.8,4,5,6,Deep work session was very effective.
+2025-12-16,9,5,7,6.0,2,8,5,
+2025-12-17,5,3,4,4.2,5,5,8,"Stressful day, took a walk to decompress."
+2025-12-18,7,5,6,6.4,0,7,2,Average day overall.
+2025-12-19,9,7,8,8.0,2,10,6,
+2025-12-20,9,0,1,5.2,6,8,6,
+2025-12-21,7,2,4,6.9,8,7,5,Crushed it! Everything clicked.
+2025-12-22,7,1,3,7.5,0,7,8,Deep work session was very effective.
+2025-12-23,4,4,7,5.7,7,3,9,Need to better prioritize tomorrow.
+2025-12-24,7,5,9,4.9,3,8,5,Deep work session was very effective.
+2025-12-25,10,3,3,6.9,0,7,5,"All tasks done, feeling accomplished."
+2025-12-26,9,2,4,6.1,2,10,6,Crushed it! Everything clicked.
+2025-12-27,9,1,1,4.7,3,10,6,Finished everything on my list!
+2025-12-28,7,3,4,3.3,8,7,4,Regular workday.
+2025-12-29,6,5,4,5.3,8,6,8,"Lots of meetings, little focus time."
+2025-12-30,6,3,3,3.7,7,3,8,Feeling overwhelmed with tasks.
+2025-12-31,6,5,6,4.8,2,5,7,Feeling overwhelmed with tasks.
+2026-01-01,6,3,5,5.7,4,7,6,Steady progress on projects.
+2026-01-02,9,11,10,5.0,4,8,7,"Very focused day, got a lot done!"
+2026-01-04,10,3,4,5.6,1,6,3,Average day overall.
+2026-01-05,7,2,4,6.0,7,6,5,"Very focused day, got a lot done!"
+2026-01-06,9,4,5,5.9,5,6,5,Great flow state today.
+2026-01-07,9,5,6,5.6,7,7,6,Regular workday.
+2026-01-08,9,7,6,7.4,5,9,5,"Very focused day, got a lot done!"
+2026-01-09,7,4,5,4.5,7,5,7,
+2026-01-10,5,3,4,4.5,9,5,6,Nothing special to note.
+2026-01-11,9,4,3,7.2,3,7,3,Productive morning set the tone for the day.
+2026-01-12,5,2,5,3.4,7,5,9,Deadline pressure building up.
+2026-01-13,9,5,5,6.5,5,8,7,Deep work session was very effective.
+2026-01-14,8,4,6,4.5,1,6,5,
+2026-01-15,9,1,2,6.4,4,7,1,Great flow state today.
+2026-01-16,7,4,5,5.1,1,4,4,"Very focused day, got a lot done!"
+2026-01-18,7,4,4,5.4,7,5,5,
+2026-01-19,6,4,5,5.3,5,7,9,Deadline pressure building up.
+2026-01-20,8,4,5,3.9,2,7,3,
+2026-01-21,8,7,7,5.0,4,6,3,Clean sweep today!
+2026-01-22,8,4,8,5.3,4,6,6,
+2026-01-23,8,5,8,4.4,1,7,4,
+2026-01-24,9,7,7,6.2,3,6,3,Deep work session was very effective.
+2026-01-25,8,3,3,5.0,4,7,5,Crushed it! Everything clicked.
+2026-01-26,10,5,4,8.0,0,8,1,Clean sweep today!
+2026-01-27,7,6,6,4.8,3,8,3,"Very focused day, got a lot done!"

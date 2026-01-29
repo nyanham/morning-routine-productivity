@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # Frontend - Next.js
+  # ==========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_API_URL=http://backend:8000/api
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src:/app/src:ro
+    networks:
+      - app-network
+
+  # ==========================================
+  # Backend - FastAPI
+  # ==========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - DEBUG=true
+    volumes:
+      - ./backend/app:/app/app:ro
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
