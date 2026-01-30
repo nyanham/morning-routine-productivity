@@ -183,7 +183,53 @@ Once the backend is running, visit:
 
 ## 🧪 Testing & Linting
 
-**Pre-commit (Recommended):**
+### Running Tests
+
+**Backend Tests (pytest):**
+
+```bash
+cd backend
+poetry run pytest -v              # Run all tests
+poetry run pytest -v --tb=short   # Shorter traceback
+poetry run pytest --cov           # With coverage report
+```
+
+**Frontend Tests (Jest):**
+
+```bash
+cd frontend
+npm test                    # Run all tests
+npm run test:watch          # Watch mode
+npm run test:coverage       # With coverage report
+```
+
+### Test Structure
+
+```
+backend/tests/
+├── conftest.py             # Fixtures and mocks
+├── api/                    # API endpoint tests
+│   ├── test_main.py        # Health endpoints
+│   ├── test_routines.py    # Routines CRUD
+│   ├── test_productivity.py
+│   └── test_analytics.py
+├── models/
+│   └── test_models.py      # Pydantic validation
+└── services/
+    ├── test_routine_service.py
+    └── test_productivity_service.py
+
+frontend/src/
+├── __tests__/
+│   ├── components/         # Component tests
+│   │   └── StatsCard.test.tsx
+│   └── lib/                # Utility tests
+│       ├── api.test.ts
+│       └── utils.test.ts
+└── test-utils.tsx          # Test helpers & factories
+```
+
+### Pre-commit (Recommended)
 
 ```bash
 # Run all checks on staged files
@@ -192,6 +238,8 @@ pre-commit run
 # Run all checks on all files
 pre-commit run --all-files
 ```
+
+### Linting
 
 **Frontend:**
 
@@ -208,7 +256,6 @@ npm run typecheck     # TypeScript check
 cd backend
 poetry run ruff check .      # Linting
 poetry run ruff format .     # Formatting
-poetry run pytest -v         # Tests
 ```
 
 ## 🚢 Deployment
