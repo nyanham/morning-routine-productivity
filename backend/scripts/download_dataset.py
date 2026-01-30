@@ -299,10 +299,10 @@ def print_statistics(routines_df: pd.DataFrame, productivity_df: pd.DataFrame):
     print(f"   Sleep duration: {routines_df['sleep_duration_hours'].mean():.1f} hrs")
     print(f"   Wake time mode: {routines_df['wake_time'].mode().iloc[0]}")
     print(
-        f"   Exercise: {routines_df['exercise_minutes'].mean():.0f} min ({(routines_df['exercise_minutes'] > 0).mean()*100:.0f}% of days)"
+        f"   Exercise: {routines_df['exercise_minutes'].mean():.0f} min ({(routines_df['exercise_minutes'] > 0).mean() * 100:.0f}% of days)"
     )
     print(
-        f"   Meditation: {routines_df['meditation_minutes'].mean():.0f} min ({(routines_df['meditation_minutes'] > 0).mean()*100:.0f}% of days)"
+        f"   Meditation: {routines_df['meditation_minutes'].mean():.0f} min ({(routines_df['meditation_minutes'] > 0).mean() * 100:.0f}% of days)"
     )
     print(f"   Morning mood: {routines_df['morning_mood'].mean():.1f}/10")
     print(f"   Caffeine: {routines_df['caffeine_intake'].mean():.0f} mg")
