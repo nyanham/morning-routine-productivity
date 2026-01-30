@@ -71,7 +71,7 @@ class TestRoutinesEndpoints:
         app.dependency_overrides.clear()
 
     def test_list_routines_success(
-        self, client_with_routines: TestClient, _sample_routine: dict[str, Any]
+        self, client_with_routines: TestClient
     ) -> None:
         """Test listing routines returns paginated data."""
         response = client_with_routines.get("/api/routines")

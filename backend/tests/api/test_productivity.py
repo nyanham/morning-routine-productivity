@@ -73,7 +73,7 @@ class TestProductivityEndpoints:
     def test_list_productivity_success(
         self,
         client_with_productivity: TestClient,
-        _sample_productivity: dict[str, Any],
+
     ) -> None:
         """Test listing productivity entries returns paginated data."""
         response = client_with_productivity.get("/api/productivity")

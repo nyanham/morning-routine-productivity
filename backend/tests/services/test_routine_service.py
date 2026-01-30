@@ -78,7 +78,7 @@ class TestRoutineService:
         assert result.total_pages == (result.total + 9) // 10
 
     def test_get_returns_routine_data(
-        self, service_with_data: RoutineService, _sample_routine_data: dict[str, Any]
+        self, service_with_data: RoutineService
     ) -> None:
         """Test get method returns routine data."""
         result = service_with_data.get("routine-123")
