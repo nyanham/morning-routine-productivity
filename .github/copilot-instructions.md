@@ -142,4 +142,4 @@ When generating or modifying code in this repository, follow all rules below.
 ## Final Reminder
 
 Code quality, documentation, and kindness are equally important.
-If a trade-off is required, explain it clearl
+If a trade-off is required, explain it clearly and respectfully.

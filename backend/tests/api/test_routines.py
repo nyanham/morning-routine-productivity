@@ -111,7 +111,7 @@ class TestRoutinesEndpoints:
         assert response.status_code == 200
 
     def test_get_routine_success(
-        self, client_with_routines: TestClient, _sample_routine: dict[str, Any]
+        self, client_with_routines: TestClient
     ) -> None:
         """Test getting a specific routine by ID."""
         response = client_with_routines.get("/api/routines/routine-123")
