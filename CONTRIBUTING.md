@@ -196,7 +196,6 @@ poetry run ruff check .
 poetry run ruff format --check .
 ```
 
-
 ## Commit Messages
 
 We follow [Conventional Commits](https://www.conventionalcommits.org/):

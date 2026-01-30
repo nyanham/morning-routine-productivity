@@ -57,8 +57,8 @@ export default function SignUpPage() {
         <div className="card w-full max-w-md text-center">
           <h1 className="mb-4 text-2xl font-bold text-slate-900">Check Your Email</h1>
           <p className="mb-6 text-slate-600">
-            We've sent a confirmation link to <span className="font-medium">{email}</span>. Please
-            click the link to verify your account.
+            We&apos;ve sent a confirmation link to <span className="font-medium">{email}</span>.
+            Please click the link to verify your account.
           </p>
           <Link href="/auth/login" className="btn-primary">
             Back to Login
