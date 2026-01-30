@@ -41,7 +41,7 @@ async def get_current_user(
             "user_metadata": user.user.user_metadata,
             "access_token": credentials.credentials,  # Pass token for RLS
         }
-    except Exception:
+    except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",

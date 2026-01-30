@@ -22,7 +22,7 @@ class Settings(BaseSettings):
         env_file_encoding = "utf-8"
 
 
-@lru_cache()
+@lru_cache(128)
 def get_settings() -> Settings:
     """Get cached settings instance."""
     return Settings()
