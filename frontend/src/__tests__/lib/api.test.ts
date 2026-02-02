@@ -158,7 +158,7 @@ describe('apiClient', () => {
       json: async () => {
         throw new Error('Invalid JSON');
       },
-    } as Response);
+    } as unknown as Response);
 
     await expect(apiClient('/test')).rejects.toMatchObject({
       status: 500,
