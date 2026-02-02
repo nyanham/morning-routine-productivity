@@ -77,9 +77,7 @@ class TestRoutineService:
         # With count=1 and page_size=10, should be 1 page
         assert result.total_pages == (result.total + 9) // 10
 
-    def test_get_returns_routine_data(
-        self, service_with_data: RoutineService
-    ) -> None:
+    def test_get_returns_routine_data(self, service_with_data: RoutineService) -> None:
         """Test get method returns routine data."""
         result = service_with_data.get("routine-123")
 
