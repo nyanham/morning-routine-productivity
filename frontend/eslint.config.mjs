@@ -1,13 +1,12 @@
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { FlatCompat } from '@eslint/eslintrc';
+import nextPlugin from '@next/eslint-plugin-next';
+import tseslint from 'typescript-eslint';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
 
 const eslintConfig = [
   // Global ignores - must be first
@@ -20,11 +19,42 @@ const eslintConfig = [
       'dist/**',
       '*.config.js',
       '*.config.mjs',
+      '*.config.ts',
     ],
   },
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  // TypeScript configuration
+  ...tseslint.configs.recommended,
+  // React configuration
   {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    plugins: {
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+      '@next/next': nextPlugin,
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     rules: {
+      // React rules
+      ...reactPlugin.configs.recommended.rules,
+      ...reactHooksPlugin.configs.recommended.rules,
+      // Next.js rules
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      // React 19 - no need for import React
+      'react/react-in-jsx-scope': 'off',
+      // Disable React Compiler rule (not using React Compiler)
+      'react-hooks/preserve-manual-memoization': 'off',
       // Allow unused variables that start with underscore
       '@typescript-eslint/no-unused-vars': [
         'warn',

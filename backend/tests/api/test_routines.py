@@ -70,9 +70,7 @@ class TestRoutinesEndpoints:
 
         app.dependency_overrides.clear()
 
-    def test_list_routines_success(
-        self, client_with_routines: TestClient
-    ) -> None:
+    def test_list_routines_success(self, client_with_routines: TestClient) -> None:
         """Test listing routines returns paginated data."""
         response = client_with_routines.get("/api/routines")
 
@@ -110,9 +108,7 @@ class TestRoutinesEndpoints:
 
         assert response.status_code == 200
 
-    def test_get_routine_success(
-        self, client_with_routines: TestClient
-    ) -> None:
+    def test_get_routine_success(self, client_with_routines: TestClient) -> None:
         """Test getting a specific routine by ID."""
         response = client_with_routines.get("/api/routines/routine-123")
 
