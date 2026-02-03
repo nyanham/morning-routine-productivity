@@ -796,14 +796,14 @@ files = [
 
 [[package]]
 name = "kagglehub"
-version = "0.4.1"
+version = "0.4.2"
 description = "Access Kaggle resources anywhere"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "kagglehub-0.4.1-py3-none-any.whl", hash = "sha256:841dcd930d1fe87ff223a99a707eb9912a48f5f5241866f9bc4e159217664a91"},
-    {file = "kagglehub-0.4.1.tar.gz", hash = "sha256:43b3fa3688fad0c47ef5ab05d3fa440770273b408ca4ceac310a6678e54a531e"},
+    {file = "kagglehub-0.4.2-py3-none-any.whl", hash = "sha256:7807d35409da653ef5ade22a33461c47f9138542b664a1d78056befa140ea3bb"},
+    {file = "kagglehub-0.4.2.tar.gz", hash = "sha256:b326087594286eb1d7d038d182d36cb1d6d220ca674f506882f1ca5af25eb5a4"},
 ]
 
 [package.dependencies]
@@ -924,14 +924,14 @@ files = [
 
 [[package]]
 name = "mangum"
-version = "0.20.0"
+version = "0.21.0"
 description = "AWS Lambda support for ASGI applications"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "mangum-0.20.0-py3-none-any.whl", hash = "sha256:c945eadc41916f73b6086c0c69935ef4b1d23d27de8dc74ed47b20e204335407"},
-    {file = "mangum-0.20.0.tar.gz", hash = "sha256:0050447b60d832dcc45cc9d917c9e0f4e9174e2d9630f621d567510d51d286bd"},
+    {file = "mangum-0.21.0-py3-none-any.whl", hash = "sha256:309e48f5c629542516c5106ecf079f4ec08809ed50df882238d98fe1392820c7"},
+    {file = "mangum-0.21.0.tar.gz", hash = "sha256:e31ed72d67f9958fa4379f65df77729906dec6dfa00afa6ed4e06c77833000de"},
 ]
 
 [package.dependencies]
@@ -3315,4 +3315,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "6aa79c64f98f8ac32f39269e18a7fbdeb634fc3f9e0f0cd061fdb78026e16f04"
+content-hash = "ee1d8f9a15defe1a1f6f052695d63d615b4b9ff67304fb64051c6a8378942b9b"
