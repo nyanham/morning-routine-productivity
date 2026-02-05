@@ -75,7 +75,7 @@ repos:
 
   # ===========================================
   # Frontend (TypeScript/JavaScript) Hooks
-  # Cross-platform compatible using npm scripts
+  # ESLint uses mirrors-eslint with bundled dependencies; Prettier and TypeScript use npm scripts for cross-platform compatibility
   # ===========================================
 
   # ESLint - JavaScript/TypeScript linting
