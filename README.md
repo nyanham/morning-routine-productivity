@@ -8,7 +8,28 @@
 
 A full-stack application for tracking morning routines and analyzing productivity data with beautiful visualizations.
 
-<!-- ![Dashboard Preview](docs/images/dashboard-preview.png) -->
+## 📸 Screenshots
+
+<div align="center">
+
+### Dashboard Overview
+
+![Dashboard](docs/images/dashboard.png)
+_Interactive dashboard with productivity charts and statistics_
+
+### Data Entry
+
+![Entry Form](docs/images/entry-form.png)
+_Log your morning routine and daily productivity metrics_
+
+### Analytics & Charts
+
+![Analytics](docs/images/analytics.png)
+_Visualize trends and correlations between habits and productivity_
+
+</div>
+
+> **Note:** Screenshots will be added once the UI is finalized. You can see the live demo at the deployment URL.
 
 ## ✨ Features
 
