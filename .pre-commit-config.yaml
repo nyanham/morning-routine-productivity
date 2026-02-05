@@ -103,7 +103,7 @@ repos:
         name: prettier
         entry: npm run format --prefix frontend
         language: system
-        files: ^frontend/src/.*\.(js|jsx|ts|tsx|json|css|md)$
+        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|scss|md)$
         pass_filenames: false
         stages: [pre-commit]
 
