@@ -75,32 +75,45 @@ repos:
 
   # ===========================================
   # Frontend (TypeScript/JavaScript) Hooks
-  # Using PowerShell commands for Windows compatibility
+  # Cross-platform compatible using npm scripts
   # ===========================================
-  - repo: local
+
+  # ESLint - JavaScript/TypeScript linting
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.18.0
     hooks:
-      # ESLint - JavaScript/TypeScript linting
       - id: eslint
         name: eslint
-        entry: powershell -Command "Push-Location frontend; npm run lint:fix; Pop-Location"
-        language: system
-        files: ^frontend/.*\.(js|jsx|ts|tsx)$
-        pass_filenames: false
-        stages: [pre-commit]
+        files: ^frontend/src/.*\.[jt]sx?$
+        types: [file]
+        args: ["--fix", "--config", "frontend/eslint.config.mjs"]
+        additional_dependencies:
+          - eslint@9.18.0
+          - "@eslint/js@9.18.0"
+          - "typescript-eslint@8.0.0"
+          - "eslint-plugin-react@7.37.4"
+          - "eslint-plugin-react-hooks@5.0.0"
+          - "@next/eslint-plugin-next@15.2.0"
+          - "globals@15.14.0"
+          - "typescript@5.7.3"
 
-      # Prettier - Code formatting
+  # Prettier - Code formatting (cross-platform using npm script)
+  - repo: local
+    hooks:
       - id: prettier
         name: prettier
-        entry: powershell -Command "Push-Location frontend; npx prettier --write src/; Pop-Location"
+        entry: npm run format --prefix frontend
         language: system
-        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|scss|md)$
+        files: ^frontend/src/.*\.(js|jsx|ts|tsx|json|css|md)$
         pass_filenames: false
         stages: [pre-commit]
 
-      # TypeScript type checking
+  # TypeScript type checking (cross-platform using npm script)
+  - repo: local
+    hooks:
       - id: typescript
         name: typescript
-        entry: powershell -Command "Push-Location frontend; npx tsc --noEmit; Pop-Location"
+        entry: npm run typecheck --prefix frontend
         language: system
         files: ^frontend/.*\.(ts|tsx)$
         pass_filenames: false
@@ -123,5 +136,5 @@ ci:
   autoupdate_branch: "develop"
   autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
   autoupdate_schedule: weekly
-  skip: [eslint, prettier, typescript] # Skip local hooks in CI
+  skip: [prettier, typescript] # Skip local hooks in CI (require npm in frontend/)
   submodules: false
