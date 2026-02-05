@@ -76,13 +76,15 @@ cd morning-routine-productivity
 ### 3. Set Up Frontend
 
 ```bash
-cd frontend
+# From root (recommended)
+npm run install:frontend
 
-# Install dependencies
+# Or from frontend directory
+cd frontend
 npm install
 
 # Copy environment template
-cp .env.example .env.local
+cp frontend/.env.example frontend/.env.local
 ```
 
 Edit `.env.local`:
@@ -99,16 +101,15 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 ### 4. Set Up Backend
 
 ```bash
-cd ../backend
+# From root (recommended)
+npm run install:backend
 
-# Install dependencies with Poetry
+# Or from backend directory
+cd backend
 poetry install
 
-# Or with pip
-pip install -r requirements.txt
-
 # Copy environment template
-cp .env.example .env
+cp backend/.env.example backend/.env
 ```
 
 Edit `.env`:
@@ -178,23 +179,38 @@ project/
 
 ## ▶️ Running the Application
 
-### Start Both Services
+### Using Root Scripts (Recommended)
+
+From the project root directory, you can use convenient npm scripts:
+
+```bash
+# Start frontend development server
+npm run dev
+
+# Or start backend development server
+npm run dev:backend
+```
+
+### Start Both Services Manually
 
 **Terminal 1 - Backend:**
 
 ```bash
+# From root (recommended)
+npm run dev:backend
+
+# Or from backend directory
 cd backend
-
-# With Poetry
 poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# With Python directly
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 **Terminal 2 - Frontend:**
 
 ```bash
+# From root (recommended)
+npm run dev
+
+# Or from frontend directory
 cd frontend
 npm run dev
 ```
@@ -310,12 +326,27 @@ flowchart LR
 
 ## 🧪 Testing
 
+### Run All Tests
+
+```bash
+# From root - run all tests (frontend + backend)
+npm run test:all
+
+# Run only frontend tests
+npm run test
+
+# Run only backend tests
+npm run test:backend
+```
+
 ### Backend Tests (pytest)
 
 ```bash
-cd backend
+# From root
+npm run test:backend
 
-# Run all tests
+# Or from backend directory
+cd backend
 poetry run pytest
 
 # Run with coverage
@@ -350,9 +381,11 @@ backend/tests/
 ### Frontend Tests (Jest)
 
 ```bash
-cd frontend
+# From root
+npm run test
 
-# Run all tests
+# Or from frontend directory
+cd frontend
 npm test
 
 # Run with coverage

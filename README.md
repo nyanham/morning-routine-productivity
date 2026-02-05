@@ -105,12 +105,19 @@ cd morning-routine-productivity
 ### 3. Set Up Frontend
 
 ```bash
+# From root (recommended)
+npm run install:frontend
+
+# Or from frontend directory
 cd frontend
 npm install
-cp .env.example .env.local
 ```
 
-Edit `.env.local`:
+Copy environment template and edit:
+
+```bash
+cp frontend/.env.example frontend/.env.local
+```
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
@@ -121,12 +128,19 @@ NEXT_PUBLIC_API_URL=http://localhost:8000/api
 ### 4. Set Up Backend
 
 ```bash
-cd ../backend
+# From root (recommended)
+npm run install:backend
+
+# Or from backend directory
+cd backend
 poetry install
-cp .env.example .env
 ```
 
-Edit `.env`:
+Copy environment template and edit:
+
+```bash
+cp backend/.env.example backend/.env
+```
 
 ```env
 SUPABASE_URL=your_supabase_url
@@ -136,7 +150,6 @@ SUPABASE_KEY=your_service_role_key
 ### 5. Set Up Pre-commit Hooks (Recommended)
 
 ```bash
-cd ..
 # Windows
 backend\.venv\Scripts\Activate.ps1
 # Linux/Mac
@@ -145,24 +158,35 @@ source backend/.venv/bin/activate
 # Install hooks
 pre-commit install
 pre-commit install --hook-type commit-msg
+
+# Run hooks manually (from root)
+npm run precommit
 ```
 
 ### 6. Run the Application
 
-**Terminal 1 - Backend:**
+**From Project Root (Recommended):**
 
 ```bash
-cd backend
-poetry run uvicorn app.main:app --reload
+# Terminal 1 - Backend
+npm run dev:backend
 # API running at http://localhost:8000
-```
 
-**Terminal 2 - Frontend:**
-
-```bash
-cd frontend
+# Terminal 2 - Frontend
 npm run dev
 # App running at http://localhost:3000
+```
+
+**Or from individual directories:**
+
+```bash
+# Backend
+cd backend
+poetry run uvicorn app.main:app --reload
+
+# Frontend
+cd frontend
+npm run dev
 ```
 
 ## 🐳 Docker (Alternative)
@@ -206,22 +230,29 @@ Once the backend is running, visit:
 
 ### Running Tests
 
-**Backend Tests (pytest):**
+**From Project Root (Recommended):**
 
 ```bash
-cd backend
-poetry run pytest -v              # Run all tests
-poetry run pytest -v --tb=short   # Shorter traceback
-poetry run pytest --cov           # With coverage report
+# Run all tests (frontend + backend)
+npm run test:all
+
+# Run frontend tests only
+npm run test
+
+# Run backend tests only
+npm run test:backend
 ```
 
-**Frontend Tests (Jest):**
+**Or from individual directories:**
 
 ```bash
+# Backend
+cd backend
+poetry run pytest -v
+
+# Frontend
 cd frontend
-npm test                    # Run all tests
-npm run test:watch          # Watch mode
-npm run test:coverage       # With coverage report
+npm test
 ```
 
 ### Test Structure
@@ -253,30 +284,36 @@ frontend/src/
 ### Pre-commit (Recommended)
 
 ```bash
-# Run all checks on staged files
-pre-commit run
+# Run all checks on all files (from root)
+npm run precommit
 
-# Run all checks on all files
+# Or run pre-commit directly
 pre-commit run --all-files
 ```
 
 ### Linting
 
-**Frontend:**
+**From Project Root:**
 
 ```bash
-cd frontend
 npm run lint          # ESLint
-npm run format:check  # Prettier
+npm run format        # Prettier format
+npm run format:check  # Prettier check
 npm run typecheck     # TypeScript check
 ```
 
-**Backend:**
+**Or from individual directories:**
 
 ```bash
+# Frontend
+cd frontend
+npm run lint
+npm run format
+
+# Backend
 cd backend
-poetry run ruff check .      # Linting
-poetry run ruff format .     # Formatting
+poetry run ruff check .
+poetry run ruff format .
 ```
 
 ## 🚢 Deployment
