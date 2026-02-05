@@ -94,7 +94,6 @@ repos:
           - "eslint-plugin-react@7.37.4"
           - "eslint-plugin-react-hooks@7.0.1"
           - "@next/eslint-plugin-next@16.1.6"
-          - "globals@15.14.0"
           - "typescript@5.7.3"
 
   # Prettier - Code formatting (cross-platform using npm script)
