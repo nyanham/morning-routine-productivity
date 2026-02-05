@@ -135,5 +135,5 @@ ci:
   autoupdate_branch: "develop"
   autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
   autoupdate_schedule: weekly
-  skip: [prettier, typescript] # Skip local hooks in CI (require npm in frontend/)
+  skip: [prettier, typescript] # Skip local npm-script hooks in CI; they depend on frontend/node_modules (ESLint uses additional_dependencies)
   submodules: false
