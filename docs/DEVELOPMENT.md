@@ -76,15 +76,11 @@ cd morning-routine-productivity
 ### 3. Set Up Frontend
 
 ```bash
-# From root (recommended)
-npm run install:frontend
-
-# Or from frontend directory
 cd frontend
 npm install
 
 # Copy environment template
-cp frontend/.env.example frontend/.env.local
+cp .env.example .env.local
 ```
 
 Edit `.env.local`:
@@ -101,15 +97,11 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 ### 4. Set Up Backend
 
 ```bash
-# From root (recommended)
-npm run install:backend
-
-# Or from backend directory
 cd backend
 poetry install
 
 # Copy environment template
-cp backend/.env.example backend/.env
+cp .env.example .env
 ```
 
 Edit `.env`:
@@ -179,27 +171,11 @@ project/
 
 ## ▶️ Running the Application
 
-### Using Root Scripts (Recommended)
-
-From the project root directory, you can use convenient npm scripts:
-
-```bash
-# Start frontend development server
-npm run dev
-
-# Or start backend development server
-npm run dev:backend
-```
-
-### Start Both Services Manually
+### Start Both Services
 
 **Terminal 1 - Backend:**
 
 ```bash
-# From root (recommended)
-npm run dev:backend
-
-# Or from backend directory
 cd backend
 poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
@@ -207,10 +183,6 @@ poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 **Terminal 2 - Frontend:**
 
 ```bash
-# From root (recommended)
-npm run dev
-
-# Or from frontend directory
 cd frontend
 npm run dev
 ```
@@ -326,26 +298,9 @@ flowchart LR
 
 ## 🧪 Testing
 
-### Run All Tests
-
-```bash
-# From root - run all tests (frontend + backend)
-npm run test:all
-
-# Run only frontend tests
-npm run test
-
-# Run only backend tests
-npm run test:backend
-```
-
 ### Backend Tests (pytest)
 
 ```bash
-# From root
-npm run test:backend
-
-# Or from backend directory
 cd backend
 poetry run pytest
 
@@ -381,10 +336,6 @@ backend/tests/
 ### Frontend Tests (Jest)
 
 ```bash
-# From root
-npm run test
-
-# Or from frontend directory
 cd frontend
 npm test
 

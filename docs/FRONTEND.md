@@ -1128,18 +1128,6 @@ describe("useRoutines", () => {
 
 ### Running Tests
 
-**From Project Root (Recommended):**
-
-```bash
-# Run frontend tests
-npm run test
-
-# Run all tests (frontend + backend)
-npm run test:all
-```
-
-**From Frontend Directory:**
-
 ```bash
 cd frontend
 

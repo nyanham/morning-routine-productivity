@@ -105,10 +105,6 @@ cd morning-routine-productivity
 ### 3. Set Up Frontend
 
 ```bash
-# From root (recommended)
-npm run install:frontend
-
-# Or from frontend directory
 cd frontend
 npm install
 ```
@@ -128,10 +124,6 @@ NEXT_PUBLIC_API_URL=http://localhost:8000/api
 ### 4. Set Up Backend
 
 ```bash
-# From root (recommended)
-npm run install:backend
-
-# Or from backend directory
 cd backend
 poetry install
 ```
@@ -159,34 +151,22 @@ source backend/.venv/bin/activate
 pre-commit install
 pre-commit install --hook-type commit-msg
 
-# Run hooks manually (from root)
-npm run precommit
+# Run hooks manually
+pre-commit run --all-files
 ```
 
 ### 6. Run the Application
 
-**From Project Root (Recommended):**
-
 ```bash
 # Terminal 1 - Backend
-npm run dev:backend
+cd backend
+poetry run uvicorn app.main:app --reload
 # API running at http://localhost:8000
 
 # Terminal 2 - Frontend
-npm run dev
-# App running at http://localhost:3000
-```
-
-**Or from individual directories:**
-
-```bash
-# Backend
-cd backend
-poetry run uvicorn app.main:app --reload
-
-# Frontend
 cd frontend
 npm run dev
+# App running at http://localhost:3000
 ```
 
 ## 🐳 Docker (Alternative)
@@ -230,21 +210,6 @@ Once the backend is running, visit:
 
 ### Running Tests
 
-**From Project Root (Recommended):**
-
-```bash
-# Run all tests (frontend + backend)
-npm run test:all
-
-# Run frontend tests only
-npm run test
-
-# Run backend tests only
-npm run test:backend
-```
-
-**Or from individual directories:**
-
 ```bash
 # Backend
 cd backend
@@ -284,36 +249,26 @@ frontend/src/
 ### Pre-commit (Recommended)
 
 ```bash
-# Run all checks on all files (from root)
-npm run precommit
+# Run all checks on staged files
+pre-commit run
 
-# Or run pre-commit directly
+# Run all checks on all files
 pre-commit run --all-files
 ```
 
 ### Linting
 
-**From Project Root:**
-
-```bash
-npm run lint          # ESLint
-npm run format        # Prettier format
-npm run format:check  # Prettier check
-npm run typecheck     # TypeScript check
-```
-
-**Or from individual directories:**
-
 ```bash
 # Frontend
 cd frontend
-npm run lint
-npm run format
+npm run lint          # ESLint
+npm run format        # Prettier
+npm run typecheck     # TypeScript
 
 # Backend
 cd backend
-poetry run ruff check .
-poetry run ruff format .
+poetry run ruff check .   # Linting
+poetry run ruff format .  # Formatting
 ```
 
 ## 🚢 Deployment
