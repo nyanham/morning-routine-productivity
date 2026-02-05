@@ -1,1 +1,50 @@
-{}
+{
+  "name": "morning-routine-productivity",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-stack morning routine and productivity tracker with Next.js frontend and FastAPI backend",
+  "keywords": [
+    "productivity",
+    "morning-routine",
+    "tracker",
+    "nextjs",
+    "fastapi",
+    "supabase"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nyanham/morning-routine-productivity.git"
+  },
+  "license": "MIT",
+  "author": "nyanham",
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev:frontend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "cd backend && poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
+    "build": "npm run build --prefix frontend",
+    "start": "npm run start --prefix frontend",
+    "lint": "npm run lint --prefix frontend",
+    "lint:fix": "npm run lint:fix --prefix frontend",
+    "format": "npm run format --prefix frontend",
+    "format:check": "npm run format:check --prefix frontend",
+    "typecheck": "npm run typecheck --prefix frontend",
+    "test": "npm run test --prefix frontend",
+    "test:frontend": "npm run test --prefix frontend",
+    "test:backend": "cd backend && poetry run pytest",
+    "test:all": "npm run test:frontend && npm run test:backend",
+    "install:frontend": "npm install --prefix frontend",
+    "install:backend": "cd backend && poetry install",
+    "install:all": "npm run install:frontend && npm run install:backend",
+    "clean": "npm run clean:frontend && npm run clean:backend",
+    "clean:frontend": "rm -rf frontend/node_modules frontend/.next",
+    "clean:backend": "rm -rf backend/.venv backend/__pycache__",
+    "precommit": "cd backend && poetry run pre-commit run --all-files"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  }
+}
