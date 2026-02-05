@@ -6,20 +6,20 @@
 
 # Default owners for everything in the repo
 
-- @your-github-username
+- @nyanham
 
 # Frontend specific
 
-/frontend/ @your-github-username
+/frontend/ @nyanham
 
 # Backend specific
 
-/backend/ @your-github-username
+/backend/ @ynyanham
 
 # Database migrations
 
-/database/ @your-github-username
+/database/ @nyanham
 
 # CI/CD and GitHub configuration
 
-/.github/ @your-github-username
+/.github/ @nyanham
