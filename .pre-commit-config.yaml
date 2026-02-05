@@ -114,7 +114,7 @@ repos:
         name: typescript
         entry: npm run typecheck --prefix frontend
         language: system
-        files: ^frontend/.*\.(ts|tsx)$
+        files: ^frontend/src/.*\.(ts|tsx)$
         pass_filenames: false
         stages: [pre-commit]
 
