@@ -89,11 +89,11 @@ repos:
         args: ["--fix", "--config", "frontend/eslint.config.mjs"]
         additional_dependencies:
           - eslint@9.18.0
-          - "@eslint/js@9.18.0"
-          - "typescript-eslint@8.0.0"
+          - "@eslint/js@9.39.2"
+          - "typescript-eslint@8.54.0"
           - "eslint-plugin-react@7.37.4"
-          - "eslint-plugin-react-hooks@5.0.0"
-          - "@next/eslint-plugin-next@15.2.0"
+          - "eslint-plugin-react-hooks@7.0.1"
+          - "@next/eslint-plugin-next@16.1.6"
           - "globals@15.14.0"
           - "typescript@5.7.3"
 
