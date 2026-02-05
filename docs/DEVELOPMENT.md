@@ -77,8 +77,6 @@ cd morning-routine-productivity
 
 ```bash
 cd frontend
-
-# Install dependencies
 npm install
 
 # Copy environment template
@@ -99,13 +97,8 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 ### 4. Set Up Backend
 
 ```bash
-cd ../backend
-
-# Install dependencies with Poetry
+cd backend
 poetry install
-
-# Or with pip
-pip install -r requirements.txt
 
 # Copy environment template
 cp .env.example .env
@@ -184,12 +177,7 @@ project/
 
 ```bash
 cd backend
-
-# With Poetry
 poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# With Python directly
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 **Terminal 2 - Frontend:**
@@ -314,8 +302,6 @@ flowchart LR
 
 ```bash
 cd backend
-
-# Run all tests
 poetry run pytest
 
 # Run with coverage
@@ -351,8 +337,6 @@ backend/tests/
 
 ```bash
 cd frontend
-
-# Run all tests
 npm test
 
 # Run with coverage

@@ -1129,6 +1129,8 @@ describe("useRoutines", () => {
 ### Running Tests
 
 ```bash
+cd frontend
+
 # Run all tests
 npm test
 

@@ -107,10 +107,13 @@ cd morning-routine-productivity
 ```bash
 cd frontend
 npm install
-cp .env.example .env.local
 ```
 
-Edit `.env.local`:
+Copy environment template and edit:
+
+```bash
+cp frontend/.env.example frontend/.env.local
+```
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
@@ -121,12 +124,15 @@ NEXT_PUBLIC_API_URL=http://localhost:8000/api
 ### 4. Set Up Backend
 
 ```bash
-cd ../backend
+cd backend
 poetry install
-cp .env.example .env
 ```
 
-Edit `.env`:
+Copy environment template and edit:
+
+```bash
+cp backend/.env.example backend/.env
+```
 
 ```env
 SUPABASE_URL=your_supabase_url
@@ -136,7 +142,6 @@ SUPABASE_KEY=your_service_role_key
 ### 5. Set Up Pre-commit Hooks (Recommended)
 
 ```bash
-cd ..
 # Windows
 backend\.venv\Scripts\Activate.ps1
 # Linux/Mac
@@ -145,21 +150,20 @@ source backend/.venv/bin/activate
 # Install hooks
 pre-commit install
 pre-commit install --hook-type commit-msg
+
+# Run hooks manually
+pre-commit run --all-files
 ```
 
 ### 6. Run the Application
 
-**Terminal 1 - Backend:**
-
 ```bash
+# Terminal 1 - Backend
 cd backend
 poetry run uvicorn app.main:app --reload
 # API running at http://localhost:8000
-```
 
-**Terminal 2 - Frontend:**
-
-```bash
+# Terminal 2 - Frontend
 cd frontend
 npm run dev
 # App running at http://localhost:3000
@@ -206,22 +210,14 @@ Once the backend is running, visit:
 
 ### Running Tests
 
-**Backend Tests (pytest):**
-
 ```bash
+# Backend
 cd backend
-poetry run pytest -v              # Run all tests
-poetry run pytest -v --tb=short   # Shorter traceback
-poetry run pytest --cov           # With coverage report
-```
+poetry run pytest -v
 
-**Frontend Tests (Jest):**
-
-```bash
+# Frontend
 cd frontend
-npm test                    # Run all tests
-npm run test:watch          # Watch mode
-npm run test:coverage       # With coverage report
+npm test
 ```
 
 ### Test Structure
@@ -262,21 +258,17 @@ pre-commit run --all-files
 
 ### Linting
 
-**Frontend:**
-
 ```bash
+# Frontend
 cd frontend
 npm run lint          # ESLint
-npm run format:check  # Prettier
-npm run typecheck     # TypeScript check
-```
+npm run format        # Prettier
+npm run typecheck     # TypeScript
 
-**Backend:**
-
-```bash
+# Backend
 cd backend
-poetry run ruff check .      # Linting
-poetry run ruff format .     # Formatting
+poetry run ruff check .   # Linting
+poetry run ruff format .  # Formatting
 ```
 
 ## 🚢 Deployment
