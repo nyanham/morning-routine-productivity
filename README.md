@@ -280,12 +280,44 @@ poetry run ruff format .  # Formatting
 3. Add environment variables
 4. Deploy!
 
-### Backend Options
+### Backend (AWS Lambda via SAM)
 
-- **AWS Lambda** - Using Mangum adapter (included)
-- **Railway** - One-click deploy
-- **Render** - Free tier available
-- **Docker** - Self-hosted
+The backend deploys to AWS Lambda using the [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) and the Mangum adapter.
+
+**Prerequisites:** AWS CLI configured, SAM CLI installed.
+
+```bash
+cd backend
+
+# Build the Lambda package
+sam build
+
+# Deploy (first time — interactive guided setup)
+sam deploy --guided
+
+# Deploy (subsequent — uses samconfig.toml defaults)
+sam deploy
+
+# Deploy to a specific environment
+sam deploy --config-env staging
+sam deploy --config-env prod
+```
+
+**Required environment variables** (set via SAM parameters or AWS console):
+
+| Variable | Description |
+|----------|-------------|
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_KEY` | Supabase service role key |
+| `CORS_ORIGINS` | Comma-separated allowed origins |
+| `ENVIRONMENT` | `development`, `staging`, or `production` |
+
+See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the full deployment guide.
+
+### Other Backend Options
+
+- **Docker** — Use the included `Dockerfile` for container-based hosting
+- **Railway / Render** — Deploy the Docker image or connect the repo directly
 
 ## 🤝 Contributing
 

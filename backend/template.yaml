@@ -1,0 +1,136 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Morning Routine Productivity API — FastAPI on AWS Lambda via Mangum.
+  Deployed with API Gateway HTTP API for low-latency REST access.
+
+# =============================================================================
+# Parameters — configurable per environment (dev, staging, production)
+# =============================================================================
+Parameters:
+  Environment:
+    Type: String
+    Default: development
+    AllowedValues:
+      - development
+      - staging
+      - production
+    Description: Deployment environment name.
+
+  SupabaseUrl:
+    Type: String
+    NoEcho: true
+    Description: Supabase project URL.
+
+  SupabaseKey:
+    Type: String
+    NoEcho: true
+    Description: Supabase service role key.
+
+  CorsOrigins:
+    Type: String
+    Default: "http://localhost:3000,https://*.vercel.app"
+    Description: Comma-separated list of allowed CORS origins.
+
+# =============================================================================
+# Global settings — shared across all functions
+# =============================================================================
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: python3.11
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+        SUPABASE_URL: !Ref SupabaseUrl
+        SUPABASE_KEY: !Ref SupabaseKey
+        CORS_ORIGINS: !Ref CorsOrigins
+
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
+
+# =============================================================================
+# Resources
+# =============================================================================
+Resources:
+  # ---------------------------------------------------------------------------
+  # Lambda Function — serves the FastAPI app via Mangum
+  # ---------------------------------------------------------------------------
+  MorningRoutineFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "morning-routine-api-${Environment}"
+      Description: Morning Routine & Productivity Tracker API
+      Handler: app.main.handler
+      CodeUri: .
+      Events:
+        # Catch-all route — API Gateway forwards everything to FastAPI
+        ApiCatchAll:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /{proxy+}
+            Method: ANY
+        # Root path handler
+        ApiRoot:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /
+            Method: ANY
+      Tags:
+        Project: morning-routine-productivity
+        Environment: !Ref Environment
+
+  # ---------------------------------------------------------------------------
+  # HTTP API Gateway — lightweight, low-latency API layer
+  # ---------------------------------------------------------------------------
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref Environment
+      Description: !Sub "Morning Routine API Gateway (${Environment})"
+      CorsConfiguration:
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        AllowHeaders:
+          - "*"
+        AllowOrigins:
+          - "http://localhost:3000"
+          - "https://*.vercel.app"
+        MaxAge: 3600
+
+  # ---------------------------------------------------------------------------
+  # CloudWatch Log Group — structured retention
+  # ---------------------------------------------------------------------------
+  MorningRoutineFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/morning-routine-api-${Environment}"
+      RetentionInDays: 14
+
+# =============================================================================
+# Outputs — useful values after deployment
+# =============================================================================
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"
+
+  FunctionArn:
+    Description: Lambda function ARN
+    Value: !GetAtt MorningRoutineFunction.Arn
+
+  FunctionName:
+    Description: Lambda function name
+    Value: !Ref MorningRoutineFunction

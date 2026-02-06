@@ -87,7 +87,7 @@ flowchart TB
 | ------------------ | ----------------------------- |
 | **GitHub Actions** | CI/CD pipelines               |
 | **Vercel**         | Frontend deployment           |
-| **AWS Lambda**     | Backend deployment (optional) |
+| **AWS Lambda**     | Backend deployment (via SAM + Mangum)     |
 | **Docker**         | Local development             |
 | **Pre-commit**     | Code quality hooks            |
 | **Ruff**           | Python linting and formatting |

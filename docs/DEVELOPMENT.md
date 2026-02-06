@@ -499,53 +499,127 @@ NEXT_PUBLIC_API_URL=https://api.your-domain.com
 
 ### Backend Deployment (AWS Lambda)
 
-#### Using AWS SAM
+The backend runs on AWS Lambda with API Gateway using [Mangum](https://mangum.io/)
+to adapt FastAPI for the Lambda runtime. Infrastructure is defined as code via
+[AWS SAM](https://docs.aws.amazon.com/serverless-application-model/).
+
+#### Prerequisites
+
+1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) — configured with credentials (`aws configure`)
+2. [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) — for building and deploying
+
+#### Architecture
+
+```
+Client → API Gateway (HTTP API) → Lambda (FastAPI + Mangum) → Supabase
+```
+
+Key files:
+
+| File | Purpose |
+|------|---------|
+| `backend/template.yaml` | SAM template — defines Lambda function, API Gateway, and CloudWatch logs |
+| `backend/samconfig.toml` | Default deploy settings per environment (dev, staging, prod) |
+| `backend/requirements.txt` | Production dependencies for Lambda packaging (keep in sync with pyproject.toml) |
+| `backend/.samignore` | Files excluded from the Lambda deployment package |
+| `backend/app/main.py` | FastAPI app + `handler = Mangum(app)` Lambda entry point |
+
+#### First-Time Deployment (Guided)
+
+```bash
+cd backend
+
+# Build the Lambda package
+sam build
+
+# Interactive deployment — creates the CloudFormation stack
+sam deploy --guided
+```
+
+SAM will prompt you for:
+- **Stack name**: e.g., `morning-routine-api-dev`
+- **AWS Region**: e.g., `us-east-1`
+- **Parameter values**: `SupabaseUrl`, `SupabaseKey`, `CorsOrigins`, `Environment`
+
+These choices are saved to `samconfig.toml` for future deploys.
+
+#### Subsequent Deployments
+
+```bash
+cd backend
+
+# Build and deploy with saved config
+sam build && sam deploy
+
+# Deploy to a specific environment
+sam deploy --config-env staging
+sam deploy --config-env prod
+```
+
+#### Useful SAM Commands
+
+```bash
+# Validate the template
+sam validate
+
+# Test locally (requires Docker)
+sam local start-api
+
+# Invoke a single request locally
+sam local invoke MorningRoutineFunction -e events/test-event.json
+
+# View deployed stack outputs (API URL, function ARN)
+sam list stack-outputs --stack-name morning-routine-api-dev
+
+# Tail Lambda logs in real time
+sam logs -n MorningRoutineFunction --stack-name morning-routine-api-dev --tail
+
+# Delete the entire stack
+sam delete --stack-name morning-routine-api-dev
+```
+
+#### Environment Variables
+
+Set via SAM parameters (in `samconfig.toml` or `--parameter-overrides`):
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `Environment` | Deployment environment | `development`, `staging`, `production` |
+| `SupabaseUrl` | Supabase project URL | `https://xxx.supabase.co` |
+| `SupabaseKey` | Supabase service role key | `eyJ...` |
+| `CorsOrigins` | Allowed CORS origins (comma-separated) | `https://your-app.vercel.app` |
+
+#### CI/CD Deployment
+
+The GitHub Actions workflow (`.github/workflows/deploy.yml`) includes a commented-out
+backend deployment job. To enable it:
+
+1. Add these GitHub Secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `SUPABASE_URL`, `SUPABASE_KEY`
+2. Uncomment the `deploy-backend` job in `deploy.yml`
+3. Push to `main` to trigger deployment
+
+#### Keeping requirements.txt in Sync
+
+SAM uses `requirements.txt` (not Poetry) to build the Lambda package. When you add
+or update dependencies in `pyproject.toml`, regenerate it:
+
+```bash
+cd backend
+poetry export -f requirements.txt --without-hashes -o requirements.txt
+```
+
+### Docker Deployment
+
+The included `Dockerfile` builds a container image for traditional hosting (e.g., ECS, Railway, Render):
 
 ```bash
 cd backend
 
 # Build
-sam build
+docker build -t morning-routine-api .
 
-# Deploy
-sam deploy --guided
-```
-
-#### Using Serverless Framework
-
-```bash
-# Install Serverless
-npm i -g serverless
-
-# Deploy
-serverless deploy
-```
-
-#### Environment Variables in AWS
-
-Set via AWS Lambda console or SAM template:
-
-```yaml
-# template.yaml
-Globals:
-  Function:
-    Environment:
-      Variables:
-        SUPABASE_URL: !Ref SupabaseUrl
-        SUPABASE_KEY: !Ref SupabaseKey
-```
-
-### Docker Deployment
-
-```bash
-# Build images
-docker-compose -f docker-compose.prod.yml build
-
-# Push to registry
-docker push your-registry/frontend:latest
-docker push your-registry/backend:latest
-
-# Deploy to your infrastructure
+# Run
+docker run -p 8000:8000 --env-file .env morning-routine-api
 ```
 
 ---
