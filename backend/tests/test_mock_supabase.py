@@ -14,9 +14,9 @@ class TestMockSupabaseQuerySingleBehavior:
         query = MockSupabaseQuery(data=[record])
         response = query.select("*").eq("id", "1").single().execute()
 
-        assert isinstance(response.data, dict), (
-            f"Expected response.data to be a dict after single(), got {type(response.data)}"
-        )
+        assert isinstance(
+            response.data, dict
+        ), f"Expected response.data to be a dict after single(), got {type(response.data)}"
         assert response.data == record
 
     def test_single_execute_with_empty_data_returns_falsy(self) -> None:
