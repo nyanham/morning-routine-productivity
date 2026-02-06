@@ -50,6 +50,7 @@ class MockSupabaseQuery:
     def __init__(self, data: list[dict[str, Any]] | None = None, count: int | None = None):
         self._data = data or []
         self._count = count
+        self._single = False
 
     def select(self, *_args: Any, **_kwargs: Any) -> "MockSupabaseQuery":
         return self
@@ -92,11 +93,14 @@ class MockSupabaseQuery:
         return self
 
     def single(self) -> "MockSupabaseQuery":
+        self._single = True
         if self._data:
             self._data = self._data[0] if isinstance(self._data, list) else self._data
         return self
 
     def execute(self) -> MockSupabaseResponse:
+        if self._single:
+            return MockSupabaseResponse(data=self._data, count=self._count)
         data = self._data if isinstance(self._data, list) else [self._data] if self._data else []
         return MockSupabaseResponse(data=data, count=self._count)
 
