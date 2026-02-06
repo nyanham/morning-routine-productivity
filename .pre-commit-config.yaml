@@ -50,51 +50,54 @@ repos:
 
   # ===========================================
   # Python Backend Hooks
+  # Uses locally installed tools via Poetry to ensure version consistency with CI.
+  # Versions are managed solely in pyproject.toml — no duplication.
   # ===========================================
 
-  # Ruff - Fast Python linter and formatter (replaces flake8, isort, black)
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.6
+  - repo: local
     hooks:
-      # Run the linter
+      # Ruff linter
       - id: ruff
-        args: ["--fix", "--exit-non-zero-on-fix"]
-        files: ^backend/
-      # Run the formatter
+        name: ruff
+        entry: poetry run -C backend ruff check --fix --exit-non-zero-on-fix .
+        language: system
+        files: ^backend/.*\.py$
+        pass_filenames: false
+
+      # Ruff formatter
       - id: ruff-format
-        files: ^backend/
+        name: ruff-format
+        entry: poetry run -C backend ruff format .
+        language: system
+        files: ^backend/.*\.py$
+        pass_filenames: false
 
   # Bandit - Security linter for Python
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.2
+  - repo: local
     hooks:
       - id: bandit
-
-        files: ^backend/
+        name: bandit
+        entry: poetry run -C backend bandit -c pyproject.toml -r app
+        language: system
+        files: ^backend/.*\.py$
         exclude: ^backend/(tests|scripts)/
+        pass_filenames: false
 
   # ===========================================
   # Frontend (TypeScript/JavaScript) Hooks
-  # ESLint uses mirrors-eslint with bundled dependencies; Prettier and TypeScript use npm scripts for cross-platform compatibility
+  # Uses locally installed tools via npm to ensure version consistency with CI.
+  # Versions are managed solely in frontend/package.json — no duplication.
   # ===========================================
 
   # ESLint - JavaScript/TypeScript linting
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.18.0
+  - repo: local
     hooks:
       - id: eslint
         name: eslint
+        entry: npm run lint --prefix frontend
+        language: system
         files: ^frontend/src/.*\.[jt]sx?$
-        types: [file]
-        args: ["--fix", "--config", "frontend/eslint.config.mjs"]
-        additional_dependencies:
-          - eslint@9.18.0
-          - "@eslint/js@9.39.2"
-          - "typescript-eslint@8.54.0"
-          - "eslint-plugin-react@7.37.4"
-          - "eslint-plugin-react-hooks@7.0.1"
-          - "@next/eslint-plugin-next@16.1.6"
-          - "typescript@5.7.3"
+        pass_filenames: false
 
   # Prettier - Code formatting (cross-platform using npm script)
   - repo: local
@@ -135,5 +138,5 @@ ci:
   autoupdate_branch: "develop"
   autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
   autoupdate_schedule: weekly
-  skip: [prettier, typescript] # Skip local npm-script hooks in CI; they depend on frontend/node_modules (ESLint uses additional_dependencies)
+  skip: [ruff, ruff-format, bandit, eslint, prettier, typescript] # Skip local hooks in CI; they depend on local tool installations
   submodules: false
