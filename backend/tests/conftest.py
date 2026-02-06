@@ -40,7 +40,7 @@ class MockSupabaseResponse:
         data: list[dict[str, Any]] | dict[str, Any] | None = None,
         count: int | None = None,
     ):
-        self.data = data if data is not None else []
+        self.data = data
         self.count = count
 
 
@@ -96,6 +96,10 @@ class MockSupabaseQuery:
         self._single = True
         if self._data:
             self._data = self._data[0] if isinstance(self._data, list) else self._data
+        else:
+            # When no data exists, set to None instead of empty list
+            # This matches the expected behavior for missing records
+            self._data = None
         return self
 
     def execute(self) -> MockSupabaseResponse:

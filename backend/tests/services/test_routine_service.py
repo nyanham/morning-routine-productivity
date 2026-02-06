@@ -85,11 +85,11 @@ class TestRoutineService:
         assert result is not None
 
     def test_get_returns_none_for_missing(self, service_empty: RoutineService) -> None:
-        """Test get method returns empty for missing routine."""
+        """Test get method returns None for missing routine."""
         result = service_empty.get("nonexistent-id")
 
-        # Empty mock returns empty list or None
-        assert result is None or result == []
+        # When no data exists, should return None
+        assert result is None
 
     def test_create_routine(self, service_empty: RoutineService) -> None:
         """Test creating a new routine."""

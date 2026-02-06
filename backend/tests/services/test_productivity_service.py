@@ -76,11 +76,11 @@ class TestProductivityService:
         assert result is not None
 
     def test_get_returns_none_for_missing(self, service_empty: ProductivityService) -> None:
-        """Test get returns empty result for missing entry."""
+        """Test get returns None for missing entry."""
         result = service_empty.get("nonexistent-id")
 
-        # Empty mock returns empty list or None
-        assert result is None or result == []
+        # When no data exists, should return None
+        assert result is None
 
     def test_create_productivity(self, service_empty: ProductivityService) -> None:
         """Test creating productivity entry."""
