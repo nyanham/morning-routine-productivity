@@ -44,8 +44,16 @@ jobs:
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
 
   # ==========================================
-  # Deploy Backend (Optional - uncomment for AWS Lambda)
+  # Deploy Backend to AWS Lambda (via SAM)
   # ==========================================
+  # Uncomment this job when you're ready to deploy the backend.
+  # Required GitHub Secrets:
+  #   - AWS_ACCESS_KEY_ID
+  #   - AWS_SECRET_ACCESS_KEY
+  #   - SUPABASE_URL
+  #   - SUPABASE_KEY
+  #   - CORS_ORIGINS (optional, defaults to https://*.vercel.app)
+  #
   # deploy-backend:
   #   name: Deploy Backend to AWS Lambda
   #   runs-on: ubuntu-latest
@@ -59,14 +67,14 @@ jobs:
   #       uses: actions/checkout@v6
   #
   #     - name: Setup Python
-  #       uses: actions/setup-python@v5
+  #       uses: actions/setup-python@v6
   #       with:
   #         python-version: ${{ env.PYTHON_VERSION }}
   #
-  #     - name: Install dependencies
-  #       run: |
-  #         pip install -r requirements.txt -t ./package
-  #         cp -r app ./package/
+  #     - name: Install AWS SAM CLI
+  #       uses: aws-actions/setup-sam@v2
+  #       with:
+  #         use-installer: true
   #
   #     - name: Configure AWS credentials
   #       uses: aws-actions/configure-aws-credentials@v4
@@ -75,11 +83,15 @@ jobs:
   #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   #         aws-region: us-east-1
   #
-  #     - name: Deploy to AWS Lambda
+  #     - name: SAM Build
+  #       run: sam build
+  #
+  #     - name: SAM Deploy
   #       run: |
-  #         cd package
-  #         zip -r ../deployment.zip .
-  #         cd ..
-  #         aws lambda update-function-code \
-  #           --function-name morning-routine-api \
-  #           --zip-file fileb://deployment.zip
+  #         sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
+  #           --stack-name morning-routine-api-prod \
+  #           --parameter-overrides \
+  #             Environment=production \
+  #             SupabaseUrl=${{ secrets.SUPABASE_URL }} \
+  #             SupabaseKey=${{ secrets.SUPABASE_KEY }} \
+  #             CorsOrigins=${{ secrets.CORS_ORIGINS || 'https://*.vercel.app' }}

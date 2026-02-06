@@ -242,6 +242,9 @@ cython_debug/
 # Ruff stuff:
 .ruff_cache/
 
+# AWS SAM
+.aws-sam/
+
 # PyPI configuration file
 .pypirc
 
