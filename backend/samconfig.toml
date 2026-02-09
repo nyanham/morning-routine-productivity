@@ -16,7 +16,7 @@ version = 0.1
 region = "us-east-1"
 
 [default.build.parameters]
-use_container = false
+use_container = true
 cached = true
 
 [default.deploy.parameters]
@@ -32,7 +32,7 @@ parameter_overrides = "Environment=\"development\" CorsOrigins=\"http://localhos
 # =============================================================================
 image_repositories = []
 [staging.build.parameters]
-use_container = false
+use_container = true
 cached = true
 
 [staging.deploy.parameters]
@@ -53,7 +53,7 @@ parameter_overrides = [
 # Production
 # =============================================================================
 [prod.build.parameters]
-use_container = false
+use_container = true
 cached = true
 
 [prod.deploy.parameters]
