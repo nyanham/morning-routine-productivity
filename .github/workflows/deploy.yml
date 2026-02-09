@@ -7,7 +7,7 @@ on:
 
 env:
   NODE_VERSION: "22"
-  PYTHON_VERSION: "3.11"
+  PYTHON_VERSION: "3.12"
 
 jobs:
   # ==========================================
@@ -52,7 +52,8 @@ jobs:
   #   - AWS_SECRET_ACCESS_KEY
   #   - SUPABASE_URL
   #   - SUPABASE_KEY
-  #   - CORS_ORIGINS (optional, defaults to https://*.vercel.app)
+  #   - CORS_ORIGINS (optional, exact-match origins)
+  #   - CORS_ORIGIN_REGEX (optional, regex for wildcard subdomains)
   #
   # deploy-backend:
   #   name: Deploy Backend to AWS Lambda
@@ -94,4 +95,5 @@ jobs:
   #             Environment=production \
   #             SupabaseUrl=${{ secrets.SUPABASE_URL }} \
   #             SupabaseKey=${{ secrets.SUPABASE_KEY }} \
-  #             CorsOrigins=${{ secrets.CORS_ORIGINS || 'https://*.vercel.app' }}
+  #             CorsOrigins="${{ secrets.CORS_ORIGINS || 'https://your-production-domain.vercel.app' }}" \
+  #             CorsOriginRegex="${{ secrets.CORS_ORIGIN_REGEX || '' }}"

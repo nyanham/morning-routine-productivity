@@ -27,7 +27,7 @@ This document provides comprehensive instructions for setting up the development
 | ----------- | ------- | ---------------------------- |
 | **Node.js** | 22+ LTS | Frontend runtime             |
 | **npm**     | 10+     | Package management           |
-| **Python**  | 3.11+   | Backend runtime              |
+| **Python**  | 3.12+   | Backend runtime              |
 | **Poetry**  | 1.7+    | Python dependency management |
 | **Git**     | 2.40+   | Version control              |
 
@@ -566,8 +566,8 @@ sam validate
 # Test locally (requires Docker)
 sam local start-api
 
-# Invoke a single request locally
-sam local invoke MorningRoutineFunction -e events/test-event.json
+# Invoke a single request locally (provide a JSON event file)
+sam local invoke MorningRoutineFunction -e path/to/event.json
 
 # View deployed stack outputs (API URL, function ARN)
 sam list stack-outputs --stack-name morning-routine-api-dev
@@ -606,7 +606,7 @@ or update dependencies in `pyproject.toml`, regenerate it:
 
 ```bash
 cd backend
-poetry export -f requirements.txt --without-hashes -o requirements.txt
+poetry export --only main -f requirements.txt --without-hashes -o requirements.txt
 ```
 
 ### Docker Deployment

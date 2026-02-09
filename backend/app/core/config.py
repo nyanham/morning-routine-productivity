@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -19,9 +20,23 @@ class Settings(BaseSettings):
     debug: bool = False
     environment: str = "development"
 
-    # CORS - exact origins and optional regex for wildcard subdomain matching
+    # CORS - exact origins and optional regex for wildcard subdomain matching.
+    # CORS_ORIGINS can be a JSON list or a comma-separated string (e.g. from Lambda env vars).
     cors_origins: list[str] = ["http://localhost:3000"]
     cors_origin_regex: str = r"https://.*\.vercel\.app"
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v: object) -> list[str]:
+        """Accept both JSON lists and comma-separated strings.
+
+        Lambda/SAM injects env vars as plain strings, so
+        CORS_ORIGINS="http://localhost:3000,https://example.com" must be
+        split into a list before Pydantic validates the field.
+        """
+        if isinstance(v, str):
+            return [origin.strip() for origin in v.split(",") if origin.strip()]
+        return v  # type: ignore[return-value]
 
     class Config:
         env_file = ".env"

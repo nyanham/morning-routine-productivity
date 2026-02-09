@@ -25,12 +25,17 @@ s3_prefix = "morning-routine-api-dev"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 resolve_s3 = true
-parameter_overrides = "Environment=\"development\" CorsOrigins=\"http://localhost:3000\" CorsOriginRegex=\"https://.*\\.vercel\\.app\""
+parameter_overrides = [
+    "Environment=development",
+    "SupabaseUrl=REPLACE_ME",
+    "SupabaseKey=REPLACE_ME",
+    "CorsOrigins=http://localhost:3000",
+    "CorsOriginRegex=https://.*\\.vercel\\.app",
+]
 
 # =============================================================================
 # Staging
 # =============================================================================
-image_repositories = []
 [staging.build.parameters]
 use_container = true
 cached = true
