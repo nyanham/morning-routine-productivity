@@ -9,10 +9,9 @@ from fastapi.testclient import TestClient
 
 import app.main as main_module
 from app.core.config import Settings
-from app.main import app
 
 
-client = TestClient(app)
+client = TestClient(main_module.app)
 
 
 class TestHealthEndpoints:
@@ -61,10 +60,7 @@ class TestProductionDocsDisabled:
             supabase_key="test-key",
             environment="production",
         )
-        with (
-            patch("app.core.config.get_settings", return_value=prod_settings),
-            patch("app.main.get_settings", return_value=prod_settings),
-        ):
+        with patch("app.core.config.get_settings", return_value=prod_settings):
             importlib.reload(main_module)
             prod_client = TestClient(main_module.app)
 
@@ -74,14 +70,36 @@ class TestProductionDocsDisabled:
             response = prod_client.get("/redoc")
             assert response.status_code == 404
 
+            # Root endpoint should not advertise a docs link in production
+            response = prod_client.get("/")
+            assert response.json()["docs"] is None
+
         # Reload to restore default (development) state for other tests
         importlib.reload(main_module)
 
     def test_docs_enabled_in_development(self) -> None:
         """Test that /docs returns 200 when ENVIRONMENT=development (default)."""
-        # The default app fixture uses development environment
         response = client.get("/docs")
         assert response.status_code == 200
 
         response = client.get("/redoc")
         assert response.status_code == 200
+
+
+class TestExceptionHandler:
+    """Tests for the global unhandled exception handler."""
+
+    def test_unhandled_exception_returns_json_500(self) -> None:
+        """Test that unhandled exceptions produce a JSON 500 (not HTML)."""
+
+        @main_module.app.get("/test-error")
+        async def _raise_error() -> None:
+            msg = "deliberate test error"
+            raise RuntimeError(msg)
+
+        test_client = TestClient(main_module.app, raise_server_exceptions=False)
+        response = test_client.get("/test-error")
+
+        assert response.status_code == 500
+        assert response.headers["content-type"] == "application/json"
+        assert response.json() == {"detail": "Internal server error"}

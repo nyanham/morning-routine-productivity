@@ -1,3 +1,4 @@
+import json
 from functools import lru_cache
 
 from pydantic import field_validator
@@ -28,13 +29,22 @@ class Settings(BaseSettings):
     @field_validator("cors_origins", mode="before")
     @classmethod
     def parse_cors_origins(cls, v: object) -> list[str]:
-        """Accept both JSON lists and comma-separated strings.
+        """Accept JSON arrays, comma-separated strings, or native lists.
 
-        Lambda/SAM injects env vars as plain strings, so
-        CORS_ORIGINS="http://localhost:3000,https://example.com" must be
-        split into a list before Pydantic validates the field.
+        Lambda/SAM injects env vars as plain strings, so we handle:
+        - '["https://a.com","https://b.com"]'  (JSON array)
+        - "https://a.com,https://b.com"          (comma-separated)
+        - ["https://a.com"]                       (already a list)
         """
         if isinstance(v, str):
+            stripped = v.strip()
+            if stripped.startswith("["):
+                try:
+                    parsed = json.loads(stripped)
+                    if isinstance(parsed, list):
+                        return [str(o).strip() for o in parsed if str(o).strip()]
+                except json.JSONDecodeError:
+                    pass
             return [origin.strip() for origin in v.split(",") if origin.strip()]
         return v  # type: ignore[return-value]
 

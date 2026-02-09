@@ -27,7 +27,7 @@ This document provides comprehensive instructions for setting up the development
 | ----------- | ------- | ---------------------------- |
 | **Node.js** | 22+ LTS | Frontend runtime             |
 | **npm**     | 10+     | Package management           |
-| **Python**  | 3.12+   | Backend runtime              |
+| **Python**  | 3.10+   | Backend runtime              |
 | **Poetry**  | 1.7+    | Python dependency management |
 | **Git**     | 2.40+   | Version control              |
 

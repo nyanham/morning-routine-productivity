@@ -79,7 +79,7 @@ async def root():
     return {
         "message": "Morning Routine Productivity API",
         "version": "0.1.0",
-        "docs": "/docs",
+        "docs": _docs_url,
     }
 
 
