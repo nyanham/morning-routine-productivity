@@ -1,0 +1,40 @@
+# SAM build ignore — exclude files not needed in the Lambda deployment package.
+
+# This keeps the package small and reduces cold start time.
+
+# Development & testing
+
+tests/
+scripts/
+data/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+**pycache**/
+
+# Config & CI
+
+.pre-commit-config.yaml
+.gitignore
+.dockerignore
+.env
+.env.example
+Dockerfile
+docker-compose\*.yml
+
+# Poetry (SAM uses requirements.txt)
+
+pyproject.toml
+poetry.lock
+
+# SAM artifacts
+
+.aws-sam/
+samconfig.toml
+template.yaml
+
+# Documentation
+
+\*.md
+LICENSE

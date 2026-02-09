@@ -4,7 +4,7 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
-[![Python](https://img.shields.io/badge/Python-3.11-green.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.12-green.svg)](https://www.python.org/)
 
 A full-stack application for tracking morning routines and analyzing productivity data with beautiful visualizations.
 
@@ -45,7 +45,7 @@ _Visualize trends and correlations between habits and productivity_
 | Layer          | Technology                                     |
 | -------------- | ---------------------------------------------- |
 | **Frontend**   | Next.js 15, React 19, TypeScript, Tailwind CSS |
-| **Backend**    | FastAPI, Python 3.11, Pydantic                 |
+| **Backend**    | FastAPI, Python 3.12, Pydantic                 |
 | **Database**   | Supabase (PostgreSQL)                          |
 | **Auth**       | Supabase Auth (JWT)                            |
 | **Charts**     | Recharts                                       |
@@ -85,7 +85,7 @@ morning-routine-productivity/
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) 22+ (LTS)
-- [Python](https://www.python.org/) 3.10+
+- [Python](https://www.python.org/) 3.12+
 - [Poetry](https://python-poetry.org/) (recommended) or pip
 - [Supabase](https://supabase.com/) account (free tier works)
 
@@ -280,12 +280,44 @@ poetry run ruff format .  # Formatting
 3. Add environment variables
 4. Deploy!
 
-### Backend Options
+### Backend (AWS Lambda via SAM)
 
-- **AWS Lambda** - Using Mangum adapter (included)
-- **Railway** - One-click deploy
-- **Render** - Free tier available
-- **Docker** - Self-hosted
+The backend deploys to AWS Lambda using the [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) and the Mangum adapter.
+
+**Prerequisites:** AWS CLI configured, SAM CLI installed.
+
+```bash
+cd backend
+
+# Build the Lambda package
+sam build
+
+# Deploy (first time — interactive guided setup)
+sam deploy --guided
+
+# Deploy (subsequent — uses samconfig.toml defaults)
+sam deploy
+
+# Deploy to a specific environment
+sam deploy --config-env staging
+sam deploy --config-env prod
+```
+
+**Required environment variables** (set via SAM parameters or AWS console):
+
+| Variable       | Description                               |
+| -------------- | ----------------------------------------- |
+| `SUPABASE_URL` | Supabase project URL                      |
+| `SUPABASE_KEY` | Supabase service role key                 |
+| `CORS_ORIGINS` | Comma-separated allowed origins           |
+| `ENVIRONMENT`  | `development`, `staging`, or `production` |
+
+See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the full deployment guide.
+
+### Other Backend Options
+
+- **Docker** — Use the included `Dockerfile` for container-based hosting
+- **Railway / Render** — Deploy the Docker image or connect the repo directly
 
 ## 🤝 Contributing
 

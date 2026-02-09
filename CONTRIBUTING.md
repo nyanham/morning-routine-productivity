@@ -20,7 +20,7 @@ Please be respectful and constructive in all interactions. We're all here to lea
 ### Prerequisites
 
 - Node.js 22+
-- Python 3.10+
+- Python 3.12+
 - Poetry (Python package manager)
 - Git
 
