@@ -44,6 +44,7 @@ class Settings(BaseSettings):
                     if isinstance(parsed, list):
                         return [str(o).strip() for o in parsed if str(o).strip()]
                 except json.JSONDecodeError:
+                    # If the value is not valid JSON, fall back to comma-separated parsing below.
                     pass
             return [origin.strip() for origin in v.split(",") if origin.strip()]
         return v  # type: ignore[return-value]
