@@ -1,8 +1,9 @@
-# Production dependencies — keep in sync with pyproject.toml
+# Production dependencies -- keep in sync with pyproject.toml
 # This file is used by AWS SAM for Lambda package builds.
 # To regenerate: poetry export -f requirements.txt --without-hashes -o requirements.txt
+#
+# Note: uvicorn is intentionally excluded -- Mangum replaces it on Lambda.
 fastapi>=0.128.0
-uvicorn[standard]>=0.40.0
 python-dotenv>=1.0.1
 supabase>=2.10.0
 pydantic[email]>=2.10.0

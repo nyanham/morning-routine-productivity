@@ -305,12 +305,12 @@ sam deploy --config-env prod
 
 **Required environment variables** (set via SAM parameters or AWS console):
 
-| Variable | Description |
-|----------|-------------|
-| `SUPABASE_URL` | Supabase project URL |
-| `SUPABASE_KEY` | Supabase service role key |
-| `CORS_ORIGINS` | Comma-separated allowed origins |
-| `ENVIRONMENT` | `development`, `staging`, or `production` |
+| Variable       | Description                               |
+| -------------- | ----------------------------------------- |
+| `SUPABASE_URL` | Supabase project URL                      |
+| `SUPABASE_KEY` | Supabase service role key                 |
+| `CORS_ORIGINS` | Comma-separated allowed origins           |
+| `ENVIRONMENT`  | `development`, `staging`, or `production` |
 
 See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the full deployment guide.
 

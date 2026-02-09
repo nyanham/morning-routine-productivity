@@ -83,18 +83,18 @@ flowchart TB
 
 ### DevOps & Tooling
 
-| Tool               | Purpose                       |
-| ------------------ | ----------------------------- |
-| **GitHub Actions** | CI/CD pipelines               |
-| **Vercel**         | Frontend deployment           |
-| **AWS Lambda**     | Backend deployment (via SAM + Mangum)     |
-| **Docker**         | Local development             |
-| **Pre-commit**     | Code quality hooks            |
-| **Ruff**           | Python linting and formatting |
-| **ESLint**         | TypeScript/JavaScript linting |
-| **Prettier**       | Code formatting               |
-| **Jest**           | Frontend testing              |
-| **Pytest**         | Backend testing               |
+| Tool               | Purpose                               |
+| ------------------ | ------------------------------------- |
+| **GitHub Actions** | CI/CD pipelines                       |
+| **Vercel**         | Frontend deployment                   |
+| **AWS Lambda**     | Backend deployment (via SAM + Mangum) |
+| **Docker**         | Local development                     |
+| **Pre-commit**     | Code quality hooks                    |
+| **Ruff**           | Python linting and formatting         |
+| **ESLint**         | TypeScript/JavaScript linting         |
+| **Prettier**       | Code formatting                       |
+| **Jest**           | Frontend testing                      |
+| **Pytest**         | Backend testing                       |
 
 ---
 

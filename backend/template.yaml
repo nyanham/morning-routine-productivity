@@ -1,11 +1,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  Morning Routine Productivity API — FastAPI on AWS Lambda via Mangum.
+  Morning Routine Productivity API - FastAPI on AWS Lambda via Mangum.
   Deployed with API Gateway HTTP API for low-latency REST access.
 
 # =============================================================================
-# Parameters — configurable per environment (dev, staging, production)
+# Parameters - configurable per environment (dev, staging, production)
 # =============================================================================
 Parameters:
   Environment:
@@ -29,11 +29,16 @@ Parameters:
 
   CorsOrigins:
     Type: String
-    Default: "http://localhost:3000,https://*.vercel.app"
-    Description: Comma-separated list of allowed CORS origins.
+    Default: "http://localhost:3000"
+    Description: Comma-separated list of allowed CORS origins (exact match).
+
+  CorsOriginRegex:
+    Type: String
+    Default: "https://.*\\.vercel\\.app"
+    Description: Regex pattern for matching additional allowed CORS origins (e.g. Vercel preview deploys).
 
 # =============================================================================
-# Global settings — shared across all functions
+# Global settings - shared across all functions
 # =============================================================================
 Globals:
   Function:
@@ -48,19 +53,14 @@ Globals:
         SUPABASE_URL: !Ref SupabaseUrl
         SUPABASE_KEY: !Ref SupabaseKey
         CORS_ORIGINS: !Ref CorsOrigins
-
-  Api:
-    Cors:
-      AllowMethods: "'*'"
-      AllowHeaders: "'*'"
-      AllowOrigin: "'*'"
+        CORS_ORIGIN_REGEX: !Ref CorsOriginRegex
 
 # =============================================================================
 # Resources
 # =============================================================================
 Resources:
   # ---------------------------------------------------------------------------
-  # Lambda Function — serves the FastAPI app via Mangum
+  # Lambda Function - serves the FastAPI app via Mangum
   # ---------------------------------------------------------------------------
   MorningRoutineFunction:
     Type: AWS::Serverless::Function
@@ -70,7 +70,7 @@ Resources:
       Handler: app.main.handler
       CodeUri: .
       Events:
-        # Catch-all route — API Gateway forwards everything to FastAPI
+        # Catch-all route - API Gateway forwards everything to FastAPI
         ApiCatchAll:
           Type: HttpApi
           Properties:
@@ -89,29 +89,19 @@ Resources:
         Environment: !Ref Environment
 
   # ---------------------------------------------------------------------------
-  # HTTP API Gateway — lightweight, low-latency API layer
+  # HTTP API Gateway - lightweight, low-latency API layer
   # ---------------------------------------------------------------------------
+  # CORS is handled entirely by FastAPI's CORSMiddleware (supports regex patterns).
+  # API Gateway V2 does not support wildcard subdomains in AllowOrigins,
+  # so we delegate all CORS logic to the application layer.
   HttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
       StageName: !Ref Environment
       Description: !Sub "Morning Routine API Gateway (${Environment})"
-      CorsConfiguration:
-        AllowMethods:
-          - GET
-          - POST
-          - PUT
-          - DELETE
-          - OPTIONS
-        AllowHeaders:
-          - "*"
-        AllowOrigins:
-          - "http://localhost:3000"
-          - "https://*.vercel.app"
-        MaxAge: 3600
 
   # ---------------------------------------------------------------------------
-  # CloudWatch Log Group — structured retention
+  # CloudWatch Log Group - structured retention
   # ---------------------------------------------------------------------------
   MorningRoutineFunctionLogGroup:
     Type: AWS::Logs::LogGroup
@@ -120,7 +110,7 @@ Resources:
       RetentionInDays: 14
 
 # =============================================================================
-# Outputs — useful values after deployment
+# Outputs - useful values after deployment
 # =============================================================================
 Outputs:
   ApiUrl:

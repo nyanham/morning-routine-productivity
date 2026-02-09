@@ -516,13 +516,13 @@ Client → API Gateway (HTTP API) → Lambda (FastAPI + Mangum) → Supabase
 
 Key files:
 
-| File | Purpose |
-|------|---------|
-| `backend/template.yaml` | SAM template — defines Lambda function, API Gateway, and CloudWatch logs |
-| `backend/samconfig.toml` | Default deploy settings per environment (dev, staging, prod) |
+| File                       | Purpose                                                                         |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| `backend/template.yaml`    | SAM template — defines Lambda function, API Gateway, and CloudWatch logs        |
+| `backend/samconfig.toml`   | Default deploy settings per environment (dev, staging, prod)                    |
 | `backend/requirements.txt` | Production dependencies for Lambda packaging (keep in sync with pyproject.toml) |
-| `backend/.samignore` | Files excluded from the Lambda deployment package |
-| `backend/app/main.py` | FastAPI app + `handler = Mangum(app)` Lambda entry point |
+| `backend/.samignore`       | Files excluded from the Lambda deployment package                               |
+| `backend/app/main.py`      | FastAPI app + `handler = Mangum(app)` Lambda entry point                        |
 
 #### First-Time Deployment (Guided)
 
@@ -537,6 +537,7 @@ sam deploy --guided
 ```
 
 SAM will prompt you for:
+
 - **Stack name**: e.g., `morning-routine-api-dev`
 - **AWS Region**: e.g., `us-east-1`
 - **Parameter values**: `SupabaseUrl`, `SupabaseKey`, `CorsOrigins`, `Environment`
@@ -582,12 +583,12 @@ sam delete --stack-name morning-routine-api-dev
 
 Set via SAM parameters (in `samconfig.toml` or `--parameter-overrides`):
 
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `Environment` | Deployment environment | `development`, `staging`, `production` |
-| `SupabaseUrl` | Supabase project URL | `https://xxx.supabase.co` |
-| `SupabaseKey` | Supabase service role key | `eyJ...` |
-| `CorsOrigins` | Allowed CORS origins (comma-separated) | `https://your-app.vercel.app` |
+| Parameter     | Description                            | Example                                |
+| ------------- | -------------------------------------- | -------------------------------------- |
+| `Environment` | Deployment environment                 | `development`, `staging`, `production` |
+| `SupabaseUrl` | Supabase project URL                   | `https://xxx.supabase.co`              |
+| `SupabaseKey` | Supabase service role key              | `eyJ...`                               |
+| `CorsOrigins` | Allowed CORS origins (comma-separated) | `https://your-app.vercel.app`          |
 
 #### CI/CD Deployment
 

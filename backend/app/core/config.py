@@ -19,8 +19,9 @@ class Settings(BaseSettings):
     debug: bool = False
     environment: str = "development"
 
-    # CORS
-    cors_origins: list[str] = ["http://localhost:3000", "https://*.vercel.app"]
+    # CORS - exact origins and optional regex for wildcard subdomain matching
+    cors_origins: list[str] = ["http://localhost:3000"]
+    cors_origin_regex: str = r"https://.*\.vercel\.app"
 
     class Config:
         env_file = ".env"
