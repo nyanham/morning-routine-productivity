@@ -375,7 +375,7 @@ Tests run automatically on every PR via GitHub Actions:
 # .github/workflows/ci.yml
 jobs:
   backend-tests:
-    - Install Python 3.11
+    - Install Python 3.12
     - Install dependencies
     - Run Ruff linting
     - Run pytest with coverage

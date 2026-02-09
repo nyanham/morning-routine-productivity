@@ -4,7 +4,7 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
-[![Python](https://img.shields.io/badge/Python-3.11-green.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.12-green.svg)](https://www.python.org/)
 
 A full-stack application for tracking morning routines and analyzing productivity data with beautiful visualizations.
 
@@ -45,7 +45,7 @@ _Visualize trends and correlations between habits and productivity_
 | Layer          | Technology                                     |
 | -------------- | ---------------------------------------------- |
 | **Frontend**   | Next.js 15, React 19, TypeScript, Tailwind CSS |
-| **Backend**    | FastAPI, Python 3.11, Pydantic                 |
+| **Backend**    | FastAPI, Python 3.12, Pydantic                 |
 | **Database**   | Supabase (PostgreSQL)                          |
 | **Auth**       | Supabase Auth (JWT)                            |
 | **Charts**     | Recharts                                       |
@@ -85,7 +85,7 @@ morning-routine-productivity/
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) 22+ (LTS)
-- [Python](https://www.python.org/) 3.10+
+- [Python](https://www.python.org/) 3.12+
 - [Poetry](https://python-poetry.org/) (recommended) or pip
 - [Supabase](https://supabase.com/) account (free tier works)
 

@@ -5,19 +5,37 @@ Tests for the main application endpoints (health, root).
 import importlib
 from unittest.mock import patch
 
+import pytest
 from fastapi.testclient import TestClient
 
 import app.main as main_module
 from app.core.config import Settings
 
 
-client = TestClient(main_module.app)
+@pytest.fixture()
+def client():
+    """Provide a TestClient with explicit development settings.
+
+    Constructing the client inside a fixture (rather than at module level)
+    ensures tests stay deterministic regardless of external environment
+    variables like ENVIRONMENT=production.
+    """
+    dev_settings = Settings(
+        supabase_url="https://test.supabase.co",
+        supabase_key="test-key",
+        environment="development",
+    )
+    with patch("app.core.config.get_settings", return_value=dev_settings):
+        importlib.reload(main_module)
+        yield TestClient(main_module.app)
+    # Restore default module state after each test
+    importlib.reload(main_module)
 
 
 class TestHealthEndpoints:
     """Tests for health check endpoints."""
 
-    def test_root_endpoint(self) -> None:
+    def test_root_endpoint(self, client: TestClient) -> None:
         """Test the root endpoint returns correct info."""
         response = client.get("/")
 
@@ -27,20 +45,20 @@ class TestHealthEndpoints:
         assert data["version"] == "0.1.0"
         assert data["docs"] == "/docs"
 
-    def test_health_endpoint(self) -> None:
+    def test_health_endpoint(self, client: TestClient) -> None:
         """Test the health check endpoint."""
         response = client.get("/health")
 
         assert response.status_code == 200
         assert response.json() == {"status": "healthy"}
 
-    def test_docs_accessible(self) -> None:
+    def test_docs_accessible(self, client: TestClient) -> None:
         """Test that API docs are accessible."""
         response = client.get("/docs")
 
         assert response.status_code == 200
 
-    def test_redoc_accessible(self) -> None:
+    def test_redoc_accessible(self, client: TestClient) -> None:
         """Test that ReDoc is accessible."""
         response = client.get("/redoc")
 
@@ -77,7 +95,7 @@ class TestProductionDocsDisabled:
         # Reload to restore default (development) state for other tests
         importlib.reload(main_module)
 
-    def test_docs_enabled_in_development(self) -> None:
+    def test_docs_enabled_in_development(self, client: TestClient) -> None:
         """Test that /docs returns 200 when ENVIRONMENT=development (default)."""
         response = client.get("/docs")
         assert response.status_code == 200

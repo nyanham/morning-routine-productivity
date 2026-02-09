@@ -67,7 +67,7 @@ flowchart TB
 | Technology          | Version | Purpose                           |
 | ------------------- | ------- | --------------------------------- |
 | **FastAPI**         | 0.115.x | High-performance API framework    |
-| **Python**          | 3.11+   | Programming language              |
+| **Python**          | 3.12+   | Programming language              |
 | **Pydantic**        | 2.x     | Data validation and serialization |
 | **Supabase Python** | 2.x     | Supabase client library           |
 | **Pandas**          | 2.x     | CSV parsing for data import       |

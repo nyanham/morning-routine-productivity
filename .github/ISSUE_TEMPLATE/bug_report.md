@@ -32,7 +32,7 @@ If applicable, add screenshots to help explain your problem.
 - **OS:** [e.g., Windows 11, macOS 14, Ubuntu 22.04]
 - **Browser:** [e.g., Chrome 120, Firefox 121]
 - **Node.js version:** [e.g., 20.10.0]
-- **Python version:** [e.g., 3.11.7]
+- **Python version:** [e.g., 3.12.7]
 
 ## Component
 
