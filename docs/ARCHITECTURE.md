@@ -20,8 +20,11 @@ flowchart TB
 
     subgraph SERVICES["SERVICE LAYER"]
         direction TB
-        subgraph Backend["Backend Layer"]
+        subgraph Backend["Backend Layer (AWS)"]
+            APIGW["API Gateway<br/>HTTP API V2"]
+            Lambda["AWS Lambda<br/>Python 3.12"]
             FastAPI["FastAPI App<br/>API Router<br/>Services<br/>Auth Middleware"]
+            MangumAdapter["Mangum Adapter<br/>ASGI → Lambda"]
         end
         subgraph Auth["Auth Layer"]
             SupaAuth["Supabase Auth<br/>JWT Token Generation<br/>Session Management"]
@@ -39,7 +42,10 @@ flowchart TB
         end
     end
 
-    Browser --> |"HTTP/HTTPS<br/>(API Calls)"| FastAPI
+    Browser --> |"HTTP/HTTPS<br/>(API Calls)"| APIGW
+    APIGW --> Lambda
+    Lambda --> MangumAdapter
+    MangumAdapter --> FastAPI
     Browser --> |"WebSocket<br/>(Real-time)"| SupaAuth
     Browser --> |"HTTPS<br/>(Static)"| Vercel
 
@@ -64,13 +70,14 @@ flowchart TB
 
 ### Backend
 
-| Technology          | Version | Purpose                           |
-| ------------------- | ------- | --------------------------------- |
-| **FastAPI**         | 0.115.x | High-performance API framework    |
-| **Python**          | 3.12+   | Programming language              |
-| **Pydantic**        | 2.x     | Data validation and serialization |
-| **Supabase Python** | 2.x     | Supabase client library           |
-| **Pandas**          | 2.x     | CSV parsing for data import       |
+| Technology          | Version | Purpose                                        |
+| ------------------- | ------- | ---------------------------------------------- |
+| **FastAPI**         | 0.115.x | High-performance API framework                 |
+| **Python**          | 3.12+   | Programming language                           |
+| **Pydantic**        | 2.x     | Data validation and serialization              |
+| **Mangum**          | 0.21.x  | ASGI adapter for AWS Lambda                    |
+| **Supabase Python** | 2.x     | Supabase client library                        |
+| **Pandas**          | 2.x     | CSV parsing for data import                    |
 
 ### Database & Auth
 
@@ -83,18 +90,21 @@ flowchart TB
 
 ### DevOps & Tooling
 
-| Tool               | Purpose                               |
-| ------------------ | ------------------------------------- |
-| **GitHub Actions** | CI/CD pipelines                       |
-| **Vercel**         | Frontend deployment                   |
-| **AWS Lambda**     | Backend deployment (via SAM + Mangum) |
-| **Docker**         | Local development                     |
-| **Pre-commit**     | Code quality hooks                    |
-| **Ruff**           | Python linting and formatting         |
-| **ESLint**         | TypeScript/JavaScript linting         |
-| **Prettier**       | Code formatting                       |
-| **Jest**           | Frontend testing                      |
-| **Pytest**         | Backend testing                       |
+| Tool               | Purpose                                        |
+| ------------------ | ---------------------------------------------- |
+| **GitHub Actions** | CI/CD pipelines                                |
+| **Vercel**         | Frontend deployment                            |
+| **AWS Lambda**     | Backend compute (serverless)                   |
+| **API Gateway**    | HTTP API V2 — routing, throttling, stages       |
+| **AWS SAM**        | Infrastructure as Code for Lambda + API Gateway |
+| **CloudWatch**     | Lambda log aggregation and monitoring          |
+| **Docker**         | Local development & container builds           |
+| **Pre-commit**     | Code quality hooks                             |
+| **Ruff**           | Python linting and formatting                  |
+| **ESLint**         | TypeScript/JavaScript linting                  |
+| **Prettier**       | Code formatting                                |
+| **Jest**           | Frontend testing                               |
+| **Pytest**         | Backend testing                                |
 
 ---
 
@@ -200,7 +210,7 @@ frontend/
 backend/
 +-- app/
 |   +-- __init__.py
-|   +-- main.py                 # FastAPI application entry
+|   +-- main.py                 # FastAPI application entry + Mangum handler
 |   +-- api/                    # API route modules
 |   |   +-- __init__.py         # Router aggregation
 |   |   +-- users.py            # User endpoints
@@ -210,8 +220,8 @@ backend/
 |   |   +-- import_data.py      # CSV import endpoint
 |   +-- core/                   # Core utilities
 |   |   +-- __init__.py
-|   |   +-- config.py           # Configuration settings
-|   |   +-- auth.py             # Authentication logic
+|   |   +-- config.py           # Configuration settings (env var parsing)
+|   |   +-- auth.py             # JWT authentication via Supabase
 |   |   +-- supabase.py         # Supabase client setup
 |   +-- models/                 # Pydantic models
 |   |   +-- __init__.py         # All model exports
@@ -227,7 +237,11 @@ backend/
 |       +-- user_service.py
 |       +-- analytics_service.py
 +-- tests/                      # Pytest test files
-+-- pyproject.toml              # Python dependencies
++-- template.yaml               # AWS SAM template (Lambda + API Gateway)
++-- samconfig.toml              # SAM deploy config per environment
++-- requirements.txt            # Production deps for Lambda packaging
++-- .samignore                  # Files excluded from Lambda package
++-- pyproject.toml              # Python dependencies (Poetry)
 +-- poetry.lock                 # Locked dependencies
 ```
 
@@ -340,7 +354,12 @@ flowchart TB
     end
 
     subgraph Backend["Backend (AWS)"]
-        APIGateway["AWS Gateway / Lambda<br/>Auto-scaling<br/>Pay-per-use"]
+        direction TB
+        APIGW["API Gateway HTTP API V2<br/>Stage-based routing<br/>e.g. /development, /staging"]
+        Lambda["AWS Lambda (Python 3.12)<br/>256 MB · 30 s timeout<br/>Auto-scaling · Pay-per-use"]
+        Mangum["Mangum Adapter<br/>ASGI → Lambda event translation<br/>Stage prefix stripping"]
+        FastAPIApp["FastAPI Application<br/>CORS Middleware<br/>Request Logging<br/>Auth + Services"]
+        CW["CloudWatch Logs<br/>14-day retention<br/>Structured logging"]
     end
 
     subgraph Database["Database (Supabase)"]
@@ -348,10 +367,79 @@ flowchart TB
     end
 
     Internet --> VercelEdge
-    Internet --> APIGateway
-    APIGateway --> Supabase
-    VercelEdge -.->|"API Calls"| APIGateway
+    Internet --> APIGW
+    APIGW --> Lambda
+    Lambda --> Mangum
+    Mangum --> FastAPIApp
+    Lambda -.->|"logs"| CW
+    FastAPIApp --> Supabase
+    VercelEdge -.->|"API Calls"| APIGW
 ```
+
+### Lambda Request Lifecycle
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client
+    participant APIGW as API Gateway<br/>(HTTP API V2)
+    participant Lambda as AWS Lambda
+    participant Mangum as Mangum Adapter
+    participant FastAPI as FastAPI App
+    participant Supabase as Supabase
+
+    Client->>APIGW: GET /development/api/routines
+    APIGW->>Lambda: Lambda event (V2 payload)
+    Lambda->>Mangum: handler(event, context)
+    Note over Mangum: Strips stage prefix<br/>"/development/api/routines" → "/api/routines"
+    Mangum->>FastAPI: ASGI request
+    FastAPI->>FastAPI: CORS middleware
+    FastAPI->>FastAPI: Auth middleware<br/>(validate JWT via Supabase)
+    FastAPI->>Supabase: Query with user token
+    Supabase-->>FastAPI: Data (RLS filtered)
+    FastAPI-->>Mangum: ASGI response
+    Mangum-->>Lambda: API Gateway response
+    Lambda-->>APIGW: HTTP response
+    APIGW-->>Client: JSON response + CORS headers
+```
+
+### Infrastructure as Code (SAM)
+
+The backend infrastructure is defined in `backend/template.yaml` using AWS SAM.
+This template provisions:
+
+| Resource               | Type                          | Purpose                                    |
+| ---------------------- | ----------------------------- | ------------------------------------------ |
+| `MorningRoutineFunction` | `AWS::Serverless::Function` | Lambda function running FastAPI via Mangum  |
+| `HttpApi`              | `AWS::Serverless::HttpApi`    | API Gateway HTTP API with stage routing    |
+| `MorningRoutineFunctionLogGroup` | `AWS::Logs::LogGroup` | CloudWatch log group with 14-day retention   |
+
+Deploy configuration per environment is stored in `backend/samconfig.toml`:
+
+| Environment   | Stack Name                   | Notes                              |
+| ------------- | ---------------------------- | ---------------------------------- |
+| `development` | `morning-routine-api-dev`    | Default config (`sam deploy`)      |
+| `staging`     | `morning-routine-api-staging`| `sam deploy --config-env staging`  |
+| `production`  | `morning-routine-api-prod`   | `sam deploy --config-env prod`     |
+
+### CORS Strategy
+
+CORS is handled entirely by FastAPI's `CORSMiddleware` (not API Gateway) because
+HTTP API V2 does not support wildcard subdomains in `AllowOrigins`. This gives us:
+
+- **Exact origin matching** via `CORS_ORIGINS` env var (comma-separated or JSON array)
+- **Regex pattern matching** via `CORS_ORIGIN_REGEX` for Vercel preview deploys
+- **Full header control** including `Authorization` and `Content-Type`
+
+### Observability
+
+The Lambda function uses a named Python logger (`morning_routine`) with a
+`StreamHandler` so logs appear in CloudWatch. Key log events:
+
+- **App initialization** — environment, CORS origins, regex pattern
+- **Request/response** — method, path, origin, status code, latency
+- **Authentication** — token validation (prefix, length), success/failure details
+- **Unhandled exceptions** — full traceback for debugging
 
 ### Local Development
 
@@ -385,9 +473,10 @@ flowchart TB
 
 ### Backend Scalability
 
-- **Stateless Design**: Any instance can handle any request
+- **Stateless Design**: Any Lambda invocation can handle any request
+- **Auto-scaling**: Lambda scales automatically with traffic
 - **Connection Pooling**: Supabase manages database connections
-- **Horizontal Scaling**: Add more Lambda/container instances
+- **Cold Start Optimization**: 256 MB memory, Python 3.12 for fast startup
 
 ### Database Scalability
 
@@ -403,15 +492,16 @@ flowchart TB
 
 ```typescript
 // Structured error handling in hooks
+// Uses name-based check instead of instanceof because
+// Next.js Turbopack/webpack can duplicate class identities
+// across chunk boundaries, making instanceof unreliable.
+import { getApiErrorMessage } from '@/lib/api';
+
 try {
   const data = await api.routines.list(token);
   setData(data);
 } catch (err) {
-  if (err instanceof ApiError) {
-    setError(err.detail); // Show user-friendly message
-  } else {
-    setError("An unexpected error occurred");
-  }
+  setError(getApiErrorMessage(err, 'An unexpected error occurred'));
 }
 ```
 
@@ -423,6 +513,21 @@ raise HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
     detail="Routine not found",
 )
+```
+
+### Authentication Errors
+
+The backend provides user-friendly auth error messages based on error type:
+
+```python
+# Token expired
+{"detail": "Token expired — please sign in again"}
+
+# Invalid signature
+{"detail": "Invalid token — please sign in again"}
+
+# Generic auth failure
+{"detail": "Authentication failed — please sign in again"}
 ```
 
 ### Database Errors

@@ -22,10 +22,16 @@ This document provides a complete reference for all REST API endpoints in the Mo
 
 ### Base URL
 
-| Environment       | URL                           |
-| ----------------- | ----------------------------- |
-| Local Development | `http://localhost:8000`       |
-| Production        | `https://api.your-domain.com` |
+| Environment       | URL                                                                    |
+| ----------------- | ---------------------------------------------------------------------- |
+| Local Development | `http://localhost:8000`                                                |
+| AWS Lambda (Dev)  | `https://<api-id>.execute-api.<region>.amazonaws.com/development`      |
+| AWS Lambda (Prod) | `https://<api-id>.execute-api.<region>.amazonaws.com/production`       |
+| Custom Domain     | `https://api.your-domain.com`                                          |
+
+> **Note:** When deployed to AWS Lambda via SAM, the API Gateway adds a stage
+> prefix (e.g. `/development`). The Mangum adapter strips this prefix
+> automatically so FastAPI routes work unchanged.
 
 ### API Prefix
 
@@ -103,6 +109,21 @@ user = supabase.auth.get_user(token)
 | `404` | Not Found                               |
 | `422` | Unprocessable Entity (validation error) |
 | `500` | Internal Server Error                   |
+
+### Authentication Error Responses
+
+The backend provides user-friendly auth error messages based on the failure type:
+
+```json
+// Token expired
+{ "detail": "Token expired \u2014 please sign in again" }
+
+// Invalid or tampered token
+{ "detail": "Invalid token \u2014 please sign in again" }
+
+// Generic auth failure
+{ "detail": "Authentication failed \u2014 please sign in again" }
+```
 
 ### Example Error Response
 

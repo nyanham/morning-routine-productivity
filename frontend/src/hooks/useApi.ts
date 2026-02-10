@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { api, ApiError } from '@/lib/api';
+import { api, getApiErrorMessage } from '@/lib/api';
 import type {
   MorningRoutine,
   ProductivityEntry,
@@ -72,7 +72,7 @@ export function useCurrentUser() {
       const data = await api.users.me(token);
       state.setData(data);
     } catch (err) {
-      state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch user');
+      state.setError(getApiErrorMessage(err, 'Failed to fetch user'));
     }
   }, [getAccessToken]);
 
@@ -92,7 +92,7 @@ export function useUserProfile() {
       const data = await api.users.getProfile(token);
       state.setData(data);
     } catch (err) {
-      state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch profile');
+      state.setError(getApiErrorMessage(err, 'Failed to fetch profile'));
     }
   }, [getAccessToken]);
 
@@ -124,7 +124,7 @@ export function useUserSettings() {
       const data = await api.users.getSettings(token);
       state.setData(data);
     } catch (err) {
-      state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch settings');
+      state.setError(getApiErrorMessage(err, 'Failed to fetch settings'));
     }
   }, [getAccessToken]);
 
@@ -157,7 +157,7 @@ export function useUserGoals() {
         const data = await api.users.listGoals(token, activeOnly);
         state.setData(data);
       } catch (err) {
-        state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch goals');
+        state.setError(getApiErrorMessage(err, 'Failed to fetch goals'));
       }
     },
     [getAccessToken]
@@ -226,7 +226,7 @@ export function useRoutines() {
         const data = await api.routines.list(token, params);
         state.setData(data);
       } catch (err) {
-        state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch routines');
+        state.setError(getApiErrorMessage(err, 'Failed to fetch routines'));
       }
     },
     [getAccessToken]
@@ -290,7 +290,7 @@ export function useProductivity() {
         const data = await api.productivity.list(token, params);
         state.setData(data);
       } catch (err) {
-        state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch productivity data');
+        state.setError(getApiErrorMessage(err, 'Failed to fetch productivity data'));
       }
     },
     [getAccessToken]
@@ -347,7 +347,7 @@ export function useAnalyticsSummary() {
         const data = await api.analytics.summary(token, startDate, endDate);
         state.setData(data);
       } catch (err) {
-        state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch summary');
+        state.setError(getApiErrorMessage(err, 'Failed to fetch summary'));
       }
     },
     [getAccessToken]
@@ -370,7 +370,7 @@ export function useChartData() {
         const data = await api.analytics.charts(token, startDate, endDate);
         state.setData(data);
       } catch (err) {
-        state.setError(err instanceof ApiError ? err.detail : 'Failed to fetch chart data');
+        state.setError(getApiErrorMessage(err, 'Failed to fetch chart data'));
       }
     },
     [getAccessToken]
@@ -401,7 +401,7 @@ export function useCSVImport() {
         state.setData(result);
         return result;
       } catch (err) {
-        const message = err instanceof ApiError ? err.detail : 'Import failed';
+        const message = getApiErrorMessage(err, 'Import failed');
         state.setError(message);
         throw err;
       }

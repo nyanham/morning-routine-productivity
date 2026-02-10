@@ -52,8 +52,10 @@ flowchart TB
         Hooks["Hooks<br/>(Logic)"]
     end
 
-    subgraph Backend["⚙️ FASTAPI BACKEND (AWS)"]
+    subgraph Backend["⚙️ FASTAPI BACKEND (AWS Lambda)"]
         direction LR
+        APIGW["API Gateway<br/>(HTTP API V2)"]
+        Lambda["Lambda<br/>(Mangum)"]
         APIRoutes["API Routes"]
         Services["Services<br/>(Logic)"]
     end
@@ -65,9 +67,12 @@ flowchart TB
     end
 
     User --> Frontend
-    Frontend -->|"API Calls"| Backend
+    Frontend -->|"API Calls"| APIGW
+    APIGW --> Lambda
+    Lambda --> APIRoutes
+    APIRoutes --> Services
     Frontend -->|"Direct Auth"| Auth
-    Backend <--> PostgreSQL
+    Services <--> PostgreSQL
     Auth --> PostgreSQL
 ```
 
@@ -95,13 +100,23 @@ flowchart TB
 - All endpoints require JWT authentication (except health checks)
 - Paginated list responses
 - Pydantic models for validation
+- Deployed to AWS Lambda via SAM + Mangum adapter
 
 ### 4. Frontend Architecture
 
 - Next.js App Router for routing
 - React Context for global state (auth)
 - Custom hooks for API interactions
+- `getApiErrorMessage()` helper for robust error extraction
 - Tailwind CSS for styling
+
+### 5. Deployment Architecture
+
+- **Frontend** → Vercel (SSR/SSG, CDN, Edge Functions)
+- **Backend** → AWS Lambda + API Gateway HTTP API (serverless, auto-scaling)
+- **Database** → Supabase (managed PostgreSQL + Auth)
+- **IaC** → AWS SAM (`template.yaml` + `samconfig.toml`)
+- **Observability** → CloudWatch Logs (structured logging with 14-day retention)
 
 ---
 

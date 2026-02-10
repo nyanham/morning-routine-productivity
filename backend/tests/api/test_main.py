@@ -121,3 +121,34 @@ class TestExceptionHandler:
         assert response.status_code == 500
         assert response.headers["content-type"] == "application/json"
         assert response.json() == {"detail": "Internal server error"}
+
+
+class TestCorsOriginsParsing:
+    """Tests for Settings.get_cors_origins_list() parsing logic."""
+
+    def test_single_origin(self) -> None:
+        """A plain URL string returns a single-element list."""
+        s = Settings(
+            supabase_url="https://test.supabase.co",
+            supabase_key="test-key",
+            cors_origins="http://localhost:3000",
+        )
+        assert s.get_cors_origins_list() == ["http://localhost:3000"]
+
+    def test_comma_separated_origins(self) -> None:
+        """Comma-separated origins are split into a list."""
+        s = Settings(
+            supabase_url="https://test.supabase.co",
+            supabase_key="test-key",
+            cors_origins="http://localhost:3000,https://example.com",
+        )
+        assert s.get_cors_origins_list() == ["http://localhost:3000", "https://example.com"]
+
+    def test_json_array_origins(self) -> None:
+        """A JSON array string is parsed into a list."""
+        s = Settings(
+            supabase_url="https://test.supabase.co",
+            supabase_key="test-key",
+            cors_origins='["http://localhost:3000","https://example.com"]',
+        )
+        assert s.get_cors_origins_list() == ["http://localhost:3000", "https://example.com"]

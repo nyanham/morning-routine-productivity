@@ -562,6 +562,8 @@ function useAsyncState<T>(initialData: T | null = null) {
 #### useRoutines
 
 ```tsx
+import { getApiErrorMessage } from '@/lib/api';
+
 export function useRoutines() {
   const { getAccessToken } = useAuthContext();
   const state = useAsyncState<PaginatedResponse<MorningRoutine>>();
@@ -582,7 +584,7 @@ export function useRoutines() {
         state.setData(data);
       } catch (err) {
         state.setError(
-          err instanceof ApiError ? err.detail : "Failed to fetch",
+          getApiErrorMessage(err, "Failed to fetch routines"),
         );
       }
     },
@@ -676,7 +678,7 @@ export function useAnalyticsSummary() {
         state.setData(data);
       } catch (err) {
         state.setError(
-          err instanceof ApiError ? err.detail : "Failed to fetch",
+          getApiErrorMessage(err, "Failed to fetch analytics"),
         );
       }
     },
@@ -705,7 +707,7 @@ export function useChartData() {
         state.setData(data);
       } catch (err) {
         state.setError(
-          err instanceof ApiError ? err.detail : "Failed to fetch",
+          getApiErrorMessage(err, "Failed to fetch chart data"),
         );
       }
     },
@@ -734,7 +736,31 @@ export class ApiError extends Error {
     super(detail);
     this.status = status;
     this.detail = detail;
+    this.name = "ApiError";
   }
+}
+
+/**
+ * Safely extract an error message from any caught value.
+ *
+ * Uses the `name` property instead of `instanceof` because
+ * Next.js Turbopack/webpack can duplicate class identities
+ * across chunk boundaries, making `instanceof` unreliable.
+ */
+export function getApiErrorMessage(err: unknown, fallback: string): string {
+  if (
+    err &&
+    typeof err === "object" &&
+    "name" in err &&
+    (err as { name: string }).name === "ApiError" &&
+    "detail" in err
+  ) {
+    return (err as ApiError).detail;
+  }
+  if (err instanceof Error) {
+    return err.message;
+  }
+  return fallback;
 }
 
 // Generic fetch wrapper
@@ -756,15 +782,24 @@ export async function apiClient<T>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}${endpoint}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch (err) {
+    // Network error, CORS blocked, or similar — fetch() itself threw.
+    console.error(`[API] ${method} ${endpoint} network error:`, err);
+    throw err;
+  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(response.status, error.detail || "Request failed");
+    const detail = error.detail || `API request failed (${response.status})`;
+    console.error(`[API] ${method} ${endpoint} → ${response.status}:`, detail);
+    throw new ApiError(response.status, detail);
   }
 
   if (response.status === 204) {

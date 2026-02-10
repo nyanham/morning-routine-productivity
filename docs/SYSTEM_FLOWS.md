@@ -585,7 +585,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     setSuccess(true);
     router.push("/dashboard");
   } catch (err) {
-    setError(err instanceof ApiError ? err.detail : "Failed to save");
+    setError(getApiErrorMessage(err, "Failed to save"));
   } finally {
     setSaving(false);
   }
@@ -641,7 +641,9 @@ export const api = {
 };
 
 // Actual HTTP request sent:
-// POST http://localhost:8000/api/routines
+// POST {NEXT_PUBLIC_API_URL}/api/routines
+// (locally: http://localhost:8000/api/routines)
+// (Lambda:  https://<api-id>.execute-api.<region>.amazonaws.com/development/api/routines)
 // Headers:
 //   Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 //   Content-Type: application/json
@@ -671,14 +673,23 @@ async def get_current_user(
 ) -> dict:
     # credentials.credentials = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
+    token = credentials.credentials
+    logger.info(
+        "AUTH validating token: length=%d, prefix=%s...",
+        len(token),
+        token[:20] if len(token) > 20 else token,
+    )
+
     # Verify JWT with Supabase
-    user = supabase.auth.get_user(credentials.credentials)
+    user = supabase.auth.get_user(token)
 
     # user.user = {
     #   id: "550e8400-e29b-41d4-a716-446655440000",
     #   email: "john@example.com",
     #   ...
     # }
+
+    logger.info("AUTH success: user_id=%s, email=%s", user.user.id, user.user.email)
 
     return {
         "id": "550e8400-e29b-41d4-a716-446655440000",
