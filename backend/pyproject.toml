@@ -14,7 +14,7 @@ supabase = "^2.27.3"
 pydantic = {extras = ["email"], version = "^2.10.0"}
 pydantic-settings = "^2.6.0"
 python-multipart = "^0.0.22"
-pandas = "^2.2.3"
+pandas = "^3.0.0"
 kagglehub = "^0.4.3"
 mangum = "^0.21.0"
 
