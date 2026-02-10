@@ -147,12 +147,14 @@ pre-commit install --hook-type commit-msg
 
 ### Backend Environment Variables
 
-| Variable       | Required | Description                   |
-| -------------- | -------- | ----------------------------- |
-| `SUPABASE_URL` | ✅       | Supabase project URL          |
-| `SUPABASE_KEY` | ✅       | Supabase service role key     |
-| `ENVIRONMENT`  | ⚪       | `development` or `production` |
-| `DEBUG`        | ⚪       | Enable debug mode             |
+| Variable            | Required | Description                                                       |
+| ------------------- | -------- | ----------------------------------------------------------------- |
+| `SUPABASE_URL`      | ✅       | Supabase project URL                                              |
+| `SUPABASE_KEY`      | ✅       | Supabase service role key                                         |
+| `ENVIRONMENT`       | ⚪       | `development`, `staging`, or `production`                         |
+| `DEBUG`             | ⚪       | Enable debug mode                                                 |
+| `CORS_ORIGINS`      | ⚪       | Allowed origins (comma-separated or JSON array). Default: `http://localhost:3000` |
+| `CORS_ORIGIN_REGEX` | ⚪       | Regex for wildcard origins (e.g. `https://.*\.vercel\.app`)      |
 
 ### Environment Files
 
@@ -189,12 +191,13 @@ npm run dev
 
 ### Access Points
 
-| Service            | URL                         |
-| ------------------ | --------------------------- |
-| Frontend           | http://localhost:3000       |
-| Backend API        | http://localhost:8000       |
-| API Docs (Swagger) | http://localhost:8000/docs  |
-| API Docs (ReDoc)   | http://localhost:8000/redoc |
+| Service            | URL                                                                       |
+| ------------------ | ------------------------------------------------------------------------- |
+| Frontend           | http://localhost:3000                                                     |
+| Backend API        | http://localhost:8000                                                     |
+| API Docs (Swagger) | http://localhost:8000/docs                                                |
+| API Docs (ReDoc)   | http://localhost:8000/redoc                                               |
+| Lambda API (Dev)   | `https://<api-id>.execute-api.<region>.amazonaws.com/development`         |
 
 ### Docker Alternative
 
@@ -655,18 +658,62 @@ curl -sSL https://install.python-poetry.org | python3 -
 
 #### "CORS error" in browser
 
-Ensure backend allows frontend origin:
+CORS is handled by FastAPI’s `CORSMiddleware`, not API Gateway.
+The `CORS_ORIGINS` env var accepts comma-separated strings or JSON arrays:
+
+```bash
+# Comma-separated (simpler)
+CORS_ORIGINS=http://localhost:3000,https://your-app.vercel.app
+
+# JSON array (also supported)
+CORS_ORIGINS=["http://localhost:3000","https://your-app.vercel.app"]
+```
+
+For Vercel preview deploys, set `CORS_ORIGIN_REGEX`:
+
+```bash
+CORS_ORIGIN_REGEX=https://.*\.vercel\.app
+```
+
+Verify CORS is working with a preflight request:
+
+```bash
+curl -X OPTIONS https://<api-url>/api/routines \
+  -H "Origin: http://localhost:3000" \
+  -H "Access-Control-Request-Method: GET" \
+  -H "Access-Control-Request-Headers: Authorization" -v
+```
+
+#### Lambda-specific issues
+
+**"Internal Server Error" on Lambda:**
+
+```bash
+# Tail Lambda logs in real time
+sam logs -n MorningRoutineFunction --stack-name morning-routine-api-dev --tail
+
+# Or view in CloudWatch
+aws logs tail /aws/lambda/morning-routine-api-development --follow
+```
+
+**Routes return 404 on Lambda:**
+
+Mangum must strip the API Gateway stage prefix. Check that `api_gateway_base_path`
+is set correctly in `app/main.py`:
 
 ```python
-# backend/app/main.py
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+handler = Mangum(
+    app,
+    lifespan="off",
+    api_gateway_base_path=f"/{settings.environment}",  # e.g. "/development"
 )
 ```
+
+**Cold starts:**
+
+- Lambda allocates 256 MB memory and 30 s timeout by default
+- First request after idle may take 2–4 seconds (cold start)
+- Subsequent requests are fast (warm invocations)
 
 #### "Pre-commit hooks failing"
 
@@ -689,25 +736,39 @@ git commit --no-verify -m "message"
 
 ### Debug Mode
 
-**Backend:**
+**Backend (Lambda):**
+
+The backend uses a named logger (`morning_routine`) that outputs to CloudWatch.
+To view logs:
+
+```bash
+# Real-time log tailing
+sam logs -n MorningRoutineFunction --stack-name morning-routine-api-dev --tail
+
+# Or via AWS CLI
+aws logs tail /aws/lambda/morning-routine-api-development --follow
+```
+
+The logger emits structured events:
+- `App initializing` — startup config (environment, CORS origins)
+- `REQ`/`RES` — every request with method, path, origin, status, latency
+- `AUTH` — token validation (prefix, length, success/failure)
+- `Unhandled exception` — full traceback
+
+**Backend (Local):**
 
 ```python
-# Enable debug logging
-import logging
-logging.basicConfig(level=logging.DEBUG)
-
 # Or in .env
 DEBUG=true
 ```
 
 **Frontend:**
 
-```tsx
-// Add to component
-console.log("Debug:", data);
+The API client logs errors to `console.error` automatically:
 
-// Or use React DevTools
-// Install React DevTools browser extension
+```
+[API] GET /api/routines → 401: Invalid token — please sign in again
+[API] POST /api/routines network error: TypeError: Failed to fetch
 ```
 
 ---
