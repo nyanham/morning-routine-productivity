@@ -13,11 +13,14 @@ from app.core.config import get_settings
 # ---------------------------------------------------------------------------
 # Structured logging - outputs to CloudWatch in Lambda
 # ---------------------------------------------------------------------------
+# Lambda pre-configures the root logger, so basicConfig is a no-op there.
+# Instead, we configure our named logger directly.
 logger = logging.getLogger("morning_routine")
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(name)s %(message)s",
-)
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    _handler = logging.StreamHandler()
+    _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s"))
+    logger.addHandler(_handler)
 
 settings = get_settings()
 logger.info(
@@ -135,4 +138,10 @@ async def health():
 # ---------------------------------------------------------------------------
 # lifespan="off" because ASGI startup/shutdown events are not reliably
 # supported in the Lambda execution model (no persistent process).
-handler = Mangum(app, lifespan="off")
+# api_gateway_base_path strips the stage prefix (e.g. /development) from
+# the request path so FastAPI routes match correctly.
+handler = Mangum(
+    app,
+    lifespan="off",
+    api_gateway_base_path=f"/{settings.environment}",
+)
