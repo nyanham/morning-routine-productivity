@@ -1,6 +1,6 @@
 {
   "name": "morning-routine-frontend",
-  "version": "0.1.0",
+  "version": "0.2.0-beta",
   "private": true,
   "engines": {
     "node": ">=22.0.0",

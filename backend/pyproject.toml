@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "morning-routine-backend"
-version = "0.1.0"
+version = "0.2.0b0"
 description = "FastAPI backend for Morning Routine & Productivity Tracker"
 authors = ["Rafael Jyo Kondo <rafaeljkey@gmail.com>"]
 package-mode = false
