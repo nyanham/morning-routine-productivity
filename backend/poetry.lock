@@ -762,14 +762,14 @@ files = [
 
 [[package]]
 name = "kagglehub"
-version = "0.4.3"
+version = "1.0.0"
 description = "Access Kaggle resources anywhere"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "kagglehub-0.4.3-py3-none-any.whl", hash = "sha256:ff17b4b5c873898995ef1e02c90083f7f60dd82080aca20e98b47ac5362c7128"},
-    {file = "kagglehub-0.4.3.tar.gz", hash = "sha256:7969ae7574f5524dfa0f4fdb362229e1187cd5ea0dc0ef6e7ea5ca23478877ee"},
+    {file = "kagglehub-1.0.0-py3-none-any.whl", hash = "sha256:9397f0c6af04cdefa6fa8734c31b42863e8741aad5832c6f3af52f1ecf8fe509"},
+    {file = "kagglehub-1.0.0.tar.gz", hash = "sha256:21dc25d0279e2071f8b97cd9e1393d003ea5e054ea48f1e8139a39e4771e9a8d"},
 ]
 
 [package.dependencies]
@@ -3141,4 +3141,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "06b862723ad62b2741f4cad294a1c709b1960e4fa7926a66537eba3ec6f38665"
+content-hash = "2810f9a930738f6a4086595f59408fb0f116dedbce84d5d134d24046a699f940"
