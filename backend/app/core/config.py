@@ -1,7 +1,7 @@
 import json
 from functools import lru_cache
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -45,11 +45,12 @@ class Settings(BaseSettings):
                 pass
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        # In Lambda, env vars are set directly; .env file won't exist and that's fine
-        extra = "ignore"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        # In Lambda, env vars are set directly; .env file won't exist and that's fine.
+        extra="ignore",
+    )
 
 
 @lru_cache(128)
