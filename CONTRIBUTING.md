@@ -13,7 +13,8 @@ Thank you for your interest in contributing! This document provides guidelines a
 
 ## Code of Conduct
 
-Please be respectful and constructive in all interactions. We're all here to learn and build something great together.
+Please be respectful and constructive in all interactions. See the
+[Code of Conduct](CODE_OF_CONDUCT.md) for full expectations.
 
 ## Getting Started
 
