@@ -2,6 +2,7 @@
 name = "cz_conventional_commits"
 tag_format = "v$version"
 version_scheme = "semver"
-version_provider = "pep621"
+version_provider = "commitizen"
+version = "0.2.0b0"
 update_changelog_on_bump = true
 major_version_zero = true
