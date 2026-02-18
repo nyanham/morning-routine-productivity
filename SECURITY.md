@@ -4,8 +4,8 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.x.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| 0.1.x   | :white_check_mark: |
+| < 0.1   | :x:                |
 
 ## Reporting a Vulnerability
 
@@ -18,7 +18,7 @@ We take security seriously. If you discover a security vulnerability, please fol
 
 ### DO
 
-1. **Email us directly** at [your-email@example.com] with:
+1. **Email us directly** at [rafaeljkey@gmail.com] with:
    - Description of the vulnerability
    - Steps to reproduce
    - Potential impact

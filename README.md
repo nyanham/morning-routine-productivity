@@ -5,6 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Python](https://img.shields.io/badge/Python-3.12-green.svg)](https://www.python.org/)
+[![AWS Lambda](https://img.shields.io/badge/AWS-Lambda-FF9900?logo=awslambda&logoColor=white)](https://aws.amazon.com/lambda/)
+[![SAM](https://img.shields.io/badge/AWS-SAM-FF9900?logo=amazonaws)](https://docs.aws.amazon.com/serverless-application-model/)
 
 A full-stack application for tracking morning routines and analyzing productivity data with beautiful visualizations.
 
@@ -29,8 +31,6 @@ _Visualize trends and correlations between habits and productivity_
 
 </div>
 
-> **Note:** Screenshots will be added once the UI is finalized. You can see the live demo at the deployment URL.
-
 ## ✨ Features
 
 - 📊 **Interactive Dashboard** - Visualize your productivity trends with Recharts
@@ -42,14 +42,15 @@ _Visualize trends and correlations between habits and productivity_
 
 ## 🛠️ Tech Stack
 
-| Layer          | Technology                                     |
-| -------------- | ---------------------------------------------- |
-| **Frontend**   | Next.js 15, React 19, TypeScript, Tailwind CSS |
-| **Backend**    | FastAPI, Python 3.12, Pydantic                 |
-| **Database**   | Supabase (PostgreSQL)                          |
-| **Auth**       | Supabase Auth (JWT)                            |
-| **Charts**     | Recharts                                       |
-| **Deployment** | Vercel (Frontend), AWS Lambda (Backend)        |
+| Layer          | Technology                                            |
+| -------------- | ----------------------------------------------------- |
+| **Frontend**   | Next.js 16, React 19, TypeScript 5.7, Tailwind CSS    |
+| **Backend**    | FastAPI, Python 3.12, Pydantic 2                      |
+| **Database**   | Supabase (PostgreSQL)                                 |
+| **Auth**       | Supabase Auth (JWT)                                   |
+| **Charts**     | Recharts                                              |
+| **Deployment** | Vercel (Frontend), AWS Lambda + API Gateway (Backend) |
+| **IaC**        | AWS SAM (Serverless Application Model)                |
 
 ## 📁 Project Structure
 
@@ -74,7 +75,10 @@ morning-routine-productivity/
 │   │   ├── core/            # Config & auth
 │   │   ├── models/          # Pydantic models
 │   │   └── services/        # Business logic
-│   └── scripts/             # Utility scripts
+│   ├── scripts/             # Utility scripts
+│   ├── template.yaml        # AWS SAM template (IaC)
+│   ├── samconfig.toml       # SAM deploy config
+│   └── requirements.txt     # Lambda dependencies
 ├── database/                 # SQL migrations
 ├── docs/                     # Documentation
 └── docker-compose.yml        # Local development
@@ -118,7 +122,7 @@ cp frontend/.env.example frontend/.env.local
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-NEXT_PUBLIC_API_URL=http://localhost:8000/api
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 ### 4. Set Up Backend
@@ -185,6 +189,15 @@ docker-compose logs -f
 # Stop services
 docker-compose down
 ```
+
+## 📚 Documentation
+
+Start here for deeper guides and architecture details:
+
+- [Quickstart](docs/00-Overview/02-Quickstart.md) — run the project in five minutes
+- [Architecture](docs/02-Architecture/01-System-Overview.md) — system design overview
+- [API Reference](docs/03-API/01-API-Overview.md) — REST endpoints and auth
+- [Contributing](docs/09-Contributing/02-Contributing-Guide.md) — how to open a PR
 
 ## 📊 API Documentation
 
@@ -282,9 +295,15 @@ poetry run ruff format .  # Formatting
 
 ### Backend (AWS Lambda via SAM)
 
-The backend deploys to AWS Lambda using the [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) and the Mangum adapter.
+The backend runs on **AWS Lambda** behind an **API Gateway HTTP API**, using
+[Mangum](https://mangum.io/) to adapt FastAPI for the Lambda runtime.
+Infrastructure is defined as code with [AWS SAM](https://docs.aws.amazon.com/serverless-application-model/).
 
-**Prerequisites:** AWS CLI configured, SAM CLI installed.
+```
+Client → API Gateway (HTTP API) → Lambda (FastAPI + Mangum) → Supabase
+```
+
+**Prerequisites:** [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) configured, [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) installed.
 
 ```bash
 cd backend
@@ -305,14 +324,26 @@ sam deploy --config-env prod
 
 **Required environment variables** (set via SAM parameters or AWS console):
 
-| Variable       | Description                               |
-| -------------- | ----------------------------------------- |
-| `SUPABASE_URL` | Supabase project URL                      |
-| `SUPABASE_KEY` | Supabase service role key                 |
-| `CORS_ORIGINS` | Comma-separated allowed origins           |
-| `ENVIRONMENT`  | `development`, `staging`, or `production` |
+| Variable            | Description                                               |
+| ------------------- | --------------------------------------------------------- |
+| `SUPABASE_URL`      | Supabase project URL                                      |
+| `SUPABASE_KEY`      | Supabase service role key                                 |
+| `CORS_ORIGINS`      | Comma-separated or JSON array of allowed CORS origins     |
+| `CORS_ORIGIN_REGEX` | Optional regex for wildcard origins (e.g. Vercel preview) |
+| `ENVIRONMENT`       | `development`, `staging`, or `production`                 |
 
-See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the full deployment guide.
+**Key files:**
+
+| File                       | Purpose                                                    |
+| -------------------------- | ---------------------------------------------------------- |
+| `backend/template.yaml`    | SAM template — Lambda, API Gateway, CloudWatch logs        |
+| `backend/samconfig.toml`   | Deploy settings per environment (dev, staging, prod)       |
+| `backend/requirements.txt` | Production deps for Lambda (keep in sync with poetry lock) |
+| `backend/.samignore`       | Files excluded from the Lambda deployment package          |
+| `backend/app/main.py`      | FastAPI app + `handler = Mangum(app)` Lambda entry point   |
+
+See [Deployment Guide](docs/07-Operations/01-Deployment.md) for the full deployment guide, including
+troubleshooting CORS, logging, and environment management.
 
 ### Other Backend Options
 
@@ -322,6 +353,11 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the full deployment guide.
 ## 🤝 Contributing
 
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
+Please review the [Code of Conduct](CODE_OF_CONDUCT.md) before participating.
+
+## 🔒 Security
+
+Please report security issues privately via [SECURITY.md](SECURITY.md).
 
 ## 📄 License
 

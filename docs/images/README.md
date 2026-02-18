@@ -2,12 +2,15 @@
 
 Place your screenshots and images in this folder.
 
-Recommended images:
+Recommended images (current set):
 
-- `dashboard-preview.png` - Main dashboard screenshot
-- `login-page.png` - Login page
+- `dashboard.png` - Main dashboard screenshot
+- `analytics.png` - Analytics and charts view
+- `entry-form.png` - Manual entry form
 - `import-csv.png` - CSV import feature
-- `manual-entry.png` - Manual entry form
+- `login-page.png` - Login page
+
+If you add new screenshots, prefer descriptive names and update this list.
 
 ## Taking Screenshots
 

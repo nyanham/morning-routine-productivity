@@ -1,74 +1,73 @@
-# Production dependencies -- pinned from poetry.lock
-# This file is used by AWS SAM for Lambda package builds.
-# To regenerate: poetry export -f requirements.txt --without-hashes --only main
-#
-# Excluded from Lambda deployment:
-#   uvicorn, uvloop, httptools, watchfiles -- Mangum replaces uvicorn on Lambda
-#   kagglehub, kagglesdk -- data seeding only, not needed in production
-#   colorama -- Windows-only terminal colors
-annotated-doc==0.0.4
-annotated-types==0.7.0
-anyio==4.12.1
-cachetools==7.0.0
-certifi==2026.1.4
-cffi==2.0.0
-charset-normalizer==3.4.4
-click==8.3.1
-cryptography==46.0.4
-deprecation==2.1.0
-dnspython==2.8.0
-email-validator==2.3.0
-fastapi==0.128.0
-fsspec==2026.2.0
-h11==0.16.0
-h2==4.3.0
-hpack==4.1.0
-httpcore==1.0.9
-httpx==0.28.1
-hyperframe==6.1.0
-idna==3.11
-mangum==0.21.0
-markdown-it-py==4.0.0
-mdurl==0.1.2
-mmh3==5.2.0
-multidict==6.7.1
-numpy==2.4.2
-packaging==26.0
-pandas==2.3.3
-postgrest==2.27.3
-propcache==0.4.1
-protobuf==6.33.5
-pycparser==3.0
-pydantic==2.12.5
-pydantic-core==2.41.5
-pydantic-settings==2.12.0
-pygments==2.19.2
-pyiceberg==0.10.0
-pyjwt==2.11.0
-pyparsing==3.3.2
-pyroaring==1.0.3
-python-dateutil==2.9.0.post0
-python-dotenv==1.2.1
-python-multipart==0.0.22
-pytz==2025.2
-pyyaml==6.0.3
-realtime==2.27.3
-requests==2.32.5
-rich==14.3.2
-six==1.17.0
-sortedcontainers==2.4.0
-starlette==0.52.1
-storage3==2.27.3
-strenum==0.4.15
-strictyaml==1.7.3
-supabase==2.27.2
-supabase-auth==2.27.3
-supabase-functions==2.27.3
-tenacity==9.1.4
-tqdm==4.67.3
-typing-extensions==4.15.0
-typing-inspection==0.4.2
-tzdata==2025.3
-urllib3==2.6.3
-websockets==16.0
-yarl==1.22.0
+annotated-doc==0.0.4 ; python_version >= "3.12" and python_version < "4.0"
+annotated-types==0.7.0 ; python_version >= "3.12" and python_version < "4.0"
+anyio==4.12.1 ; python_version >= "3.12" and python_version < "4.0"
+cachetools==6.2.6 ; python_version >= "3.12" and python_version < "4.0"
+certifi==2026.1.4 ; python_version >= "3.12" and python_version < "4.0"
+cffi==2.0.0 ; python_version >= "3.12" and python_version < "4.0" and platform_python_implementation != "PyPy"
+charset-normalizer==3.4.4 ; python_version >= "3.12" and python_version < "4.0"
+click==8.3.1 ; python_version >= "3.12" and python_version < "4.0"
+colorama==0.4.6 ; python_version >= "3.12" and python_version < "4.0" and (platform_system == "Windows" or sys_platform == "win32")
+cryptography==46.0.5 ; python_version >= "3.12" and python_version < "4.0"
+deprecation==2.1.0 ; python_version >= "3.12" and python_version < "4.0"
+dnspython==2.8.0 ; python_version >= "3.12" and python_version < "4.0"
+email-validator==2.3.0 ; python_version >= "3.12" and python_version < "4.0"
+fastapi==0.128.6 ; python_version >= "3.12" and python_version < "4.0"
+fsspec==2026.1.0 ; python_version >= "3.12" and python_version < "4.0"
+h11==0.16.0 ; python_version >= "3.12" and python_version < "4.0"
+h2==4.3.0 ; python_version >= "3.12" and python_version < "4.0"
+hpack==4.1.0 ; python_version >= "3.12" and python_version < "4.0"
+httpcore==1.0.9 ; python_version >= "3.12" and python_version < "4.0"
+httptools==0.7.1 ; python_version >= "3.12" and python_version < "4.0"
+httpx==0.28.1 ; python_version >= "3.12" and python_version < "4.0"
+hyperframe==6.1.0 ; python_version >= "3.12" and python_version < "4.0"
+idna==3.11 ; python_version >= "3.12" and python_version < "4.0"
+kagglehub==0.4.3 ; python_version >= "3.12" and python_version < "4.0"
+kagglesdk==0.1.15 ; python_version >= "3.12" and python_version < "4.0"
+mangum==0.21.0 ; python_version >= "3.12" and python_version < "4.0"
+markdown-it-py==4.0.0 ; python_version >= "3.12" and python_version < "4.0"
+mdurl==0.1.2 ; python_version >= "3.12" and python_version < "4.0"
+mmh3==5.2.0 ; python_version >= "3.12" and python_version < "4.0"
+multidict==6.7.1 ; python_version >= "3.12" and python_version < "4.0"
+numpy==2.4.1 ; python_version >= "3.12" and python_version < "4.0"
+packaging==26.0 ; python_version >= "3.12" and python_version < "4.0"
+pandas==2.3.3 ; python_version >= "3.12" and python_version < "4.0"
+postgrest==2.27.3 ; python_version >= "3.12" and python_version < "4.0"
+propcache==0.4.1 ; python_version >= "3.12" and python_version < "4.0"
+protobuf==6.33.5 ; python_version >= "3.12" and python_version < "4.0"
+pycparser==3.0 ; python_version >= "3.12" and python_version < "4.0" and platform_python_implementation != "PyPy" and implementation_name != "PyPy"
+pydantic-core==2.41.5 ; python_version >= "3.12" and python_version < "4.0"
+pydantic-settings==2.12.0 ; python_version >= "3.12" and python_version < "4.0"
+pydantic==2.12.5 ; python_version >= "3.12" and python_version < "4.0"
+pygments==2.19.2 ; python_version >= "3.12" and python_version < "4.0"
+pyiceberg==0.10.0 ; python_version >= "3.12" and python_version < "4.0"
+pyjwt==2.10.1 ; python_version >= "3.12" and python_version < "4.0"
+pyparsing==3.3.2 ; python_version >= "3.12" and python_version < "4.0"
+pyroaring==1.0.3 ; python_version >= "3.12" and python_version < "4.0"
+python-dateutil==2.9.0.post0 ; python_version >= "3.12" and python_version < "4.0"
+python-dotenv==1.2.1 ; python_version >= "3.12" and python_version < "4.0"
+python-multipart==0.0.22 ; python_version >= "3.12" and python_version < "4.0"
+pytz==2025.2 ; python_version >= "3.12" and python_version < "4.0"
+pyyaml==6.0.3 ; python_version >= "3.12" and python_version < "4.0"
+realtime==2.27.3 ; python_version >= "3.12" and python_version < "4.0"
+requests==2.32.5 ; python_version >= "3.12" and python_version < "4.0"
+rich==14.3.1 ; python_version >= "3.12" and python_version < "4.0"
+six==1.17.0 ; python_version >= "3.12" and python_version < "4.0"
+sortedcontainers==2.4.0 ; python_version >= "3.12" and python_version < "4.0"
+starlette==0.50.0 ; python_version >= "3.12" and python_version < "4.0"
+storage3==2.27.3 ; python_version >= "3.12" and python_version < "4.0"
+strenum==0.4.15 ; python_version >= "3.12" and python_version < "4.0"
+strictyaml==1.7.3 ; python_version >= "3.12" and python_version < "4.0"
+supabase-auth==2.27.3 ; python_version >= "3.12" and python_version < "4.0"
+supabase-functions==2.27.3 ; python_version >= "3.12" and python_version < "4.0"
+supabase==2.27.3 ; python_version >= "3.12" and python_version < "4.0"
+tenacity==9.1.2 ; python_version >= "3.12" and python_version < "4.0"
+tqdm==4.67.1 ; python_version >= "3.12" and python_version < "4.0"
+typing-extensions==4.15.0 ; python_version >= "3.12" and python_version < "4.0"
+typing-inspection==0.4.2 ; python_version >= "3.12" and python_version < "4.0"
+tzdata==2025.3 ; python_version >= "3.12" and python_version < "4.0"
+urllib3==2.6.3 ; python_version >= "3.12" and python_version < "4.0"
+uvicorn==0.40.0 ; python_version >= "3.12" and python_version < "4.0"
+uvloop==0.22.1 ; python_version >= "3.12" and python_version < "4.0" and sys_platform != "win32" and sys_platform != "cygwin" and platform_python_implementation != "PyPy"
+watchfiles==1.1.1 ; python_version >= "3.12" and python_version < "4.0"
+websockets==15.0.1 ; python_version >= "3.12" and python_version < "4.0"
+yarl==1.22.0 ; python_version >= "3.12" and python_version < "4.0"

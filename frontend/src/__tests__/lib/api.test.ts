@@ -147,7 +147,7 @@ describe('apiClient', () => {
 
     await expect(apiClient('/test')).rejects.toMatchObject({
       status: 500,
-      detail: 'API request failed',
+      detail: 'API request failed (500)',
     });
   });
 
@@ -162,7 +162,7 @@ describe('apiClient', () => {
 
     await expect(apiClient('/test')).rejects.toMatchObject({
       status: 500,
-      detail: 'API request failed',
+      detail: 'API request failed (500)',
     });
   });
 
