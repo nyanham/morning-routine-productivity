@@ -7,7 +7,7 @@
 
 ## Backend Tools
 
-### Ruff  ELinter & Formatter
+### Ruff  — Linter & Formatter
 
 Ruff replaces Flake8, isort, and Black with a single, fast Rust-based tool.
 
@@ -32,7 +32,7 @@ select = [
   "RUF",  # ruff-specific rules
 ]
 ignore = [
-  "E501",    # Line too long  Eformatter handles it
+  "E501",    # Line too long  — formatter handles it
   "B008",    # Function call in default argument (FastAPI Depends pattern)
   "TCH001",  # Move import into TYPE_CHECKING block
   "TCH002",  # Move third-party import into TYPE_CHECKING block
@@ -60,7 +60,7 @@ ruff format .             # Format all files
 ruff format . --check     # Verify formatting (CI)
 ```
 
-### mypy  EStatic Type Checking
+### mypy  — Static Type Checking
 
 ```toml
 [tool.mypy]
@@ -98,7 +98,7 @@ mypy app/              # Check application code
 mypy app/ tests/       # Check everything
 ```
 
-### Bandit  ESecurity Scanning
+### Bandit  — Security Scanning
 
 ```toml
 [tool.bandit]
@@ -193,7 +193,7 @@ flowchart LR
 | Check      | Backend                  | Frontend              |
 | ---------- | ------------------------ | --------------------- |
 | Lint       | `ruff check .`           | `npx next lint`       |
-| Format     | `ruff format . --check`  |  E(Prettier optional) |
+| Format     | `ruff format . --check`  |  — (Prettier optional) |
 | Type-check | `mypy app/`              | `npx tsc --noEmit`    |
 | Security   | `bandit -r app/` + Trivy | Trivy                 |
 | Tests      | `pytest`                 | `npm test`            |

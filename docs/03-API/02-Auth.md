@@ -111,8 +111,8 @@ The authenticated client calls `client.postgrest.auth(access_token)`, which sets
 
 | Endpoint      | Why                                              |
 | ------------- | ------------------------------------------------ |
-| `GET /`       | Root health check  Ereturns API name and version |
-| `GET /health` | Health check  Ereturns `{"status": "healthy"}`   |
+| `GET /`       | Root health check  — returns API name and version |
+| `GET /health` | Health check  — returns `{"status": "healthy"}`   |
 
 All other endpoints require a valid JWT.
 
@@ -123,9 +123,9 @@ All other endpoints require a valid JWT.
 | Condition                      | Status | Detail                                         |
 | ------------------------------ | ------ | ---------------------------------------------- |
 | Missing `Authorization` header | 403    | `Not authenticated`                            |
-| Token expired                  | 401    | `Token expired  Eplease sign in again`         |
-| Invalid / tampered token       | 401    | `Invalid token  Eplease sign in again`         |
-| Other auth failure             | 401    | `Authentication failed  Eplease sign in again` |
+| Token expired                  | 401    | `Token expired  — please sign in again`         |
+| Invalid / tampered token       | 401    | `Invalid token  — please sign in again`         |
+| Other auth failure             | 401    | `Authentication failed  — please sign in again` |
 
 See [Error-Handling.md](./03-Error-Handling.md) for the full error format.
 

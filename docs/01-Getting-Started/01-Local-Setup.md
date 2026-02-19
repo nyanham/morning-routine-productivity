@@ -42,9 +42,9 @@ cd morning-routine-productivity
 2. Wait for the project to initialize (~2 minutes).
 3. Open **SQL Editor** and run the contents of `database/schema.sql`.
 4. Go to **Settings ↁEAPI** and copy these three values:
-   - **Project URL**  Ee.g. `https://abc123.supabase.co`
-   - **anon (public) key**  Eused by the frontend
-   - **service_role key**  Eused by the backend (keep this secret)
+   - **Project URL**  — e.g. `https://abc123.supabase.co`
+   - **anon (public) key**  — used by the frontend
+   - **service_role key**  — used by the backend (keep this secret)
 
 ---
 
@@ -127,13 +127,13 @@ pre-commit run --all-files
 Start both services (see [Running-Services.md](./03-Running-Services.md) for full details):
 
 ```bash
-# Terminal 1  EBackend
+# Terminal 1  — Backend
 cd backend
 poetry run uvicorn app.main:app --reload
 ```
 
 ```bash
-# Terminal 2  EFrontend
+# Terminal 2  — Frontend
 cd frontend
 npm run dev
 ```

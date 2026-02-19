@@ -9,11 +9,11 @@
 
 | Variable            | Required | Default                            | Description                                                                        |
 | ------------------- | :------: | ---------------------------------- | ---------------------------------------------------------------------------------- |
-| `SUPABASE_URL`      |   Yes    |  E                                 | Supabase project URL (e.g. `https://xxxx.supabase.co`)                             |
-| `SUPABASE_KEY`      |   Yes    |  E                                 | Supabase **service role** key (server-side only)                                   |
+| `SUPABASE_URL`      |   Yes    |  —                                  | Supabase project URL (e.g. `https://xxxx.supabase.co`)                             |
+| `SUPABASE_KEY`      |   Yes    |  —                                  | Supabase **service role** key (server-side only)                                   |
 | `APP_NAME`          |    No    | `Morning Routine Productivity API` | Display name shown on `/docs`                                                      |
 | `DEBUG`             |    No    | `false`                            | Enable debug-level logging                                                         |
-| `ENVIRONMENT`       |    No    | `development`                      | `development`, `staging`, or `production`  Econtrols docs visibility and behaviour |
+| `ENVIRONMENT`       |    No    | `development`                      | `development`, `staging`, or `production`  — controls docs visibility and behaviour |
 | `CORS_ORIGINS`      |    No    | `http://localhost:3000`            | Allowed origins (comma-separated or JSON array)                                    |
 | `CORS_ORIGIN_REGEX` |    No    | `https://.*\.vercel\.app`          | Regex pattern for additional allowed origins (e.g. Vercel previews)                |
 
@@ -33,8 +33,8 @@ CORS_ORIGINS=http://localhost:3000
 
 | Variable                        | Required | Default                 | Description                                              |
 | ------------------------------- | :------: | ----------------------- | -------------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`      |   Yes    |  E                      | Supabase project URL (public, embedded in client bundle) |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` |   Yes    |  E                      | Supabase **anon** key (public, safe for the browser)     |
+| `NEXT_PUBLIC_SUPABASE_URL`      |   Yes    |  —                       | Supabase project URL (public, embedded in client bundle) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` |   Yes    |  —                       | Supabase **anon** key (public, safe for the browser)     |
 | `NEXT_PUBLIC_API_URL`           |    No    | `http://localhost:8000` | Backend API base URL                                     |
 
 ### Example
@@ -74,8 +74,8 @@ Parameters injected as Lambda environment variables:
 | Parameter         | Maps To             | Default                   |
 | ----------------- | ------------------- | ------------------------- |
 | `Environment`     | `ENVIRONMENT`       | `development`             |
-| `SupabaseUrl`     | `SUPABASE_URL`      |  E                        |
-| `SupabaseKey`     | `SUPABASE_KEY`      |  E                        |
+| `SupabaseUrl`     | `SUPABASE_URL`      |  —                         |
+| `SupabaseKey`     | `SUPABASE_KEY`      |  —                         |
 | `CorsOrigins`     | `CORS_ORIGINS`      | `http://localhost:3000`   |
 | `CorsOriginRegex` | `CORS_ORIGIN_REGEX` | `https://.*\.vercel\.app` |
 
@@ -88,7 +88,7 @@ appear in CloudFormation console output.
 ## Security Reminders
 
 - **Never** commit `.env`, `.env.local`, or any file containing real keys.
-- The **service role key** (`SUPABASE_KEY`) bypasses RLS  Ekeep it server-side.
+- The **service role key** (`SUPABASE_KEY`) bypasses RLS  — keep it server-side.
 - The **anon key** (`NEXT_PUBLIC_SUPABASE_ANON_KEY`) is safe for the browser
   because RLS policies enforce access control.
 - Rotate credentials periodically and after any suspected compromise.

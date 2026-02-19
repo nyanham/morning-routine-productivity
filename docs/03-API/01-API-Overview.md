@@ -116,8 +116,8 @@ Common query parameters:
 | ------------ | ------- | ------- | ----------------------------- |
 | `page`       | integer | `1`     | Page number (1-indexed)       |
 | `page_size`  | integer | `10`    | Items per page                |
-| `start_date` | date    |  E      | Filter from date (YYYY-MM-DD) |
-| `end_date`   | date    |  E      | Filter to date (YYYY-MM-DD)   |
+| `start_date` | date    |  —       | Filter from date (YYYY-MM-DD) |
+| `end_date`   | date    |  —       | Filter to date (YYYY-MM-DD)   |
 
 ---
 

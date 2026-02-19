@@ -41,7 +41,7 @@ flowchart LR
 
 ---
 
-## Frontend  EVercel
+## Frontend  — Vercel
 
 ### How It Works
 
@@ -74,7 +74,7 @@ Turbopack). Static assets are served via Vercel's edge CDN.
 
 ---
 
-## Backend  EAWS Lambda via SAM
+## Backend  — AWS Lambda via SAM
 
 ### Architecture
 
@@ -113,8 +113,8 @@ All parameters can be overridden per environment:
 | Parameter         | Default                     | Description                                    |
 | ----------------- | --------------------------- | ---------------------------------------------- |
 | `Environment`     | `development`               | `development` / `staging` / `production`       |
-| `SupabaseUrl`     |  E                          | Supabase project URL                           |
-| `SupabaseKey`     |  E                          | Supabase service role key                      |
+| `SupabaseUrl`     |  —                           | Supabase project URL                           |
+| `SupabaseKey`     |  —                           | Supabase service role key                      |
 | `CorsOrigins`     | `http://localhost:3000`     | Exact-match allowed origins (comma-separated)  |
 | `CorsOriginRegex` | `https://.*\\.vercel\\.app` | Regex for additional origins (preview deploys) |
 
@@ -170,7 +170,7 @@ enable it:
 
 1. Add the required GitHub secrets (see [CI-CD.md](02-CI-CD.md)).
 2. Uncomment the `deploy-backend` job in `.github/workflows/deploy.yml`.
-3. Push to `main`  Ethe job runs after the frontend deploys successfully.
+3. Push to `main`  — the job runs after the frontend deploys successfully.
 
 ---
 

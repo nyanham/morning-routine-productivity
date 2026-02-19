@@ -78,8 +78,8 @@ trigger and any admin queries that search by email.
 
 PostgreSQL automatically creates B-tree indexes for:
 
-- **Primary keys**  E`id` on every table.
-- **Unique constraints**  E`(user_id, date)` on `morning_routines` and
+- **Primary keys**  — `id` on every table.
+- **Unique constraints**  — `(user_id, date)` on `morning_routines` and
   `productivity_entries`; `(user_id)` on `user_settings`; `(email)` on
   `user_profiles`.
 
@@ -99,7 +99,7 @@ the RLS filter piggy-backs on the same index scan with negligible extra cost.
 ### Pagination
 
 Both service classes use `LIMIT` / `OFFSET` pagination. For large datasets
-(thousands of entries per user) this is fine  Ethe `(user_id, date DESC)`
+(thousands of entries per user) this is fine  — the `(user_id, date DESC)`
 index keeps the scan efficient. If the dataset grows significantly, consider
 switching to **keyset (cursor) pagination** using the `date` column as the
 cursor.

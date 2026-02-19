@@ -1,6 +1,6 @@
 # Contributing Guide
 
-> Everything a new contributor needs to know  Efrom forking to merging.
+> Everything a new contributor needs to know  — from forking to merging.
 
 ---
 
@@ -121,8 +121,8 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 | `feat`     | New feature                              |
 | `fix`      | Bug fix                                  |
 | `docs`     | Documentation only                       |
-| `style`    | Formatting  Eno logic change             |
-| `refactor` | Code restructuring  Eno behaviour change |
+| `style`    | Formatting  — no logic change             |
+| `refactor` | Code restructuring  — no behaviour change |
 | `test`     | Adding or updating tests                 |
 | `chore`    | Tooling, dependencies, CI maintenance    |
 
@@ -142,7 +142,7 @@ chore(deps): update fastapi to 0.128.0
 ### Frontend (TypeScript / React)
 
 - Functional components with hooks
-- TypeScript strict mode  Eavoid `any`
+- TypeScript strict mode  — avoid `any`
 - Follow the ESLint config
 - Tailwind CSS for styling
 - Small, focused components
@@ -180,7 +180,7 @@ async def get_user(user_id: str) -> UserResponse:
 ## Running Checks Locally
 
 ```bash
-# Pre-commit (recommended  Eruns everything)
+# Pre-commit (recommended  — runs everything)
 pre-commit run --all-files
 
 # Frontend
@@ -260,7 +260,7 @@ Labels marked `ignore-for-release` are excluded from the changelog.
 
 ## Questions?
 
-Open a GitHub issue  Ewe're happy to help.
+Open a GitHub issue  — we're happy to help.
 
 ---
 

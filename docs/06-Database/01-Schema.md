@@ -2,7 +2,7 @@
 
 > Full reference for the PostgreSQL schema that powers the Morning Routine &
 > Productivity Tracker.  
-> **Source of truth:** [database/schema.sql](../../database/schema.sql)  Eif
+> **Source of truth:** [database/schema.sql](../../database/schema.sql)  — if
 > this document and the SQL file disagree, the SQL file wins.
 
 ---
@@ -13,7 +13,7 @@
 | --------- | -------------------------------- |
 | Provider  | Supabase (managed PostgreSQL)    |
 | Version   | PostgreSQL 15+                   |
-| Extension | `uuid-ossp`  EUUID generation    |
+| Extension | `uuid-ossp`  — UUID generation    |
 | Auth      | Supabase `auth.users` (built-in) |
 
 ---
@@ -124,19 +124,19 @@ erDiagram
 
 ## Design Principles
 
-1. **User isolation**  EEvery data table includes a `user_id` foreign key to
+1. **User isolation**  — Every data table includes a `user_id` foreign key to
    `auth.users(id)`. Row-Level Security ensures each user only sees their own
    data (see [Row-Level-Security.md](02-Row-Level-Security.md)).
-2. **Referential integrity**  EForeign keys use `ON DELETE CASCADE` so deleting
+2. **Referential integrity**  — Foreign keys use `ON DELETE CASCADE` so deleting
    a Supabase auth user removes all related data. The one exception is
    `productivity_entries.routine_id`, which uses `ON DELETE SET NULL` so a
    productivity entry survives if its linked routine is deleted.
-3. **Audit timestamps**  EEvery table carries `created_at` and `updated_at`.
+3. **Audit timestamps**  — Every table carries `created_at` and `updated_at`.
    A shared trigger keeps `updated_at` current on every `UPDATE` (see
    [Triggers-and-Functions.md](03-Triggers-and-Functions.md)).
-4. **Normalization**  EProfiles, settings, and goals live in separate tables
+4. **Normalization**  — Profiles, settings, and goals live in separate tables
    with clear single-responsibility boundaries.
-5. **Database-level validation**  E`CHECK` constraints enforce ranges and
+5. **Database-level validation**  — `CHECK` constraints enforce ranges and
    enum-like values directly in PostgreSQL, preventing bad data even if the
    application layer is bypassed.
 
@@ -151,8 +151,8 @@ automatically by the `handle_new_user` trigger when a user signs up.
 
 | Column                 | Type           | Nullable | Default   | Notes                                               |
 | ---------------------- | -------------- | :------: | --------- | --------------------------------------------------- |
-| `id`                   | `UUID`         |    NO    |  E        | **PK**, references `auth.users(id)`                 |
-| `email`                | `VARCHAR(255)` |    NO    |  E        | Unique                                              |
+| `id`                   | `UUID`         |    NO    |  —         | **PK**, references `auth.users(id)`                 |
+| `email`                | `VARCHAR(255)` |    NO    |  —         | Unique                                              |
 | `full_name`            | `VARCHAR(100)` |   YES    | `NULL`    |                                                     |
 | `display_name`         | `VARCHAR(50)`  |   YES    | `NULL`    |                                                     |
 | `avatar_url`           | `TEXT`         |   YES    | `NULL`    |                                                     |
@@ -189,7 +189,7 @@ because settings change more frequently.
 | Column                 | Type          | Nullable | Default              | Notes                          |
 | ---------------------- | ------------- | :------: | -------------------- | ------------------------------ |
 | `id`                   | `UUID`        |    NO    | `uuid_generate_v4()` | **PK**                         |
-| `user_id`              | `UUID`        |    NO    |  E                   | **FK ↁEauth.users**, unique    |
+| `user_id`              | `UUID`        |    NO    |  —                    | **FK ↁEauth.users**, unique    |
 | `theme`                | `VARCHAR(20)` |   YES    | `'system'`           | `light`, `dark`, `system`      |
 | `accent_color`         | `VARCHAR(20)` |   YES    | `'blue'`             |                                |
 | `compact_mode`         | `BOOLEAN`     |   YES    | `false`              |                                |
@@ -229,15 +229,15 @@ CHECK (measurement_system IN ('metric', 'imperial'))
 ### `user_goals`
 
 Each user may track multiple goals. A partial unique index enforces **one
-active goal per `(user_id, goal_type)`**  Ewe can deactivate an old goal and
+active goal per `(user_id, goal_type)`**  — we can deactivate an old goal and
 create a new one without violating the constraint.
 
 | Column             | Type            | Nullable | Default              | Notes                                            |
 | ------------------ | --------------- | :------: | -------------------- | ------------------------------------------------ |
 | `id`               | `UUID`          |    NO    | `uuid_generate_v4()` | **PK**                                           |
-| `user_id`          | `UUID`          |    NO    |  E                   | **FK ↁEauth.users**                              |
-| `goal_type`        | `VARCHAR(30)`   |    NO    |  E                   | See allowed values below                         |
-| `target_value`     | `DECIMAL(10,2)` |    NO    |  E                   |                                                  |
+| `user_id`          | `UUID`          |    NO    |  —                    | **FK ↁEauth.users**                              |
+| `goal_type`        | `VARCHAR(30)`   |    NO    |  —                    | See allowed values below                         |
+| `target_value`     | `DECIMAL(10,2)` |    NO    |  —                    |                                                  |
 | `target_unit`      | `VARCHAR(20)`   |   YES    | `NULL`               | `hours`, `minutes`, `ml`, `mg`, `score`, `count` |
 | `is_active`        | `BOOLEAN`       |   YES    | `true`               |                                                  |
 | `reminder_enabled` | `BOOLEAN`       |   YES    | `false`              |                                                  |
@@ -275,20 +275,20 @@ CREATE UNIQUE INDEX idx_user_goals_unique_active
 
 ### `morning_routines`
 
-One row per user per day. Captures everything about the morning  Esleep, mood,
+One row per user per day. Captures everything about the morning  — sleep, mood,
 exercise, nutrition, and habits.
 
 | Column                   | Type           | Nullable | Default              | Notes                               |
 | ------------------------ | -------------- | :------: | -------------------- | ----------------------------------- |
 | `id`                     | `UUID`         |    NO    | `uuid_generate_v4()` | **PK**                              |
-| `user_id`                | `UUID`         |    NO    |  E                   | **FK ↁEauth.users**                 |
-| `date`                   | `DATE`         |    NO    |  E                   | Unique per user                     |
-| `wake_time`              | `TIME`         |    NO    |  E                   |                                     |
-| `sleep_duration_hours`   | `DECIMAL(4,2)` |    NO    |  E                   | 0  E24                              |
+| `user_id`                | `UUID`         |    NO    |  —                    | **FK ↁEauth.users**                 |
+| `date`                   | `DATE`         |    NO    |  —                    | Unique per user                     |
+| `wake_time`              | `TIME`         |    NO    |  —                    |                                     |
+| `sleep_duration_hours`   | `DECIMAL(4,2)` |    NO    |  —                    | 0  — 24                              |
 | `exercise_minutes`       | `INTEGER`      |   YES    | `0`                  | ≥ 0                                 |
 | `meditation_minutes`     | `INTEGER`      |   YES    | `0`                  | ≥ 0                                 |
 | `breakfast_quality`      | `VARCHAR(20)`  |   YES    | `'good'`             | `poor`, `fair`, `good`, `excellent` |
-| `morning_mood`           | `INTEGER`      |    NO    |  E                   | 1  E10                              |
+| `morning_mood`           | `INTEGER`      |    NO    |  —                    | 1  — 10                              |
 | `screen_time_before_bed` | `INTEGER`      |   YES    | `0`                  | ≥ 0 (minutes)                       |
 | `caffeine_intake`        | `INTEGER`      |   YES    | `0`                  | ≥ 0 (mg)                            |
 | `water_intake_ml`        | `INTEGER`      |   YES    | `0`                  | ≥ 0                                 |
@@ -316,22 +316,22 @@ CHECK (water_intake_ml >= 0)
 ### `productivity_entries`
 
 One row per user per day. Captures work output, focus, energy, and stress. An
-optional `routine_id` links back to the morning routine for the same day  E
+optional `routine_id` links back to the morning routine for the same day  — 
 enabling routine-to-productivity correlation analytics.
 
 | Column               | Type           | Nullable | Default              | Notes                                           |
 | -------------------- | -------------- | :------: | -------------------- | ----------------------------------------------- |
 | `id`                 | `UUID`         |    NO    | `uuid_generate_v4()` | **PK**                                          |
-| `user_id`            | `UUID`         |    NO    |  E                   | **FK ↁEauth.users**                             |
-| `date`               | `DATE`         |    NO    |  E                   | Unique per user                                 |
+| `user_id`            | `UUID`         |    NO    |  —                    | **FK ↁEauth.users**                             |
+| `date`               | `DATE`         |    NO    |  —                    | Unique per user                                 |
 | `routine_id`         | `UUID`         |   YES    | `NULL`               | **FK ↁEmorning_routines**, `ON DELETE SET NULL` |
-| `productivity_score` | `INTEGER`      |    NO    |  E                   | 1  E10                                          |
+| `productivity_score` | `INTEGER`      |    NO    |  —                    | 1  — 10                                          |
 | `tasks_completed`    | `INTEGER`      |   YES    | `0`                  | ≥ 0                                             |
 | `tasks_planned`      | `INTEGER`      |   YES    | `0`                  | ≥ 0                                             |
 | `focus_hours`        | `DECIMAL(4,2)` |   YES    | `0`                  | ≥ 0                                             |
 | `distractions_count` | `INTEGER`      |   YES    | `0`                  | ≥ 0                                             |
-| `energy_level`       | `INTEGER`      |    NO    |  E                   | 1  E10                                          |
-| `stress_level`       | `INTEGER`      |    NO    |  E                   | 1  E10                                          |
+| `energy_level`       | `INTEGER`      |    NO    |  —                    | 1  — 10                                          |
+| `stress_level`       | `INTEGER`      |    NO    |  —                    | 1  — 10                                          |
 | `notes`              | `TEXT`         |   YES    | `NULL`               |                                                 |
 | `created_at`         | `TIMESTAMPTZ`  |   YES    | `NOW()`              |                                                 |
 | `updated_at`         | `TIMESTAMPTZ`  |   YES    | `NOW()`              | Auto-updated by trigger                         |
@@ -356,15 +356,15 @@ CHECK (distractions_count >= 0)
 
 ## Score Ranges
 
-Every `1  E10` scale in the schema follows this interpretation:
+Every `1  — 10` scale in the schema follows this interpretation:
 
 | Score  | Label     |
 | ------ | --------- |
-| 1  E2  | Very Low  |
-| 3  E4  | Low       |
-| 5  E6  | Moderate  |
-| 7  E8  | High      |
-| 9  E10 | Very High |
+| 1  — 2  | Very Low  |
+| 3  — 4  | Low       |
+| 5  — 6  | Moderate  |
+| 7  — 8  | High      |
+| 9  — 10 | Very High |
 
 ---
 

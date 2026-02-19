@@ -38,19 +38,19 @@ backend/app/
 
 ```mermaid
 flowchart TB
-    subgraph API["API Layer  Eapp/api/"]
+    subgraph API["API Layer  — app/api/"]
         Handlers["Route handlers\nParse request, call service, return response"]
     end
 
-    subgraph AUTH["Auth  Eapp/core/auth.py"]
+    subgraph AUTH["Auth  — app/core/auth.py"]
         JWTCheck["get_current_user()\nValidate JWT via Supabase"]
     end
 
-    subgraph SERVICE["Service Layer  Eapp/services/"]
+    subgraph SERVICE["Service Layer  — app/services/"]
         Logic["Business logic\nData transformation, validation"]
     end
 
-    subgraph DATA["Data Layer  Eapp/core/supabase.py"]
+    subgraph DATA["Data Layer  — app/core/supabase.py"]
         ServiceClient["Service client\n(admin, bypasses RLS)"]
         AuthClient["Authenticated client\n(user token, respects RLS)"]
     end
@@ -77,13 +77,13 @@ flowchart TB
 
 `app/main.py` does everything in module-level code so it runs once per Lambda cold start:
 
-1. **Configure logging**  Enamed logger `morning_routine` with `StreamHandler` (appears in CloudWatch).
-2. **Load settings**  E`get_settings()` reads env vars via Pydantic, cached with `@lru_cache`.
-3. **Create the FastAPI app**  Ewith conditional Swagger/ReDoc (disabled in production).
-4. **Add CORS middleware**  Eexact origins from `CORS_ORIGINS`, regex from `CORS_ORIGIN_REGEX`.
-5. **Include the API router**  Eaggregated in `app/api/__init__.py`.
-6. **Register middleware**  Erequest/response logger, global exception handler.
-7. **Create the Mangum handler**  E`handler = Mangum(app, ...)` for Lambda.
+1. **Configure logging**  — named logger `morning_routine` with `StreamHandler` (appears in CloudWatch).
+2. **Load settings**  — `get_settings()` reads env vars via Pydantic, cached with `@lru_cache`.
+3. **Create the FastAPI app**  — with conditional Swagger/ReDoc (disabled in production).
+4. **Add CORS middleware**  — exact origins from `CORS_ORIGINS`, regex from `CORS_ORIGIN_REGEX`.
+5. **Include the API router**  — aggregated in `app/api/__init__.py`.
+6. **Register middleware**  — request/response logger, global exception handler.
+7. **Create the Mangum handler**  — `handler = Mangum(app, ...)` for Lambda.
 
 ---
 
@@ -106,8 +106,8 @@ flowchart LR
 
 CORS is handled by FastAPI (not API Gateway) because HTTP API V2 does not support wildcard subdomains:
 
-- **Exact match**  E`CORS_ORIGINS` (comma-separated or JSON array).
-- **Regex match**  E`CORS_ORIGIN_REGEX` for Vercel preview deploys (`https://.*\.vercel\.app`).
+- **Exact match**  — `CORS_ORIGINS` (comma-separated or JSON array).
+- **Regex match**  — `CORS_ORIGIN_REGEX` for Vercel preview deploys (`https://.*\.vercel\.app`).
 - **All methods and headers** are allowed; credentials are enabled.
 
 ### Request logger
@@ -140,9 +140,9 @@ sequenceDiagram
 
 | Condition          | HTTP status | Detail message                                 |
 | ------------------ | ----------- | ---------------------------------------------- |
-| Token expired      | 401         | `Token expired  Eplease sign in again`         |
-| Invalid signature  | 401         | `Invalid token  Eplease sign in again`         |
-| Other auth failure | 401         | `Authentication failed  Eplease sign in again` |
+| Token expired      | 401         | `Token expired  — please sign in again`         |
+| Invalid signature  | 401         | `Invalid token  — please sign in again`         |
+| Other auth failure | 401         | `Authentication failed  — please sign in again` |
 
 ### Two Supabase clients
 
@@ -170,8 +170,8 @@ class Settings(BaseSettings):
     cors_origin_regex: str = r"https://.*\.vercel\.app"
 ```
 
-- **Locally**  Evalues come from `backend/.env`.
-- **On Lambda**  Evalues are injected by the SAM template as environment variables.
+- **Locally**  — values come from `backend/.env`.
+- **On Lambda**  — values are injected by the SAM template as environment variables.
 - Settings are cached with `@lru_cache` (parsed once per process).
 
 See [../01-Getting-Started/02-Configuration.md](../01-Getting-Started/02-Configuration.md) for the full variable reference.
@@ -192,8 +192,8 @@ handler = Mangum(
 
 **Key details:**
 
-- `lifespan="off"`  EASGI startup/shutdown events are not reliable in Lambda's execution model.
-- `api_gateway_base_path`  Estrips the stage prefix (e.g. `/development`) so FastAPI routes match without modification.
+- `lifespan="off"`  — ASGI startup/shutdown events are not reliable in Lambda's execution model.
+- `api_gateway_base_path`  — strips the stage prefix (e.g. `/development`) so FastAPI routes match without modification.
 
 ### Lambda request lifecycle
 

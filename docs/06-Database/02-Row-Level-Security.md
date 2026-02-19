@@ -1,6 +1,6 @@
 # Row-Level Security (RLS)
 
-> How Supabase RLS keeps every user's data isolated at the database layer  E
+> How Supabase RLS keeps every user's data isolated at the database layer  — 
 > even if the application code has a bug.
 
 ---
@@ -64,8 +64,8 @@ SELECT / INSERT / UPDATE / DELETE rows where the user-id column equals
 
 | Table                  | Match Column | SELECT | INSERT | UPDATE | DELETE |
 | ---------------------- | ------------ | :----: | :----: | :----: | :----: |
-| `user_profiles`        | `id`         |  Yes   |    E   |  Yes   |    E   |
-| `user_settings`        | `user_id`    |  Yes   |    E   |  Yes   |    E   |
+| `user_profiles`        | `id`         |  Yes   |    —    |  Yes   |    —    |
+| `user_settings`        | `user_id`    |  Yes   |    —    |  Yes   |    —    |
 | `user_goals`           | `user_id`    |  Yes   |  Yes   |  Yes   |  Yes   |
 | `morning_routines`     | `user_id`    |  Yes   |  Yes   |  Yes   |  Yes   |
 | `productivity_entries` | `user_id`    |  Yes   |  Yes   |  Yes   |  Yes   |
@@ -73,7 +73,7 @@ SELECT / INSERT / UPDATE / DELETE rows where the user-id column equals
 > `user_profiles` and `user_settings` lack INSERT/DELETE policies because these
 > rows are created and owned by the `handle_new_user` trigger (which runs as
 > `SECURITY DEFINER`). Users never create or delete their own profile/settings
-> row  Ethey only read and update.
+> row  — they only read and update.
 
 ---
 
@@ -237,7 +237,7 @@ where the backend stamps `user_id` manually before inserting.
 
 When developing against a local Supabase instance or the hosted dashboard:
 
-1. **SQL Editor**  ERun queries as the `authenticated` role by setting the JWT
+1. **SQL Editor**  — Run queries as the `authenticated` role by setting the JWT
    claim before the query:
 
    ```sql
@@ -246,7 +246,7 @@ When developing against a local Supabase instance or the hosted dashboard:
    -- Returns only rows for that user
    ```
 
-2. **Supabase Dashboard ↁEAuthentication ↁEUsers**  ECopy a user's UUID and
+2. **Supabase Dashboard ↁEAuthentication ↁEUsers**  — Copy a user's UUID and
    use the SQL Editor to impersonate them.
 
 3. **Disable RLS temporarily** (development only!):

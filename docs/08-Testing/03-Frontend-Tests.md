@@ -31,7 +31,7 @@ const config: Config = {
 | `testEnvironment: "jsdom"` | Simulates a browser DOM                               |
 | `moduleNameMapper`         | Resolves the `@/` import alias                        |
 | `collectCoverageFrom`      | Includes `.ts/.tsx`, excludes type files and layouts  |
-| Coverage thresholds (5 %)  | Low starting bar  Eintended to rise as coverage grows |
+| Coverage thresholds (5 %)  | Low starting bar  — intended to rise as coverage grows |
 
 ### Running
 
@@ -91,7 +91,7 @@ const entry = createMockProductivity({ productivity_score: 3 });
 
 ## Test Files
 
-### `__tests__/lib/api.test.ts`  EAPI Client
+### `__tests__/lib/api.test.ts`  — API Client
 
 **`ApiError`** (5 tests):
 
@@ -117,9 +117,9 @@ const entry = createMockProductivity({ productivity_score: 3 });
 | Error response | Throws `ApiError` with status and error body        |
 | Custom headers | Merged into the request                             |
 
-All tests stub `global.fetch` via `jest.fn()`  Eno network calls.
+All tests stub `global.fetch` via `jest.fn()`  — no network calls.
 
-### `__tests__/lib/utils.test.ts`  EUtility Functions
+### `__tests__/lib/utils.test.ts`  — Utility Functions
 
 | Utility                    | # Tests | Notes                                       |
 | -------------------------- | ------: | ------------------------------------------- |
@@ -130,7 +130,7 @@ All tests stub `global.fetch` via `jest.fn()`  Eno network calls.
 | `getProductivityColor()`   |       3 | Low / medium / high ↁETailwind classes      |
 | `getProductivityBgColor()` |       3 | Same tiers, background colour classes       |
 
-### `__tests__/components/StatsCard.test.tsx`  EComponent Test
+### `__tests__/components/StatsCard.test.tsx`  — Component Test
 
 | Test                    | What It Checks                                |
 | ----------------------- | --------------------------------------------- |
@@ -153,8 +153,8 @@ the custom `render` from `test-utils.tsx`.
 2. **Import `render`** from `@/test-utils` (not from `@testing-library/react`
    directly) to get the auth context wrapper.
 3. **Use factories** for mock data instead of inlining large objects.
-4. **Prefer user-visible queries**  E`getByText`, `getByRole`, `getByLabelText`
-    Eover `getByTestId`.
+4. **Prefer user-visible queries**  — `getByText`, `getByRole`, `getByLabelText`
+    — over `getByTestId`.
 5. **Mock `fetch`** at the global level when testing components that call
    the API.
 

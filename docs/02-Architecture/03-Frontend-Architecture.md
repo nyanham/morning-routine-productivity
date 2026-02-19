@@ -105,7 +105,7 @@ sequenceDiagram
     participant AC as AuthContext
     participant SB as Supabase Auth
 
-    App->>AC: useEffect  Einitialize
+    App->>AC: useEffect  — initialize
     AC->>SB: getSession()
     SB-->>AC: session | null
     AC->>AC: setUser, setSession, setLoading(false)
@@ -134,7 +134,7 @@ The app intentionally avoids Redux, Zustand, or similar libraries. Server data i
 ```typescript
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-// Generic fetch wrapper  Eadds auth header, parses JSON, throws ApiError
+// Generic fetch wrapper  — adds auth header, parses JSON, throws ApiError
 async function fetchApi<T>(endpoint: string, options?: ApiOptions): Promise<T>
 
 // Resource-specific methods
@@ -221,19 +221,19 @@ flowchart TB
 
 ## Styling
 
-- **Tailwind CSS 4**  Eutility-first, configured in `tailwind.config.js`.
-- **Global styles**  Eminimal, in `app/globals.css`.
-- **No CSS modules or styled-components**  Eall styling is inline Tailwind classes.
-- **Responsive**  Edesigned for desktop and tablet; mobile is functional but not the primary target.
+- **Tailwind CSS 4**  — utility-first, configured in `tailwind.config.js`.
+- **Global styles**  — minimal, in `app/globals.css`.
+- **No CSS modules or styled-components**  — all styling is inline Tailwind classes.
+- **Responsive**  — designed for desktop and tablet; mobile is functional but not the primary target.
 
 ---
 
 ## TypeScript conventions
 
 - **Strict mode** enabled in `tsconfig.json`.
-- **No `any`**  Euse explicit types or `unknown` with type guards.
-- **Shared types**  Eall data shapes are defined in `types/index.ts` and mirror the backend Pydantic models.
-- **Interfaces for props**  Eevery component defines its props interface.
+- **No `any`**  — use explicit types or `unknown` with type guards.
+- **Shared types**  — all data shapes are defined in `types/index.ts` and mirror the backend Pydantic models.
+- **Interfaces for props**  — every component defines its props interface.
 
 ---
 

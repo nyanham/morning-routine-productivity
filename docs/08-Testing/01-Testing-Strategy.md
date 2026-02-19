@@ -1,7 +1,7 @@
 # Testing Strategy
 
 > An overview of how (and why) we test the Morning Routine & Productivity
-> Tracker  Efrom unit tests to security scans.
+> Tracker  — from unit tests to security scans.
 
 ---
 
@@ -27,7 +27,7 @@ graph TB
 | --------------- | --------------------------------------------- | -------------------------------------- | ------- |
 | **Unit**        | Pydantic model validation, service CRUD logic | Utility functions, component rendering | Active  |
 | **Integration** | FastAPI endpoint tests with mock Supabase     | API client behaviour (fetch mocking)   | Active  |
-| **E2E**         |  E                                            |  E                                     | Planned |
+| **E2E**         |  —                                             |  —                                      | Planned |
 
 ---
 
@@ -124,7 +124,7 @@ frontend/src/
 
 ## Mocking Philosophy
 
-### Backend  EMock Supabase, Not the Service Layer
+### Backend  — Mock Supabase, Not the Service Layer
 
 We mock at the **Supabase client boundary**, not inside the service layer.
 This means:
@@ -134,7 +134,7 @@ This means:
 - Endpoint tests use FastAPI's **dependency override** to swap
   `get_current_user` and `get_user_supabase` with mock replacements.
 
-### Frontend  EMock Fetch, Not Components
+### Frontend  — Mock Fetch, Not Components
 
 - **API tests** mock `global.fetch` to verify request construction and
   response handling without a running server.
@@ -154,7 +154,7 @@ Every push and PR triggers these checks (see
 | ------------- | -------------------------- | ------------------------------------------ |
 | Lint          | `ruff check .`             | `npm run lint`                             |
 | Format        | `ruff format --check .`    | (included in lint)                         |
-| Type check    | (mypy  Eavailable locally) | `npx tsc --noEmit`                         |
+| Type check    | (mypy  — available locally) | `npx tsc --noEmit`                         |
 | Tests         | `poetry run pytest -v`     | `npm test -- --coverage --passWithNoTests` |
 | Security scan | Trivy (filesystem)         | Trivy (filesystem)                         |
 
@@ -196,12 +196,12 @@ Coverage reports are generated in `frontend/coverage/` during CI runs.
 
 ## Adding New Tests
 
-1. **Follow the existing pattern**  Elook at a neighbouring test file for
+1. **Follow the existing pattern**  — look at a neighbouring test file for
    the fixture and assertion style.
-2. **Name tests descriptively**  E`test_create_routine_invalid_mood` beats
+2. **Name tests descriptively**  — `test_create_routine_invalid_mood` beats
    `test_create_3`.
-3. **One concern per test**  Etest a single behaviour, not an entire flow.
-4. **Use data factories**  E`createMockRoutine()` (frontend) and the
+3. **One concern per test**  — test a single behaviour, not an entire flow.
+4. **Use data factories**  — `createMockRoutine()` (frontend) and the
    `sample_routine` fixture (backend) keep test data consistent.
 
 ---

@@ -33,7 +33,7 @@ Every new PR is pre-filled with:
 | Section                       | Purpose                                                                   |
 | ----------------------------- | ------------------------------------------------------------------------- |
 | **Description**               | Brief summary of the change                                               |
-| **Type of Change**            | Checkbox list  Ebug fix, feature, breaking change, docs, config, refactor |
+| **Type of Change**            | Checkbox list  — bug fix, feature, breaking change, docs, config, refactor |
 | **Component(s) Affected**     | Frontend, Backend, Database, CI/CD, Documentation                         |
 | **Related Issues**            | `Closes #(issue)`                                                         |
 | **How Has This Been Tested?** | Unit / integration / manual checkboxes                                    |

@@ -77,14 +77,14 @@ pre-commit install --hook-type commit-msg
 Open **two terminals**:
 
 ```bash
-# Terminal 1  EBackend
+# Terminal 1  — Backend
 cd backend
 poetry run uvicorn app.main:app --reload
 # ↁEhttp://localhost:8000
 ```
 
 ```bash
-# Terminal 2  EFrontend
+# Terminal 2  — Frontend
 cd frontend
 npm run dev
 # ↁEhttp://localhost:3000

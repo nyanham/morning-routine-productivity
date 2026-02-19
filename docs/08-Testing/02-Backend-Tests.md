@@ -15,10 +15,10 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 ```
 
-- **`asyncio_mode = "auto"`**  Epytest-asyncio automatically handles async
+- **`asyncio_mode = "auto"`**  — pytest-asyncio automatically handles async
   test functions without requiring an explicit `@pytest.mark.asyncio`
   decorator.
-- **`testpaths`**  Epytest only scans the `tests/` directory.
+- **`testpaths`**  — pytest only scans the `tests/` directory.
 
 ### Running
 
@@ -85,7 +85,7 @@ classDiagram
 
 [tests/test_mock_supabase.py](../../backend/tests/test_mock_supabase.py)
 verifies that the mock accurately simulates Supabase's `single()` vs list
-behaviour  Ea safety net that prevents false-positive test results.
+behaviour  — a safety net that prevents false-positive test results.
 
 ---
 
@@ -127,7 +127,7 @@ This removes the need for a real JWT or Supabase connection.
 
 ## Test Files
 
-### `tests/api/test_main.py`  EApp-Level Tests
+### `tests/api/test_main.py`  — App-Level Tests
 
 | Test Class                   | # Tests | What It Covers                                                                            |
 | ---------------------------- | ------: | ----------------------------------------------------------------------------------------- |
@@ -139,7 +139,7 @@ This removes the need for a real JWT or Supabase connection.
 Uses `importlib.reload(main_module)` with patched settings to toggle between
 development and production configuration within the same test session.
 
-### `tests/api/test_routines.py`  ERoutines CRUD
+### `tests/api/test_routines.py`  — Routines CRUD
 
 | Test                                          | Endpoint                               | Expected                    |
 | --------------------------------------------- | -------------------------------------- | --------------------------- |
@@ -158,7 +158,7 @@ development and production configuration within the same test session.
 | `test_delete_routine_success`                 | `DELETE /api/routines/:id`             | 204                         |
 | `test_delete_routine_not_found`               | `DELETE /api/routines/:id`             | 404                         |
 
-### `tests/api/test_productivity.py`  EProductivity CRUD
+### `tests/api/test_productivity.py`  — Productivity CRUD
 
 Mirrors the routines test structure for `/api/productivity`:
 
@@ -166,7 +166,7 @@ Mirrors the routines test structure for `/api/productivity`:
 - Create (success, with routine link, invalid score, negative tasks, missing required)
 - Update (success, not found), Delete (success, not found)
 
-### `tests/api/test_analytics.py`  EAnalytics
+### `tests/api/test_analytics.py`  — Analytics
 
 | Test                                | Endpoint                         | Expected             |
 | ----------------------------------- | -------------------------------- | -------------------- |
@@ -177,7 +177,7 @@ Mirrors the routines test structure for `/api/productivity`:
 | `test_get_charts_empty`             | `GET /api/analytics/charts`      | 200, empty list      |
 | `test_get_charts_with_date_filter`  | `GET /api/analytics/charts?...`  | 200                  |
 
-### `tests/models/test_models.py`  EPydantic Validation
+### `tests/models/test_models.py`  — Pydantic Validation
 
 **`TestMorningRoutineModels`** (14 tests):
 
@@ -191,7 +191,7 @@ Mirrors the routines test structure for `/api/productivity`:
   (too high / too low), invalid energy/stress levels, negative tasks,
   negative focus hours, partial update, full model, boundary values (1 and 10).
 
-### `tests/services/test_routine_service.py`  ERoutineService
+### `tests/services/test_routine_service.py`  — RoutineService
 
 | Test                                    | What It Verifies                           |
 | --------------------------------------- | ------------------------------------------ |
@@ -208,7 +208,7 @@ Mirrors the routines test structure for `/api/productivity`:
 | `test_delete_returns_false_for_missing` | `False` for missing ID                     |
 | `test_service_uses_correct_table`       | `service.table == "morning_routines"`      |
 
-### `tests/services/test_productivity_service.py`  EProductivityService
+### `tests/services/test_productivity_service.py`  — ProductivityService
 
 Same pattern as RoutineService tests, targeting `productivity_entries` table.
 Adds `test_service_stores_user_id` to verify constructor state.
@@ -217,13 +217,13 @@ Adds `test_service_stores_user_id` to verify constructor state.
 
 ## Writing a New Backend Test
 
-1. **Choose the right level**  Emodel validation ↁE`tests/models/`,
+1. **Choose the right level**  — model validation ↁE`tests/models/`,
    service logic ↁE`tests/services/`, HTTP endpoint ↁE`tests/api/`.
-2. **Use a fixture for data**  Edefine it in the test class or in `conftest.py`
+2. **Use a fixture for data**  — define it in the test class or in `conftest.py`
    if it's shared.
-3. **Override dependencies**  Eswap `get_current_user` and
+3. **Override dependencies**  — swap `get_current_user` and
    `get_user_supabase` to control auth and data.
-4. **Assert status codes and response shape**  Edon't assert on mock internals.
+4. **Assert status codes and response shape**  — don't assert on mock internals.
 
 ```python
 def test_example(self, client_with_routines: TestClient) -> None:
