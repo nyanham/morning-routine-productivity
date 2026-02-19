@@ -10,9 +10,9 @@
 The schema defines two stored functions and six triggers. Together they
 handle two concerns:
 
-1. **Automatic `updated_at` timestamps**  Ekeep the audit column current on
+1. **Automatic `updated_at` timestamps**  — keep the audit column current on
    every `UPDATE`.
-2. **New-user provisioning**  Ecreate a `user_profiles` row and a
+2. **New-user provisioning**  — create a `user_profiles` row and a
    `user_settings` row the moment a user signs up via Supabase Auth.
 
 ```mermaid
@@ -61,7 +61,7 @@ $$ LANGUAGE plpgsql SET search_path = '';
 | Scope       | `FOR EACH ROW`  |
 | search_path | `''` (empty)    |
 
-This function is generic  Ethe same function is reused across all five
+This function is generic  — the same function is reused across all five
 application tables.
 
 ### Triggers That Call It
@@ -84,7 +84,7 @@ CREATE TRIGGER update_<table>_updated_at
     EXECUTE FUNCTION update_updated_at_column();
 ```
 
-> **Why `BEFORE UPDATE`?**  EBy modifying `NEW` before the row is written,
+> **Why `BEFORE UPDATE`?**  — By modifying `NEW` before the row is written,
 > we avoid a second write and keep the operation in a single disk I/O pass.
 
 ---
@@ -140,9 +140,9 @@ sequenceDiagram
     Trigger -->> Auth: RETURN NEW
 ```
 
-1. **`user_profiles`**  ECopies `id`, `email`, and optionally `full_name`
+1. **`user_profiles`**  — Copies `id`, `email`, and optionally `full_name`
    from the auth metadata. All other profile columns use their DDL defaults.
-2. **`user_settings`**  ECreates a row with every preference set to its
+2. **`user_settings`**  — Creates a row with every preference set to its
    default value (theme = `system`, accent_color = `blue`, etc.).
 
 ### Trigger
@@ -155,7 +155,7 @@ CREATE TRIGGER on_auth_user_created
     EXECUTE FUNCTION handle_new_user();
 ```
 
-> **Why `AFTER INSERT`?**  EThe `auth.users` row must be committed first so
+> **Why `AFTER INSERT`?**  — The `auth.users` row must be committed first so
 > the foreign key from `user_profiles.id` and `user_settings.user_id` can
 > reference it.
 
@@ -175,7 +175,7 @@ superuser or the migration role). This is necessary because:
 
 > **Security note:** `SECURITY DEFINER` functions should be kept minimal and
 > carefully reviewed. This function only inserts into two tables using data
-> from the triggering row  Eit does not accept external input.
+> from the triggering row  — it does not accept external input.
 ---
 
 ## Immutable `search_path`
@@ -198,7 +198,7 @@ references `public.user_profiles` and `public.user_settings`.
 ## Adding a New Trigger
 
 1. If the trigger calls `update_updated_at_column()`, just add the
-   `CREATE TRIGGER` statement  Eno new function needed.
+   `CREATE TRIGGER` statement  — no new function needed.
 2. For custom logic, create a new function with a clear name and
    `RETURNS TRIGGER`.
 3. Prefer `BEFORE UPDATE` for column mutations and `AFTER INSERT` for
