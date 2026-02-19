@@ -1,7 +1,7 @@
 from datetime import date, datetime, time
 from typing import Literal
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 # ============================================
@@ -47,6 +47,8 @@ class UserProfileUpdate(BaseModel):
 class UserProfile(UserProfileBase):
     """Full user profile model with all fields."""
 
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     email: str
     is_active: bool = True
@@ -55,9 +57,6 @@ class UserProfile(UserProfileBase):
     created_at: datetime
     updated_at: datetime
     last_login_at: datetime | None = None
-
-    class Config:
-        from_attributes = True
 
 
 # ============================================
@@ -130,13 +129,12 @@ class UserSettingsUpdate(BaseModel):
 class UserSettings(UserSettingsBase):
     """Full user settings model with all fields."""
 
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     user_id: str
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 # ============================================
@@ -186,13 +184,12 @@ class UserGoalUpdate(BaseModel):
 class UserGoal(UserGoalBase):
     """Full goal model with all fields."""
 
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     user_id: str
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 # ============================================

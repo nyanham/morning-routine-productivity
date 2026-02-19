@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ProductivityBase(BaseModel):
@@ -40,10 +40,9 @@ class ProductivityUpdate(BaseModel):
 class Productivity(ProductivityBase):
     """Full productivity model with database fields."""
 
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     user_id: str
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
