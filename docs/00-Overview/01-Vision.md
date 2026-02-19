@@ -4,7 +4,7 @@
 
 The **Morning Routine & Productivity Tracker** is a full-stack web application that helps people understand the link between their morning habits and daily productivity.
 
-Users log daily routines  Ewake time, sleep duration, exercise, meditation, mood  Ealongside productivity metrics like focus hours, tasks completed, and stress levels. The app then visualizes correlations so users can discover which habits actually move the needle.
+Users log daily routines  — wake time, sleep duration, exercise, meditation, mood  — alongside productivity metrics like focus hours, tasks completed, and stress levels. The app then visualizes correlations so users can discover which habits actually move the needle.
 
 ## Why Does It Exist?
 
@@ -26,18 +26,18 @@ By collecting personal data over time and surfacing trends through interactive c
 
 ## Core Capabilities
 
-- **Track morning routines**  Elog habits daily through a clean form or CSV import
-- **Monitor productivity**  Erecord scores, tasks, focus time, and stress
-- **Visualize correlations**  Einteractive charts connecting habits to outcomes
-- **Multi-user support**  Eeach user sees only their own data, secured by row-level policies
-- **Responsive UI**  Eworks on desktop and tablet
+- **Track morning routines**  — log habits daily through a clean form or CSV import
+- **Monitor productivity**  — record scores, tasks, focus time, and stress
+- **Visualize correlations**  — interactive charts connecting habits to outcomes
+- **Multi-user support**  — each user sees only their own data, secured by row-level policies
+- **Responsive UI**  — works on desktop and tablet
 
 ## Design Philosophy
 
-- **Simplicity over features**  Edo a few things well rather than many things poorly
-- **Data belongs to the user**  Eper-user isolation at the database level
-- **Serverless by default**  Eminimize operational overhead with managed services
-- **Clarity over cleverness**  Ereadable code, honest documentation, small composable units
+- **Simplicity over features**  — do a few things well rather than many things poorly
+- **Data belongs to the user**  — per-user isolation at the database level
+- **Serverless by default**  — minimize operational overhead with managed services
+- **Clarity over cleverness**  — readable code, honest documentation, small composable units
 
 ## Tech Stack at a Glance
 

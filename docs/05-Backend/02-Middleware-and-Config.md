@@ -47,7 +47,7 @@ app.add_middleware(
 | -------------------- | ------------------- | ------------------------------------ |
 | `allow_origins`      | `CORS_ORIGINS`      | Exact origin allow-list              |
 | `allow_origin_regex` | `CORS_ORIGIN_REGEX` | Wildcard match (e.g. `*.vercel.app`) |
-| `allow_credentials`  |  E                  | Cookies / Auth headers               |
+| `allow_credentials`  |  —                   | Cookies / Auth headers               |
 
 **`CORS_ORIGINS` parsing** (in `Settings.get_cors_origins_list()`):
 
@@ -59,7 +59,7 @@ app.add_middleware(
 
 ### 2. Request Logger
 
-> `@app.middleware("http")`  E`log_requests` in `main.py`.
+> `@app.middleware("http")`  — `log_requests` in `main.py`.
 
 Every request/response pair is logged for CloudWatch observability:
 
@@ -138,8 +138,8 @@ class Settings(BaseSettings):
 
 | Variable            | Required | Default                              | Description                   |
 | ------------------- | -------- | ------------------------------------ | ----------------------------- |
-| `SUPABASE_URL`      | Yes      |  E                                   | Supabase project URL          |
-| `SUPABASE_KEY`      | Yes      |  E                                   | Supabase service role key     |
+| `SUPABASE_URL`      | Yes      |  —                                    | Supabase project URL          |
+| `SUPABASE_KEY`      | Yes      |  —                                    | Supabase service role key     |
 | `APP_NAME`          | No       | `"Morning Routine Productivity API"` | Shown in OpenAPI docs         |
 | `DEBUG`             | No       | `false`                              | Debug mode toggle             |
 | `ENVIRONMENT`       | No       | `"development"`                      | `development` / `production`  |
@@ -180,7 +180,7 @@ Two client factories serve different security contexts:
 supabase: Client = create_client(settings.supabase_url, settings.supabase_key)
 
 def get_supabase() -> Client:
-    """Bypasses RLS  Eused for admin operations and token verification."""
+    """Bypasses RLS  — used for admin operations and token verification."""
     return supabase
 ```
 
@@ -201,7 +201,7 @@ def get_authenticated_supabase(access_token: str) -> Client:
 
 - Created per-request.
 - Injects the user's JWT into PostgREST headers.
-- All queries go through RLS  Ethe user can only see their own data.
+- All queries go through RLS  — the user can only see their own data.
 - Returned by the `get_user_supabase` dependency.
 
 ### Client Selection in Auth
@@ -238,9 +238,9 @@ FastAPI dependency that:
 
 | Error condition         | Detail message                                   |
 | ----------------------- | ------------------------------------------------ |
-| Expired token           | `"Token expired  Eplease sign in again"`         |
-| Invalid signature / JWT | `"Invalid token  Eplease sign in again"`         |
-| Other                   | `"Authentication failed  Eplease sign in again"` |
+| Expired token           | `"Token expired  — please sign in again"`         |
+| Invalid signature / JWT | `"Invalid token  — please sign in again"`         |
+| Other                   | `"Authentication failed  — please sign in again"` |
 
 ### get_user_supabase
 

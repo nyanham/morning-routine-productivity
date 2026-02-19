@@ -6,7 +6,7 @@
 
 ## Scope
 
-This code of conduct applies to **all** project spaces  Eissues, pull
+This code of conduct applies to **all** project spaces  — issues, pull
 requests, discussions, and any associated community channels.
 
 ---

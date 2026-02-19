@@ -1,6 +1,6 @@
 # Hooks
 
-> Custom React hooks  Ethe shared async pattern, domain-specific hooks, and TypeScript types.
+> Custom React hooks  — the shared async pattern, domain-specific hooks, and TypeScript types.
 
 ---
 
@@ -157,7 +157,7 @@ Manage user goals.
 | `fetch`  | `GET  /api/users/me/goals`           | `UserGoal[]` |
 | `create` | `POST /api/users/me/goals`           | `UserGoal`   |
 | `update` | `PATCH /api/users/me/goals/:goalId`  | `UserGoal`   |
-| `remove` | `DELETE /api/users/me/goals/:goalId` |  E           |
+| `remove` | `DELETE /api/users/me/goals/:goalId` |  —            |
 
 `fetch` accepts an optional `activeOnly` boolean. After `create`, `update`,
 or `remove`, the local `data` array is updated optimistically.
@@ -173,7 +173,7 @@ Morning routine CRUD with pagination.
 | `fetch`  | `GET  /api/routines`       | `PaginatedResponse<MorningRoutine>` |
 | `create` | `POST /api/routines`       | `MorningRoutine`                    |
 | `update` | `PUT  /api/routines/:id`   | `MorningRoutine`                    |
-| `remove` | `DELETE /api/routines/:id` |  E                                  |
+| `remove` | `DELETE /api/routines/:id` |  —                                   |
 
 **Fetch parameters:**
 
@@ -220,7 +220,7 @@ Productivity entry CRUD with pagination. Same shape as `useRoutines()`.
 | `fetch`  | `GET  /api/productivity`       | `PaginatedResponse<ProductivityEntry>` |
 | `create` | `POST /api/productivity`       | `ProductivityEntry`                    |
 | `update` | `PUT  /api/productivity/:id`   | `ProductivityEntry`                    |
-| `remove` | `DELETE /api/productivity/:id` |  E                                     |
+| `remove` | `DELETE /api/productivity/:id` |  —                                      |
 
 ---
 

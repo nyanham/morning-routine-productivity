@@ -1,6 +1,6 @@
 # Services
 
-> Business-logic layer  Ehow each service is constructed, what it does, and
+> Business-logic layer  — how each service is constructed, what it does, and
 > how it interacts with Supabase.
 
 ---
@@ -20,9 +20,9 @@ class XxxService:
 1. **Instantiated per-request** inside the API handler.
 2. **Receives an authenticated Supabase client** so queries automatically
    pass through Row-Level Security.
-3. **Filters on `user_id`** as an additional guard  Edefence in depth even
+3. **Filters on `user_id`** as an additional guard  — defence in depth even
    if RLS policies change.
-4. **Returns dicts or Pydantic models**  Eno ORM objects.
+4. **Returns dicts or Pydantic models**  — no ORM objects.
 
 ```mermaid
 graph LR
@@ -53,7 +53,7 @@ All services are re-exported from the barrel file `services/__init__.py`.
 
 ## RoutineService
 
-> `services/routine_service.py`  ECRUD for morning routine entries.
+> `services/routine_service.py`  — CRUD for morning routine entries.
 
 | Method   | Supabase call                | Returns                             |
 | -------- | ---------------------------- | ----------------------------------- |
@@ -100,7 +100,7 @@ def list(
 
 ## ProductivityService
 
-> `services/productivity_service.py`  ECRUD for productivity entries.
+> `services/productivity_service.py`  — CRUD for productivity entries.
 
 Structurally identical to `RoutineService` but operates on the
 `productivity_entries` table. All method signatures and behaviours match
@@ -118,7 +118,7 @@ one-to-one.
 
 ## AnalyticsService
 
-> `services/analytics_service.py`  Eread-only aggregate computations.
+> `services/analytics_service.py`  — read-only aggregate computations.
 
 ### get_summary()
 
@@ -166,7 +166,7 @@ def get_chart_data(
 
 ## UserService
 
-> `services/user_service.py`  Eprofile, settings, and goals management.
+> `services/user_service.py`  — profile, settings, and goals management.
 
 ### Profile Methods
 
@@ -227,7 +227,7 @@ async def list_routines(
     return service.list(page, page_size)                     # 4. Delegate
 ```
 
-This keeps handlers thin (typically 3 E lines of meaningful code) and makes
+This keeps handlers thin (typically 3 —  lines of meaningful code) and makes
 services easy to test by injecting mock clients.
 
 ---

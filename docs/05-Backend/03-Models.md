@@ -53,7 +53,7 @@ graph TD
 | `exercise_minutes`       | `int`                                       | `>= 0`, default `0` |
 | `meditation_minutes`     | `int`                                       | `>= 0`, default `0` |
 | `breakfast_quality`      | `Literal["poor","fair","good","excellent"]` | Default `"good"`    |
-| `morning_mood`           | `int`                                       | `1 E0`              |
+| `morning_mood`           | `int`                                       | `1 — 0`              |
 | `screen_time_before_bed` | `int`                                       | `>= 0`, minutes     |
 | `caffeine_intake`        | `int`                                       | `>= 0`, mg or cups  |
 | `water_intake_ml`        | `int`                                       | `>= 0`              |
@@ -83,13 +83,13 @@ Config: `from_attributes = True`.
 | -------------------- | ------------- | ------------------- |
 | `date`               | `date`        | Required            |
 | `routine_id`         | `str \| None` | FK to routine       |
-| `productivity_score` | `int`         | `1 E0`              |
+| `productivity_score` | `int`         | `1 — 0`              |
 | `tasks_completed`    | `int`         | `>= 0`, default `0` |
 | `tasks_planned`      | `int`         | `>= 0`, default `0` |
 | `focus_hours`        | `float`       | `>= 0`, default `0` |
 | `distractions_count` | `int`         | `>= 0`, default `0` |
-| `energy_level`       | `int`         | `1 E0`              |
-| `stress_level`       | `int`         | `1 E0`              |
+| `energy_level`       | `int`         | `1 — 0`              |
+| `stress_level`       | `int`         | `1 — 0`              |
 | `notes`              | `str \| None` | Free text           |
 
 ### ProductivityCreate
@@ -118,12 +118,12 @@ Adds: `id`, `user_id`, `created_at`, `updated_at`. Config: `from_attributes = Tr
 | --------------- | ------------------------------------------------------------------- | ----------------- |
 | `full_name`     | `str \| None`                                                       | max 100 chars     |
 | `display_name`  | `str \| None`                                                       | max 50 chars      |
-| `avatar_url`    | `str \| None`                                                       |  E                |
-| `date_of_birth` | `date \| None`                                                      |  E                |
-| `gender`        | `Literal["male","female","non_binary","prefer_not_to_say"] \| None` |  E                |
+| `avatar_url`    | `str \| None`                                                       |  —                 |
+| `date_of_birth` | `date \| None`                                                      |  —                 |
+| `gender`        | `Literal["male","female","non_binary","prefer_not_to_say"] \| None` |  —                 |
 | `timezone`      | `str`                                                               | default `"UTC"`   |
 | `locale`        | `str`                                                               | default `"en-US"` |
-| `bio`           | `str \| None`                                                       |  E                |
+| `bio`           | `str \| None`                                                       |  —                 |
 | `occupation`    | `str \| None`                                                       | max 100 chars     |
 
 #### UserProfileCreate
@@ -174,7 +174,7 @@ Adds: `id`, `email`, `is_active`, `email_verified`, `onboarding_completed`,
 
 | Field                  | Type                           | Default      |
 | ---------------------- | ------------------------------ | ------------ |
-| `default_date_range`   | `int`                          | `30` (7 E65) |
+| `default_date_range`   | `int`                          | `30` (7 — 65) |
 | `default_chart_type`   | `Literal["line","bar","area"]` | `"line"`     |
 | `show_weekend_markers` | `bool`                         | `True`       |
 | `start_week_on`        | `Literal["monday","sunday"]`   | `"monday"`   |
@@ -304,7 +304,7 @@ class PaginatedResponse(BaseModel, Generic[T]):
 - **Pydantic v2** with `model_dump()` / `model_dump(exclude_unset=True)`.
 - **`Field(ge=, le=)`** enforces numeric range constraints at the schema
   level, before any service logic runs.
-- **`Literal` types** restrict string fields to an allowlist  Einvalid values
+- **`Literal` types** restrict string fields to an allowlist  — invalid values
   produce a `422` with a clear validation error.
 - **`from_attributes = True`** (formerly `orm_mode`) allows models to be
   constructed from dict-like objects returned by Supabase.

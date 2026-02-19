@@ -1,6 +1,6 @@
 # Integration Points
 
-How the application connects to external services  ESupabase, AWS, and Vercel  Eand the contracts between them.
+How the application connects to external services  — Supabase, AWS, and Vercel  — and the contracts between them.
 
 ---
 
@@ -43,7 +43,7 @@ Supabase provides **three services** to the application: Auth, PostgreSQL, and r
 | Concern       | Frontend                                                         | Backend                                     |
 | ------------- | ---------------------------------------------------------------- | ------------------------------------------- |
 | **SDK**       | `@supabase/supabase-js` v2                                       | `supabase-py` v2                            |
-| **Operation** | `signUp`, `signIn`, `signOut`, `getSession`, `onAuthStateChange` | `auth.get_user(token)`  Everify JWT only    |
+| **Operation** | `signUp`, `signIn`, `signOut`, `getSession`, `onAuthStateChange` | `auth.get_user(token)`  — verify JWT only    |
 | **Key used**  | `NEXT_PUBLIC_SUPABASE_ANON_KEY` (public)                         | `SUPABASE_KEY` (service role, secret)       |
 | **Token**     | Stored in browser by Supabase SDK                                | Received via `Authorization: Bearer` header |
 
@@ -73,17 +73,17 @@ sequenceDiagram
 | Concern                  | Detail                                                                       |
 | ------------------------ | ---------------------------------------------------------------------------- |
 | **Connection**           | Via Supabase's HTTP-based postgrest API (not a raw TCP connection)           |
-| **Service client**       | Uses the service role key  Ebypasses RLS (used for admin/token verification) |
-| **Authenticated client** | Uses `client.postgrest.auth(access_token)`  Erespects RLS                    |
+| **Service client**       | Uses the service role key  — bypasses RLS (used for admin/token verification) |
+| **Authenticated client** | Uses `client.postgrest.auth(access_token)`  — respects RLS                    |
 | **Connection pooling**   | Managed by Supabase (PgBouncer)                                              |
 
 The two clients are created in `backend/app/core/supabase.py`:
 
 ```python
-# Service client  Ebypasses RLS
+# Service client  — bypasses RLS
 supabase = create_client(settings.supabase_url, settings.supabase_key)
 
-# Authenticated client  Erespects RLS
+# Authenticated client  — respects RLS
 def get_authenticated_supabase(access_token: str) -> Client:
     client = create_client(settings.supabase_url, settings.supabase_key)
     client.postgrest.auth(access_token)
@@ -109,7 +109,7 @@ RLS policies use `auth.uid()` which resolves from the JWT passed via `postgrest.
 | **Protocol**   | HTTPS                                          |
 | **Stages**     | `development`, `staging`, `production`         |
 | **Routing**    | Catch-all `$default` ↁELambda                  |
-| **CORS**       | Disabled at Gateway level  Ehandled by FastAPI |
+| **CORS**       | Disabled at Gateway level  — handled by FastAPI |
 | **Throttling** | Default AWS limits apply                       |
 
 ### Lambda
@@ -125,8 +125,8 @@ RLS policies use `auth.uid()` which resolves from the JWT passed via `postgrest.
 
 **Cold start behavior:**
 
-- First request after idle: 2 E seconds (initializes Python, loads FastAPI, connects to Supabase).
-- Subsequent requests: ~50 E00 ms (warm invocation).
+- First request after idle: 2 —  seconds (initializes Python, loads FastAPI, connects to Supabase).
+- Subsequent requests: ~50 — 00 ms (warm invocation).
 - Memory and Python 3.12 help keep cold starts reasonable.
 
 ### CloudWatch

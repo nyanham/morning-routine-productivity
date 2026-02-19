@@ -52,9 +52,9 @@ The backend maps common JWT failure modes to user-friendly messages:
 
 | Condition                    | Status | Detail                                         |
 | ---------------------------- | ------ | ---------------------------------------------- |
-| Token expired                | 401    | `Token expired  Eplease sign in again`         |
-| Invalid signature / tampered | 401    | `Invalid token  Eplease sign in again`         |
-| Other auth failure           | 401    | `Authentication failed  Eplease sign in again` |
+| Token expired                | 401    | `Token expired  — please sign in again`         |
+| Invalid signature / tampered | 401    | `Invalid token  — please sign in again`         |
+| Other auth failure           | 401    | `Authentication failed  — please sign in again` |
 | No `Authorization` header    | 403    | `Not authenticated`                            |
 
 ---
@@ -121,7 +121,7 @@ export class ApiError extends Error {
   detail: string;
 }
 
-// Safe extraction  Eworks across chunk boundaries
+// Safe extraction  — works across chunk boundaries
 export function getApiErrorMessage(err: unknown, fallback: string): string;
 ```
 

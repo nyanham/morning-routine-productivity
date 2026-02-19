@@ -1,6 +1,6 @@
 # Components
 
-> Catalogue of reusable React components  Elayout, UI primitives, and charts.
+> Catalogue of reusable React components  — layout, UI primitives, and charts.
 
 ---
 
@@ -201,7 +201,7 @@ Line chart displaying three daily metrics over time.
 
 | Prop    | Type               | Default                    |
 | ------- | ------------------ | -------------------------- |
-| `data`  | `ChartDataPoint[]` |  E                         |
+| `data`  | `ChartDataPoint[]` |  —                          |
 | `title` | `string`           | `"Productivity Over Time"` |
 
 **Series:**
@@ -212,7 +212,7 @@ Line chart displaying three daily metrics over time.
 | `energy_level`       | `#10b981` | Energy       |
 | `morning_mood`       | `#f59e0b` | Mood         |
 
-- Y-axis domain: `[0, 10]` (all metrics use a 1 E0 scale).
+- Y-axis domain: `[0, 10]` (all metrics use a 1 — 0 scale).
 - Active dot radius: `6` for hover highlighting.
 
 ```tsx
@@ -231,7 +231,7 @@ Grouped bar chart for morning routine activity durations.
 
 | Prop    | Type               | Default                        |
 | ------- | ------------------ | ------------------------------ |
-| `data`  | `ChartDataPoint[]` |  E                             |
+| `data`  | `ChartDataPoint[]` |  —                              |
 | `title` | `string`           | `"Morning Routine Activities"` |
 
 **Series:**
@@ -260,7 +260,7 @@ Donut (pie) chart showing how sleep durations are distributed across buckets.
 
 | Prop    | Type                                               | Default                         |
 | ------- | -------------------------------------------------- | ------------------------------- |
-| `data`  | `{ name: string; value: number; color: string }[]` |  E                              |
+| `data`  | `{ name: string; value: number; color: string }[]` |  —                               |
 | `title` | `string`                                           | `"Sleep Duration Distribution"` |
 
 **Appearance:**

@@ -16,7 +16,7 @@
 | Mangum            | 0.21.x  | ASGI ↁEAWS Lambda adapter               |
 | Pandas            | 2.x     | CSV import parsing                      |
 | Uvicorn           | 0.40.x  | Local ASGI development server           |
-| Poetry            |  E      | Dependency management                   |
+| Poetry            |  —       | Dependency management                   |
 
 ---
 
@@ -101,7 +101,7 @@ graph TD
    and return the result. No direct database calls.
 2. **Services own business logic.** Each service receives an authenticated
    Supabase client and the `user_id` at construction time.
-3. **Models are plain Pydantic schemas.** No ORM mapping  Ethe Supabase
+3. **Models are plain Pydantic schemas.** No ORM mapping  — the Supabase
    client returns dicts that Pydantic validates on the way out.
 4. **Core is infrastructure.** Config loading, client factories, and auth
    verification live here; domain code does not.
@@ -150,7 +150,7 @@ sequenceDiagram
   JWT into PostgREST requests, so Row-Level Security (RLS) policies filter
   results server-side.
 - **Middleware logs** every request/response pair with method, path, origin,
-  status code, and latency in milliseconds  Eall visible in CloudWatch.
+  status code, and latency in milliseconds  — all visible in CloudWatch.
 
 ---
 

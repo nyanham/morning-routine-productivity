@@ -4,7 +4,7 @@
 
 ---
 
-## 00  EOverview
+## 00  — Overview
 
 | Document                                           | Description                                 |
 | -------------------------------------------------- | ------------------------------------------- |
@@ -12,7 +12,7 @@
 | [Quickstart.md](../00-Overview/02-Quickstart.md)   | Fastest path from clone to running app      |
 | [Project-Map.md](../00-Overview/03-Project-Map.md) | Annotated directory tree                    |
 
-## 01  EGetting Started
+## 01  — Getting Started
 
 | Document                                                            | Description                             |
 | ------------------------------------------------------------------- | --------------------------------------- |
@@ -20,7 +20,7 @@
 | [Configuration.md](../01-Getting-Started/02-Configuration.md)       | Environment files and settings          |
 | [Running-Services.md](../01-Getting-Started/03-Running-Services.md) | Dev server, Docker Compose, SAM local   |
 
-## 02  EArchitecture
+## 02  — Architecture
 
 | Document                                                                   | Description                                      |
 | -------------------------------------------------------------------------- | ------------------------------------------------ |
@@ -30,7 +30,7 @@
 | [Data-Model.md](../02-Architecture/04-Data-Model.md)                       | Entity-relationship diagram                      |
 | [Integration-Points.md](../02-Architecture/05-Integration-Points.md)       | How frontend, backend, Supabase, and AWS connect |
 
-## 03  EAPI
+## 03  — API
 
 | Document                                                              | Description                              |
 | --------------------------------------------------------------------- | ---------------------------------------- |
@@ -43,7 +43,7 @@
 | [Endpoints / Analytics.md](../03-API/Endpoints/04-Analytics.md)       | Summary and chart endpoints              |
 | [Endpoints / Import.md](../03-API/Endpoints/05-Import.md)             | CSV bulk import                          |
 
-## 04  EFrontend
+## 04  — Frontend
 
 | Document                                                     | Description                               |
 | ------------------------------------------------------------ | ----------------------------------------- |
@@ -53,7 +53,7 @@
 | [Styling.md](../04-Frontend/05-Styling.md)                   | Tailwind setup, theme tokens, `cn()` util |
 | [Hooks.md](../04-Frontend/03-Hooks.md)                       | Custom hooks (`useAuth`, `useApi`)        |
 
-## 05  EBackend
+## 05  — Backend
 
 | Document                                                              | Description                             |
 | --------------------------------------------------------------------- | --------------------------------------- |
@@ -62,7 +62,7 @@
 | [Models.md](../05-Backend/03-Models.md)                               | Pydantic models and validation rules    |
 | [Middleware-and-Config.md](../05-Backend/02-Middleware-and-Config.md) | CORS, exception handler, Settings class |
 
-## 06  EDatabase
+## 06  — Database
 
 | Document                                                                   | Description                                   |
 | -------------------------------------------------------------------------- | --------------------------------------------- |
@@ -72,7 +72,7 @@
 | [Triggers-and-Functions.md](../06-Database/03-Triggers-and-Functions.md)   | `updated_at` trigger, helper functions        |
 | [Seed-Data.md](../06-Database/05-Seed-Data.md)                             | CSV dataset, download script, import endpoint |
 
-## 07  EOperations
+## 07  — Operations
 
 | Document                                                                   | Description                                  |
 | -------------------------------------------------------------------------- | -------------------------------------------- |
@@ -81,7 +81,7 @@
 | [Monitoring-and-Logging.md](../07-Operations/03-Monitoring-and-Logging.md) | CloudWatch, Vercel analytics, log structure  |
 | [Security.md](../07-Operations/04-Security.md)                             | Secrets management, IAM, dependency scanning |
 
-## 08  ETesting
+## 08  — Testing
 
 | Document                                                          | Description                                   |
 | ----------------------------------------------------------------- | --------------------------------------------- |
@@ -90,7 +90,7 @@
 | [Frontend-Tests.md](../08-Testing/03-Frontend-Tests.md)           | Jest config, test utils, component tests      |
 | [Linting-and-Quality.md](../08-Testing/04-Linting-and-Quality.md) | Ruff, mypy, Bandit, ESLint, pre-commit        |
 
-## 09  EContributing
+## 09  — Contributing
 
 | Document                                                                     | Description                                  |
 | ---------------------------------------------------------------------------- | -------------------------------------------- |
@@ -99,7 +99,7 @@
 | [Issue-and-PR-Templates.md](../09-Contributing/03-Issue-and-PR-Templates.md) | GitHub templates, CODEOWNERS, release config |
 | [Security-Policy.md](../09-Contributing/04-Security-Policy.md)               | Pointer to root `SECURITY.md` (single source of truth) |
 
-## 10  EReference
+## 10  — Reference
 
 | Document                                                | Description                             |
 | ------------------------------------------------------- | --------------------------------------- |

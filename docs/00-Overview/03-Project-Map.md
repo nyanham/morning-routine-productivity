@@ -48,9 +48,9 @@ frontend/
 
 **Key entry points:**
 
-- [src/app/layout.tsx](../../frontend/src/app/layout.tsx)  Eroot layout, providers
-- [src/lib/api.ts](../../frontend/src/lib/api.ts)  EAPI client used by all hooks
-- [src/contexts/AuthContext.tsx](../../frontend/src/contexts/AuthContext.tsx)  Eauthentication state
+- [src/app/layout.tsx](../../frontend/src/app/layout.tsx)  — root layout, providers
+- [src/lib/api.ts](../../frontend/src/lib/api.ts)  — API client used by all hooks
+- [src/contexts/AuthContext.tsx](../../frontend/src/contexts/AuthContext.tsx)  — authentication state
 
 ---
 
@@ -91,9 +91,9 @@ backend/
 
 **Key entry points:**
 
-- [app/main.py](../../backend/app/main.py)  Eapp startup, CORS, Lambda handler
-- [app/core/config.py](../../backend/app/core/config.py)  Eall environment variables
-- [app/api/](../../backend/app/api/)  Estart here to understand available endpoints
+- [app/main.py](../../backend/app/main.py)  — app startup, CORS, Lambda handler
+- [app/core/config.py](../../backend/app/core/config.py)  — all environment variables
+- [app/api/](../../backend/app/api/)  — start here to understand available endpoints
 
 ---
 

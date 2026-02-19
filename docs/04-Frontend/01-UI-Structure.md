@@ -15,7 +15,7 @@
 | Recharts     | 2.x     | Data visualisation (line, bar, pie) |
 | Lucide React | 0.5.x   | Icon library                        |
 | Supabase JS  | 2.x     | Auth & real-time client             |
-| PapaParse    |  E      | Client-side CSV parsing             |
+| PapaParse    |  —       | Client-side CSV parsing             |
 
 ---
 
@@ -24,7 +24,7 @@
 ```
 frontend/src/
 ├── app/                       # Next.js App Router (file-based routing)
-━E  ├── layout.tsx             # Root layout  Eproviders, fonts, global CSS
+━E  ├── layout.tsx             # Root layout  — providers, fonts, global CSS
 ━E  ├── page.tsx               # Landing page (/)
 ━E  ├── globals.css            # Tailwind v4 @theme, component layer
 ━E  ├── auth/
@@ -179,10 +179,10 @@ or redirects.
 
 The public landing page (`/`) is a self-contained marketing page with:
 
-1. **Header**  Elogo + Login / Sign Up links
-2. **Hero section**  Eheadline, subtitle, CTA buttons
-3. **Features grid**  Ethree `FeatureCard` components (CSV Import, Manual Input, Visual Analytics)
-4. **Footer**  Ecopyright
+1. **Header**  — logo + Login / Sign Up links
+2. **Hero section**  — headline, subtitle, CTA buttons
+3. **Features grid**  — three `FeatureCard` components (CSV Import, Manual Input, Visual Analytics)
+4. **Footer**  — copyright
 
 It uses no shared dashboard layout and renders at full width.
 

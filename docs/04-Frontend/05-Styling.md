@@ -28,7 +28,7 @@ Defined in `globals.css` via the `@theme` directive:
 
 ```css
 @theme {
-  /* Primary  EBlue */
+  /* Primary  — Blue */
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
   --color-primary-200: #bfdbfe;
@@ -40,7 +40,7 @@ Defined in `globals.css` via the `@theme` directive:
   --color-primary-800: #1e40af;
   --color-primary-900: #1e3a8a;
 
-  /* Accent  EPurple / Fuchsia */
+  /* Accent  — Purple / Fuchsia */
   --color-accent-50: #fdf4ff;
   --color-accent-100: #fae8ff;
   --color-accent-200: #f5d0fe;
@@ -176,7 +176,7 @@ export function cn(...inputs: ClassValue[]) {
 
 > Source: `src/lib/utils.ts`
 
-Two functions map a numeric productivity score (1 E0) to semantic colours:
+Two functions map a numeric productivity score (1 — 0) to semantic colours:
 
 ```typescript
 // Returns a text colour class
@@ -206,12 +206,12 @@ getProductivityBgColor(score: number): string
 ### Grid Layouts
 
 ```tsx
-{/* Stats cards  E4 columns on desktop */}
+{/* Stats cards  — 4 columns on desktop */}
 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
   <StatsCard ... />
 </div>
 
-{/* Charts  E2 columns on desktop */}
+{/* Charts  — 2 columns on desktop */}
 <div className="mt-8 grid gap-6 lg:grid-cols-2">
   <ProductivityChart data={...} />
   <RoutineBarChart data={...} />
@@ -266,7 +266,7 @@ The project uses Tailwind's default breakpoints:
 
 | Prefix | Min-width | Typical use                     |
 | ------ | --------- | ------------------------------- |
-| `sm`   | 640px     |  E                              |
+| `sm`   | 640px     |  —                               |
 | `md`   | 768px     | 2-column grids                  |
 | `lg`   | 1024px    | 4-column stats, 2-column charts |
 | `xl`   | 1280px    | Max-width containers            |

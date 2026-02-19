@@ -44,7 +44,7 @@ flowchart TB
 
 ---
 
-## CI Workflow  EJobs in Detail
+## CI Workflow  — Jobs in Detail
 
 ### 1. Frontend Lint & Type Check
 
@@ -134,7 +134,7 @@ prepared to deploy to AWS. To activate:
    | `CORS_ORIGIN_REGEX`     | (optional) Origin regex        |
 
 2. Uncomment the `deploy-backend` job in `deploy.yml`.
-3. Push to `main`  Ethe backend deploys **after** the frontend succeeds.
+3. Push to `main`  — the backend deploys **after** the frontend succeeds.
 
 The job uses:
 
@@ -168,7 +168,7 @@ Automated dependency updates are configured in `.github/dependabot.yml`:
 | -------------- | ----------- | --------------- | -------- | --------------------- |
 | npm            | `/frontend` | Weekly (Monday) | 5        | Minor + patch grouped |
 | pip            | `/backend`  | Weekly (Monday) | 5        | Minor + patch grouped |
-| GitHub Actions | `/`         | Weekly (Monday) | 3        |  E                    |
+| GitHub Actions | `/`         | Weekly (Monday) | 3        |  —                     |
 
 All PRs are labelled (`dependencies`, `frontend`/`backend`/`ci`) and commit
 messages are prefixed with `chore(deps)` or `chore(ci)`.

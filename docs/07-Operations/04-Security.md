@@ -1,6 +1,6 @@
 # Security
 
-> Security posture across the stack  Esecrets management, authentication,
+> Security posture across the stack  — secrets management, authentication,
 > network boundaries, and dependency hygiene.
 
 ---
@@ -42,7 +42,7 @@ flowchart TB
 ### Rule: Never Hardcode Secrets
 
 All sensitive values are passed through **environment variables** or
-**GitHub Secrets**  Enever committed to the repository.
+**GitHub Secrets**  — never committed to the repository.
 
 | Secret                          | Where It Lives          | Consumed By           |
 | ------------------------------- | ----------------------- | --------------------- |
@@ -103,7 +103,7 @@ If the token is invalid or expired, the endpoint returns `401 Unauthorized`.
 
 ### Row-Level Security
 
-RLS is the **last line of defence**  Eeven if application code has a bug,
+RLS is the **last line of defence**  — even if application code has a bug,
 PostgreSQL enforces that each user can only access their own rows. Full
 details in [../06-Database/02-Row-Level-Security.md](../06-Database/02-Row-Level-Security.md).
 
@@ -139,9 +139,9 @@ list only the exact production origin in `CorsOrigins`.
 ### Principle of Least Privilege
 
 - The Lambda function's IAM execution role grants **only** what SAM auto-
-  creates  E`logs:CreateLogGroup`, `logs:CreateLogStream`, `logs:PutLogEvents`.
+  creates  — `logs:CreateLogGroup`, `logs:CreateLogStream`, `logs:PutLogEvents`.
 - No S3, DynamoDB, or other AWS service access is granted.
-- The Supabase service role key is powerful  Eit is only used server-side and
+- The Supabase service role key is powerful  — it is only used server-side and
   never exposed to the browser.
 
 ---

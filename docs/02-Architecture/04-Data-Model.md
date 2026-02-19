@@ -92,7 +92,7 @@ Created automatically by a database trigger when a user signs up via Supabase Au
 
 | Field                       | Type         | Notes                                               |
 | --------------------------- | ------------ | --------------------------------------------------- |
-| `id`                        | UUID         | PK  Ereferences `auth.users(id)`, cascade on delete |
+| `id`                        | UUID         | PK  — references `auth.users(id)`, cascade on delete |
 | `email`                     | VARCHAR(255) | Unique                                              |
 | `full_name`                 | VARCHAR(100) | From signup metadata                                |
 | `display_name`              | VARCHAR(50)  | Optional nickname                                   |
@@ -140,7 +140,7 @@ One entry per user per day. The **core tracking entity**.
 | `exercise_minutes`       | INT         | Morning exercise duration                 |
 | `meditation_minutes`     | INT         | Meditation duration                       |
 | `breakfast_quality`      | VARCHAR(20) | e.g. `none`, `light`, `balanced`, `heavy` |
-| `morning_mood`           | INT         | 1 E0 scale                                |
+| `morning_mood`           | INT         | 1 — 0 scale                                |
 | `screen_time_before_bed` | INT         | Minutes of screen time the night before   |
 | `caffeine_intake`        | INT         | Number of caffeinated drinks              |
 | `water_intake_ml`        | INT         | Water consumed (ml)                       |
@@ -153,13 +153,13 @@ One entry per user per day, optionally linked to a morning routine.
 | -------------------- | ----- | ----------------------------------- |
 | `date`               | DATE  | Unique per user                     |
 | `routine_id`         | UUID  | FK to `morning_routines` (nullable) |
-| `productivity_score` | INT   | 1 E0 self-assessed score            |
+| `productivity_score` | INT   | 1 — 0 self-assessed score            |
 | `tasks_completed`    | INT   |                                     |
 | `tasks_planned`      | INT   |                                     |
 | `focus_hours`        | FLOAT | Deep work hours                     |
 | `distractions_count` | INT   | Number of distractions              |
-| `energy_level`       | INT   | 1 E0                                |
-| `stress_level`       | INT   | 1 E0                                |
+| `energy_level`       | INT   | 1 — 0                                |
+| `stress_level`       | INT   | 1 — 0                                |
 | `notes`              | TEXT  | Free-form daily notes               |
 
 ---

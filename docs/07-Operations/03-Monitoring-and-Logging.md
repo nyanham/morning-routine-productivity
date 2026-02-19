@@ -1,6 +1,6 @@
 # Monitoring & Logging
 
-> Observability setup  Ehow to see what the application is doing at runtime.
+> Observability setup  — how to see what the application is doing at runtime.
 
 ---
 
@@ -92,7 +92,7 @@ logger.error(
 )
 ```
 
-The client only receives `{"detail": "Internal server error"}`  Eno
+The client only receives `{"detail": "Internal server error"}`  — no
 stack traces leak to the outside.
 
 ---

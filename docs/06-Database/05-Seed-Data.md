@@ -18,7 +18,7 @@ The project ships with two approaches for getting data into the database:
 
 ## Generator Script
 
-The script creates correlated synthetic data  Esleep quality affects mood,
+The script creates correlated synthetic data  — sleep quality affects mood,
 exercise influences energy, meditation reduces stress, etc.
 
 ### Running the Generator
@@ -151,7 +151,7 @@ The script outputs summary statistics after generation:
 
 ### Option 1: CSV Import API
 
-The easiest path  Eupload through the running application:
+The easiest path  — upload through the running application:
 
 ```bash
 curl -X POST http://localhost:8000/api/import/csv \

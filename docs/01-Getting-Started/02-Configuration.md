@@ -29,9 +29,9 @@ Set in `frontend/.env.local` (local) or in the Vercel dashboard (production).
 
 | Variable                        | Required | Default | Description                                            |
 | ------------------------------- | -------- | ------- | ------------------------------------------------------ |
-| `NEXT_PUBLIC_SUPABASE_URL`      | Yes      |  E      | Supabase project URL                                   |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes      |  E      | Supabase anonymous (public) key                        |
-| `NEXT_PUBLIC_API_URL`           | Yes      |  E      | Backend API base URL (`http://localhost:8000` locally) |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Yes      |  —       | Supabase project URL                                   |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes      |  —       | Supabase anonymous (public) key                        |
+| `NEXT_PUBLIC_API_URL`           | Yes      |  —       | Backend API base URL (`http://localhost:8000` locally) |
 
 All frontend variables are prefixed with `NEXT_PUBLIC_` so Next.js exposes them to the browser bundle. Do **not** put secrets here.
 
@@ -43,14 +43,14 @@ Set in `backend/.env` (local) or injected via SAM parameters / Lambda environmen
 
 | Variable            | Required | Default                   | Description                                                         |
 | ------------------- | -------- | ------------------------- | ------------------------------------------------------------------- |
-| `SUPABASE_URL`      | Yes      |  E                        | Supabase project URL                                                |
-| `SUPABASE_KEY`      | Yes      |  E                        | Supabase **service role** key (secret  Enever expose to the client) |
+| `SUPABASE_URL`      | Yes      |  —                         | Supabase project URL                                                |
+| `SUPABASE_KEY`      | Yes      |  —                         | Supabase **service role** key (secret  — never expose to the client) |
 | `ENVIRONMENT`       | No       | `development`             | `development`, `staging`, or `production`                           |
 | `DEBUG`             | No       | `false`                   | Enable debug-level logging                                          |
-| `CORS_ORIGINS`      | No       | `http://localhost:3000`   | Allowed origins  Ecomma-separated or JSON array                     |
+| `CORS_ORIGINS`      | No       | `http://localhost:3000`   | Allowed origins  — comma-separated or JSON array                     |
 | `CORS_ORIGIN_REGEX` | No       | `https://.*\.vercel\.app` | Regex for wildcard origin matching (e.g. Vercel preview deploys)    |
-| `KAGGLE_USERNAME`   | No       |  E                        | Kaggle username (only for the dataset download script)              |
-| `KAGGLE_KEY`        | No       |  E                        | Kaggle API key (only for the dataset download script)               |
+| `KAGGLE_USERNAME`   | No       |  —                         | Kaggle username (only for the dataset download script)              |
+| `KAGGLE_KEY`        | No       |  —                         | Kaggle API key (only for the dataset download script)               |
 
 ### CORS origins format
 

@@ -6,7 +6,7 @@
 
 ## Overview
 
-The frontend uses a deliberately simple state model  Eno external state library
+The frontend uses a deliberately simple state model  — no external state library
 (Redux, Zustand, etc.) is needed. State falls into three categories:
 
 ```mermaid
@@ -74,11 +74,11 @@ sequenceDiagram
 
 ### Key Design Decisions
 
-1. **Single Context**  Eauthentication is the only truly global state.
+1. **Single Context**  — authentication is the only truly global state.
    Everything else lives in hooks scoped to individual pages or components.
-2. **Supabase listener**  E`onAuthStateChange` keeps the context in sync
+2. **Supabase listener**  — `onAuthStateChange` keeps the context in sync
    across tabs and after token refresh, so we never hold stale credentials.
-3. **Redirect on events**  Enavigation happens inside the provider, not in
+3. **Redirect on events**  — navigation happens inside the provider, not in
    individual pages. `SIGNED_IN` ↁE`/dashboard`, `SIGNED_OUT` ↁE`/auth/login`.
 
 ### Usage
@@ -117,7 +117,7 @@ useUserGoals()        ↁE{ data, loading, error, fetch, create, update, remove 
 useCSVImport()        ↁE{ data, loading, error, importFile }
 ```
 
-These hooks are **not** global  Eeach component that calls a hook gets its own
+These hooks are **not** global  — each component that calls a hook gets its own
 copy of the state. This avoids accidental cross-component coupling and makes
 components easy to test in isolation.
 

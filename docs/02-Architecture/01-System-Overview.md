@@ -12,12 +12,12 @@ flowchart TB
         Browser["Web Browser"]
     end
 
-    subgraph FRONTEND["FRONTEND  EVercel"]
+    subgraph FRONTEND["FRONTEND  — Vercel"]
         Vercel["Vercel Edge Network\nSSR / SSG / CDN"]
         NextJS["Next.js 16\nApp Router\nReact 19"]
     end
 
-    subgraph BACKEND["BACKEND  EAWS"]
+    subgraph BACKEND["BACKEND  — AWS"]
         APIGW["API Gateway\nHTTP API V2"]
         Lambda["AWS Lambda\nPython 3.12"]
         Mangum["Mangum Adapter\nASGI ↁELambda"]
@@ -25,7 +25,7 @@ flowchart TB
         CW["CloudWatch Logs"]
     end
 
-    subgraph DATA["DATA  ESupabase"]
+    subgraph DATA["DATA  — Supabase"]
         Auth["Supabase Auth\nJWT · Sessions"]
         PG["PostgreSQL\nRLS Policies"]
     end
@@ -65,25 +65,25 @@ Each layer has a single job and communicates only with adjacent layers.
 ```mermaid
 flowchart TB
     subgraph PRESENTATION["PRESENTATION"]
-        Components["Components  EUI rendering"]
-        Pages["Pages  Eroute handling"]
-        Contexts["Contexts  Eglobal state"]
+        Components["Components  — UI rendering"]
+        Pages["Pages  — route handling"]
+        Contexts["Contexts  — global state"]
     end
 
     subgraph APPLICATION["APPLICATION"]
-        Hooks["Hooks  Elogic orchestration"]
-        APIClient["API Client  EHTTP communication"]
+        Hooks["Hooks  — logic orchestration"]
+        APIClient["API Client  — HTTP communication"]
     end
 
     subgraph SERVICE["SERVICE"]
-        Routes["API Routes  Erequest handling"]
-        Services["Services  Ebusiness logic"]
-        Models["Models  Edata validation"]
+        Routes["API Routes  — request handling"]
+        Services["Services  — business logic"]
+        Models["Models  — data validation"]
     end
 
     subgraph DATA["DATA"]
-        Supabase["Supabase Client  EDB operations"]
-        RLS["RLS Policies  Edata security"]
+        Supabase["Supabase Client  — DB operations"]
+        RLS["RLS Policies  — data security"]
     end
 
     PRESENTATION --> APPLICATION
@@ -93,22 +93,22 @@ flowchart TB
 
 ### 2. Security first
 
-- **JWT authentication**  Eevery API request requires a valid token.
-- **Row-Level Security**  EPostgreSQL enforces user data isolation at the query level.
-- **Input validation**  EPydantic models reject malformed data before it reaches the service layer.
-- **CORS restriction**  Eonly explicitly allowed origins can call the API.
+- **JWT authentication**  — every API request requires a valid token.
+- **Row-Level Security**  — PostgreSQL enforces user data isolation at the query level.
+- **Input validation**  — Pydantic models reject malformed data before it reaches the service layer.
+- **CORS restriction**  — only explicitly allowed origins can call the API.
 
 ### 3. Type safety across the stack
 
-- **TypeScript strict mode** on the frontend  Eno implicit `any`.
-- **Pydantic v2** on the backend  Eruntime model validation.
-- **Shared shapes**  Efrontend `types/index.ts` mirrors backend Pydantic models.
+- **TypeScript strict mode** on the frontend  — no implicit `any`.
+- **Pydantic v2** on the backend  — runtime model validation.
+- **Shared shapes**  — frontend `types/index.ts` mirrors backend Pydantic models.
 
 ### 4. Stateless design
 
-- No server sessions  EJWT tokens carry all authentication state.
-- RLS-enabled queries  Ethe database handles authorization.
-- Any Lambda invocation can handle any request  Eenables horizontal auto-scaling.
+- No server sessions  — JWT tokens carry all authentication state.
+- RLS-enabled queries  — the database handles authorization.
+- Any Lambda invocation can handle any request  — enables horizontal auto-scaling.
 
 ---
 

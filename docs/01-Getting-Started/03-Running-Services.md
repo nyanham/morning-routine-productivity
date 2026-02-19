@@ -4,7 +4,7 @@ All the ways to start the application: local processes, Docker Compose, and AWS 
 
 ---
 
-## Option 1  ELocal processes (recommended for development)
+## Option 1  — Local processes (recommended for development)
 
 This is the fastest feedback loop. Both services reload on file changes.
 
@@ -35,7 +35,7 @@ npm run dev
 
 ---
 
-## Option 2  EDocker Compose
+## Option 2  — Docker Compose
 
 Runs both services in containers. Useful for testing the full stack without installing runtimes locally.
 
@@ -75,7 +75,7 @@ docker-compose down -v
 
 ### Access points
 
-Same as local  E`http://localhost:3000` (frontend) and `http://localhost:8000` (backend).
+Same as local  — `http://localhost:3000` (frontend) and `http://localhost:8000` (backend).
 
 ### How networking works
 
@@ -89,7 +89,7 @@ From your browser, you still use `localhost` because Docker maps the container p
 
 ---
 
-## Option 3  EAWS SAM local (Lambda emulation)
+## Option 3  — AWS SAM local (Lambda emulation)
 
 SAM CLI can emulate the Lambda + API Gateway environment on your machine. This is useful to test the exact runtime that runs in production.
 
