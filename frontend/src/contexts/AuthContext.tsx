@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, useCallback, ReactNode 
 import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
+import FullPageSpinner from '@/components/ui/FullPageSpinner';
 
 // ==========================================
 // TYPES
@@ -173,16 +174,7 @@ export function RequireAuth({ children, fallback }: RequireAuthProps) {
   }, [user, loading, router, pathname]);
 
   if (loading) {
-    return (
-      fallback || (
-        <div className="flex min-h-screen items-center justify-center bg-slate-50">
-          <div className="flex flex-col items-center gap-4">
-            <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-b-2"></div>
-            <p className="text-slate-600">Loading...</p>
-          </div>
-        </div>
-      )
-    );
+    return fallback || <FullPageSpinner />;
   }
 
   if (!user) {

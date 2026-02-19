@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { BarChart3 } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
+import FullPageSpinner from '@/components/ui/FullPageSpinner';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
@@ -13,7 +14,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn, user } = useAuthContext();
+  const { signIn, user, loading: authLoading } = useAuthContext();
 
   // Redirect if already logged in
   useEffect(() => {
@@ -22,6 +23,12 @@ function LoginForm() {
       router.push(returnUrl);
     }
   }, [user, router, searchParams]);
+
+  // Show a loading spinner while we verify the session.
+  // This avoids a flash of the login form when the user is already signed in.
+  if (authLoading || user) {
+    return <FullPageSpinner message="Checking session…" />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,13 +112,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-screen items-center justify-center bg-slate-50">
-          <div className="text-slate-600">Loading...</div>
-        </div>
-      }
-    >
+    <Suspense fallback={<FullPageSpinner />}>
       <LoginForm />
     </Suspense>
   );

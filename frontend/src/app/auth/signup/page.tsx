@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { BarChart3 } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
+import FullPageSpinner from '@/components/ui/FullPageSpinner';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -15,7 +16,7 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
-  const { signUp, user } = useAuthContext();
+  const { signUp, user, loading: authLoading } = useAuthContext();
 
   // Redirect if already logged in
   useEffect(() => {
@@ -23,6 +24,12 @@ export default function SignUpPage() {
       router.push('/dashboard');
     }
   }, [user, router]);
+
+  // Show a loading spinner while we verify the session.
+  // This avoids a flash of the signup form when the user is already signed in.
+  if (authLoading || user) {
+    return <FullPageSpinner message="Checking session…" />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
