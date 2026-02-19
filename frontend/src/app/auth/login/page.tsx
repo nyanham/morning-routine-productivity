@@ -13,7 +13,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn, user } = useAuthContext();
+  const { signIn, user, loading: authLoading } = useAuthContext();
 
   // Redirect if already logged in
   useEffect(() => {
@@ -22,6 +22,19 @@ function LoginForm() {
       router.push(returnUrl);
     }
   }, [user, router, searchParams]);
+
+  // Show a loading spinner while we verify the session.
+  // This avoids a flash of the login form when the user is already signed in.
+  if (authLoading || user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-4 border-t-transparent"></div>
+          <p className="text-sm text-slate-500">Checking session…</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
