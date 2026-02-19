@@ -176,8 +176,11 @@ export function RequireAuth({ children, fallback }: RequireAuthProps) {
     return (
       fallback || (
         <div className="flex min-h-screen items-center justify-center bg-slate-50">
-          <div className="flex flex-col items-center gap-4">
-            <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <div role="status" aria-live="polite" className="flex flex-col items-center gap-4">
+            <div
+              aria-hidden="true"
+              className="border-primary-600 h-12 w-12 animate-spin rounded-full border-b-2"
+            ></div>
             <p className="text-slate-600">Loading...</p>
           </div>
         </div>
