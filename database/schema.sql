@@ -257,71 +257,71 @@ ALTER TABLE productivity_entries ENABLE ROW LEVEL SECURITY;
 -- User Profiles Policies
 CREATE POLICY "Users can view own profile"
     ON user_profiles FOR SELECT
-    USING (auth.uid() = id);
+    USING ((select auth.uid()) = id);
 
 CREATE POLICY "Users can update own profile"
     ON user_profiles FOR UPDATE
-    USING (auth.uid() = id);
+    USING ((select auth.uid()) = id);
 
 -- User Settings Policies
 CREATE POLICY "Users can view own settings"
     ON user_settings FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own settings"
     ON user_settings FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 -- User Goals Policies
 CREATE POLICY "Users can view own goals"
     ON user_goals FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can insert own goals"
     ON user_goals FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own goals"
     ON user_goals FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can delete own goals"
     ON user_goals FOR DELETE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 -- Morning Routines Policies
 CREATE POLICY "Users can view own routines"
     ON morning_routines FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can insert own routines"
     ON morning_routines FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own routines"
     ON morning_routines FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can delete own routines"
     ON morning_routines FOR DELETE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 -- Productivity Entries Policies
 CREATE POLICY "Users can view own productivity"
     ON productivity_entries FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can insert own productivity"
     ON productivity_entries FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own productivity"
     ON productivity_entries FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can delete own productivity"
     ON productivity_entries FOR DELETE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 -- ============================================
 -- GRANTS
