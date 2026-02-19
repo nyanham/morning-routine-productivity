@@ -15,7 +15,7 @@ flowchart LR
 
     subgraph Supabase
         B["PostgREST /\nSupabase Client"]
-        C{"RLS Policy\nauth.uid() = user_id?"}
+        C{"RLS Policy\n(select auth.uid()) = user_id?"}
         D["User's\nOwn Rows"]
         E["Empty\nResult"]
     end
@@ -60,7 +60,7 @@ ALTER TABLE productivity_entries ENABLE ROW LEVEL SECURITY;
 
 Every table follows the same ownership pattern: _a user may only
 SELECT / INSERT / UPDATE / DELETE rows where the user-id column equals
-`auth.uid()`_. The column used to match differs slightly between tables.
+`(select auth.uid())`_. The column used to match differs slightly between tables.
 
 | Table                  | Match Column | SELECT | INSERT | UPDATE | DELETE |
 | ---------------------- | ------------ | :----: | :----: | :----: | :----: |
@@ -85,12 +85,12 @@ SELECT / INSERT / UPDATE / DELETE rows where the user-id column equals
 -- Users can read their own profile
 CREATE POLICY "Users can view own profile"
     ON user_profiles FOR SELECT
-    USING (auth.uid() = id);
+    USING ((select auth.uid()) = id);
 
 -- Users can update their own profile
 CREATE POLICY "Users can update own profile"
     ON user_profiles FOR UPDATE
-    USING (auth.uid() = id);
+    USING ((select auth.uid()) = id);
 ```
 
 ### `user_settings`
@@ -98,11 +98,11 @@ CREATE POLICY "Users can update own profile"
 ```sql
 CREATE POLICY "Users can view own settings"
     ON user_settings FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own settings"
     ON user_settings FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 ```
 
 ### `user_goals`
@@ -110,19 +110,19 @@ CREATE POLICY "Users can update own settings"
 ```sql
 CREATE POLICY "Users can view own goals"
     ON user_goals FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can insert own goals"
     ON user_goals FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own goals"
     ON user_goals FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can delete own goals"
     ON user_goals FOR DELETE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 ```
 
 ### `morning_routines`
@@ -130,19 +130,19 @@ CREATE POLICY "Users can delete own goals"
 ```sql
 CREATE POLICY "Users can view own routines"
     ON morning_routines FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can insert own routines"
     ON morning_routines FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own routines"
     ON morning_routines FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can delete own routines"
     ON morning_routines FOR DELETE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 ```
 
 ### `productivity_entries`
@@ -150,20 +150,25 @@ CREATE POLICY "Users can delete own routines"
 ```sql
 CREATE POLICY "Users can view own productivity"
     ON productivity_entries FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can insert own productivity"
     ON productivity_entries FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own productivity"
     ON productivity_entries FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can delete own productivity"
     ON productivity_entries FOR DELETE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 ```
+
+> **Performance note — `(select auth.uid())`:** All policies wrap the call in
+> a scalar subselect. Without it, PostgreSQL re-evaluates `auth.uid()` for
+> every row. The subselect lets the planner evaluate it **once** and reuse the
+> result, which makes a meaningful difference at scale.
 
 ---
 

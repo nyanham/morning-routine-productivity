@@ -171,13 +171,15 @@ CREATE INDEX IF NOT EXISTS idx_productivity_entries_user_date ON productivity_en
 -- ============================================
 
 -- Updated at trigger function
+-- search_path is set to '' to prevent search_path injection (Supabase security lint).
+-- This function only uses NEW and NOW(), so no schema-qualified references are needed.
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = '';
 
 -- Apply triggers to all tables
 DROP TRIGGER IF EXISTS update_user_profiles_updated_at ON user_profiles;
@@ -213,11 +215,13 @@ CREATE TRIGGER update_productivity_entries_updated_at
 -- ============================================
 -- AUTO-CREATE PROFILE & SETTINGS ON USER SIGNUP
 -- ============================================
+-- search_path is set to '' to prevent search_path injection (Supabase security lint).
+-- All table references are schema-qualified because the search_path is empty.
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
     -- Create user profile
-    INSERT INTO user_profiles (id, email, full_name)
+    INSERT INTO public.user_profiles (id, email, full_name)
     VALUES (
         NEW.id,
         NEW.email,
@@ -225,12 +229,12 @@ BEGIN
     );
 
     -- Create default settings
-    INSERT INTO user_settings (user_id)
+    INSERT INTO public.user_settings (user_id)
     VALUES (NEW.id);
 
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 -- Trigger on auth.users insert
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
@@ -253,71 +257,71 @@ ALTER TABLE productivity_entries ENABLE ROW LEVEL SECURITY;
 -- User Profiles Policies
 CREATE POLICY "Users can view own profile"
     ON user_profiles FOR SELECT
-    USING (auth.uid() = id);
+    USING ((select auth.uid()) = id);
 
 CREATE POLICY "Users can update own profile"
     ON user_profiles FOR UPDATE
-    USING (auth.uid() = id);
+    USING ((select auth.uid()) = id);
 
 -- User Settings Policies
 CREATE POLICY "Users can view own settings"
     ON user_settings FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own settings"
     ON user_settings FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 -- User Goals Policies
 CREATE POLICY "Users can view own goals"
     ON user_goals FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can insert own goals"
     ON user_goals FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own goals"
     ON user_goals FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can delete own goals"
     ON user_goals FOR DELETE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 -- Morning Routines Policies
 CREATE POLICY "Users can view own routines"
     ON morning_routines FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can insert own routines"
     ON morning_routines FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own routines"
     ON morning_routines FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can delete own routines"
     ON morning_routines FOR DELETE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 -- Productivity Entries Policies
 CREATE POLICY "Users can view own productivity"
     ON productivity_entries FOR SELECT
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can insert own productivity"
     ON productivity_entries FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update own productivity"
     ON productivity_entries FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can delete own productivity"
     ON productivity_entries FOR DELETE
-    USING (auth.uid() = user_id);
+    USING ((select auth.uid()) = user_id);
 
 -- ============================================
 -- GRANTS
