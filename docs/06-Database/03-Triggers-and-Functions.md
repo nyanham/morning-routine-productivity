@@ -50,15 +50,16 @@ BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = '';
 ```
 
-| Property | Value           |
-| -------- | --------------- |
-| Language | PL/pgSQL        |
-| Returns  | `TRIGGER`       |
-| Timing   | `BEFORE UPDATE` |
-| Scope    | `FOR EACH ROW`  |
+| Property    | Value           |
+| ----------- | --------------- |
+| Language    | PL/pgSQL        |
+| Returns     | `TRIGGER`       |
+| Timing      | `BEFORE UPDATE` |
+| Scope       | `FOR EACH ROW`  |
+| search_path | `''` (empty)    |
 
 This function is generic  Ethe same function is reused across all five
 application tables.
@@ -99,7 +100,7 @@ CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
     -- Create user profile
-    INSERT INTO user_profiles (id, email, full_name)
+    INSERT INTO public.user_profiles (id, email, full_name)
     VALUES (
         NEW.id,
         NEW.email,
@@ -107,21 +108,22 @@ BEGIN
     );
 
     -- Create default settings
-    INSERT INTO user_settings (user_id)
+    INSERT INTO public.user_settings (user_id)
     VALUES (NEW.id);
 
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 ```
 
-| Property | Value                                                         |
-| -------- | ------------------------------------------------------------- |
-| Language | PL/pgSQL                                                      |
-| Returns  | `TRIGGER`                                                     |
-| Security | `SECURITY DEFINER` (runs as the function owner, bypasses RLS) |
-| Timing   | `AFTER INSERT` on `auth.users`                                |
-| Scope    | `FOR EACH ROW`                                                |
+| Property    | Value                                                         |
+| ----------- | ------------------------------------------------------------- |
+| Language    | PL/pgSQL                                                      |
+| Returns     | `TRIGGER`                                                     |
+| Security    | `SECURITY DEFINER` (runs as the function owner, bypasses RLS) |
+| Timing      | `AFTER INSERT` on `auth.users`                                |
+| Scope       | `FOR EACH ROW`                                                |
+| search_path | `''` (empty)                                                  |
 
 ### What It Creates
 
@@ -174,7 +176,23 @@ superuser or the migration role). This is necessary because:
 > **Security note:** `SECURITY DEFINER` functions should be kept minimal and
 > carefully reviewed. This function only inserts into two tables using data
 > from the triggering row  Eit does not accept external input.
+---
 
+## Immutable `search_path`
+
+Both functions are declared with `SET search_path = ''`. This prevents
+**search_path injection**, where an attacker creates a schema containing a
+malicious object with the same name as a table or function the trigger
+references. With an empty `search_path`, all table references inside the
+function body must be schema-qualified (e.g., `public.user_profiles`).
+
+`update_updated_at_column()` only touches `NEW` and calls `NOW()`, so it
+needs no schema-qualified references. `handle_new_user()` explicitly
+references `public.user_profiles` and `public.user_settings`.
+
+> **Supabase security lint:** If you omit `SET search_path`, the Supabase
+> Dashboard will flag the function with *"Function has a role mutable
+> search_path"*.
 ---
 
 ## Adding a New Trigger
