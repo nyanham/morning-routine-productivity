@@ -10,69 +10,6 @@ import { DashboardSkeleton } from '@/components/ui/Skeleton';
 import { Clock, Target, Zap, Moon, AlertCircle, RefreshCw } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
-// Demo data for when no real data is available
-const demoProductivityData = [
-  { date: 'Jan 1', productivity_score: 7, energy_level: 6, morning_mood: 7 },
-  { date: 'Jan 2', productivity_score: 8, energy_level: 7, morning_mood: 8 },
-  { date: 'Jan 3', productivity_score: 6, energy_level: 5, morning_mood: 6 },
-  { date: 'Jan 4', productivity_score: 9, energy_level: 8, morning_mood: 8 },
-  { date: 'Jan 5', productivity_score: 7, energy_level: 7, morning_mood: 7 },
-  { date: 'Jan 6', productivity_score: 8, energy_level: 8, morning_mood: 9 },
-  { date: 'Jan 7', productivity_score: 9, energy_level: 9, morning_mood: 8 },
-];
-
-const demoRoutineData = [
-  {
-    date: 'Jan 1',
-    sleep_duration_hours: 7,
-    exercise_minutes: 30,
-    meditation_minutes: 10,
-  },
-  {
-    date: 'Jan 2',
-    sleep_duration_hours: 8,
-    exercise_minutes: 45,
-    meditation_minutes: 15,
-  },
-  {
-    date: 'Jan 3',
-    sleep_duration_hours: 6,
-    exercise_minutes: 0,
-    meditation_minutes: 5,
-  },
-  {
-    date: 'Jan 4',
-    sleep_duration_hours: 8,
-    exercise_minutes: 60,
-    meditation_minutes: 20,
-  },
-  {
-    date: 'Jan 5',
-    sleep_duration_hours: 7,
-    exercise_minutes: 30,
-    meditation_minutes: 10,
-  },
-  {
-    date: 'Jan 6',
-    sleep_duration_hours: 7.5,
-    exercise_minutes: 45,
-    meditation_minutes: 15,
-  },
-  {
-    date: 'Jan 7',
-    sleep_duration_hours: 8,
-    exercise_minutes: 50,
-    meditation_minutes: 20,
-  },
-];
-
-const demoSleepDistribution = [
-  { name: '<6 hrs', value: 10, color: '#ef4444' },
-  { name: '6-7 hrs', value: 25, color: '#f97316' },
-  { name: '7-8 hrs', value: 40, color: '#22c55e' },
-  { name: '>8 hrs', value: 25, color: '#3b82f6' },
-];
-
 // Format date for display
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -118,7 +55,7 @@ function DashboardContent() {
   // Transform data for charts
   const productivityChartData = useMemo(() => {
     if (!productivity.data?.data?.length && !routines.data?.data?.length) {
-      return demoProductivityData;
+      return [];
     }
 
     // Combine routine and productivity data by date
@@ -154,7 +91,7 @@ function DashboardContent() {
 
   const routineChartData = useMemo(() => {
     if (!routines.data?.data?.length) {
-      return demoRoutineData;
+      return [];
     }
 
     return routines.data.data.map((r: MorningRoutine) => ({
@@ -167,7 +104,7 @@ function DashboardContent() {
 
   const sleepDistribution = useMemo(() => {
     if (!routines.data?.data?.length) {
-      return demoSleepDistribution;
+      return [];
     }
 
     const distribution = { '<6': 0, '6-7': 0, '7-8': 0, '>8': 0 };
@@ -207,13 +144,7 @@ function DashboardContent() {
   // Recent entries for the table
   const recentEntries = useMemo(() => {
     if (!routines.data?.data?.length && !productivity.data?.data?.length) {
-      return [
-        { date: 'Jan 7', wake: '6:15 AM', sleep: '8 hrs', prod: 9, mood: 8 },
-        { date: 'Jan 6', wake: '6:30 AM', sleep: '7.5 hrs', prod: 8, mood: 9 },
-        { date: 'Jan 5', wake: '6:45 AM', sleep: '7 hrs', prod: 7, mood: 7 },
-        { date: 'Jan 4', wake: '6:00 AM', sleep: '8 hrs', prod: 9, mood: 8 },
-        { date: 'Jan 3', wake: '7:00 AM', sleep: '6 hrs', prod: 6, mood: 6 },
-      ];
+      return [];
     }
 
     const routineMap = new Map(routines.data?.data?.map((r: MorningRoutine) => [r.date, r]) || []);
@@ -297,9 +228,7 @@ function DashboardContent() {
           <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" />
           <div className="text-sm text-blue-800">
             <p className="font-medium">No data yet</p>
-            <p>
-              Start by importing a CSV file or adding entries manually. Showing demo data below.
-            </p>
+            <p>Start by importing a CSV file or adding entries manually.</p>
           </div>
         </div>
       )}
@@ -313,46 +242,38 @@ function DashboardContent() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             <StatsCard
               title="Avg. Productivity"
-              value={summary.data?.avg_productivity?.toFixed(1) ?? '7.8'}
+              value={summary.data?.avg_productivity?.toFixed(1) ?? '-'}
               subtitle="out of 10"
-              trend={summary.data?.productivity_trend ?? 'up'}
+              trend={summary.data?.productivity_trend}
               trendValue={
                 summary.data?.productivity_trend === 'up'
-                  ? '+12%'
+                  ? 'trending up'
                   : summary.data?.productivity_trend === 'down'
-                    ? '-5%'
-                    : '0%'
+                    ? 'trending down'
+                    : summary.data?.productivity_trend === 'stable'
+                      ? 'stable'
+                      : undefined
               }
               icon={<Target className="text-primary-600 h-6 w-6" />}
             />
             <StatsCard
               title="Avg. Sleep"
-              value={
-                summary.data?.avg_sleep ? `${summary.data.avg_sleep.toFixed(1)} hrs` : '7.3 hrs'
-              }
+              value={summary.data?.avg_sleep ? `${summary.data.avg_sleep.toFixed(1)} hrs` : '-'}
               subtitle="per night"
-              trend="stable"
-              trendValue="0%"
               icon={<Moon className="text-primary-600 h-6 w-6" />}
             />
             <StatsCard
               title="Total Entries"
               value={String(summary.data?.total_entries ?? routines.data?.total ?? 0)}
               subtitle="this period"
-              trend="up"
-              trendValue="new"
               icon={<Clock className="text-primary-600 h-6 w-6" />}
             />
             <StatsCard
               title="Avg. Exercise"
               value={
-                summary.data?.avg_exercise
-                  ? `${Math.round(summary.data.avg_exercise)} min`
-                  : '35 min'
+                summary.data?.avg_exercise ? `${Math.round(summary.data.avg_exercise)} min` : '-'
               }
               subtitle="per day"
-              trend="up"
-              trendValue="+8%"
               icon={<Zap className="text-primary-600 h-6 w-6" />}
             />
           </div>
