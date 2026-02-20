@@ -6,6 +6,7 @@ import StatsCard from '@/components/ui/StatsCard';
 import { ProductivityChart, RoutineBarChart, SleepDistributionChart } from '@/components/charts';
 import { RequireAuth } from '@/contexts/AuthContext';
 import { useRoutines, useProductivity, useAnalyticsSummary, useChartData } from '@/hooks/useApi';
+import { DashboardSkeleton } from '@/components/ui/Skeleton';
 import { Clock, Target, Zap, Moon, AlertCircle, RefreshCw } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
@@ -297,107 +298,122 @@ function DashboardContent() {
         </div>
       )}
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
-          title="Avg. Productivity"
-          value={summary.data?.avg_productivity?.toFixed(1) ?? '7.8'}
-          subtitle="out of 10"
-          trend={summary.data?.productivity_trend ?? 'up'}
-          trendValue={
-            summary.data?.productivity_trend === 'up'
-              ? '+12%'
-              : summary.data?.productivity_trend === 'down'
-                ? '-5%'
-                : '0%'
-          }
-          icon={<Target className="text-primary-600 h-6 w-6" />}
-        />
-        <StatsCard
-          title="Avg. Sleep"
-          value={summary.data?.avg_sleep ? `${summary.data.avg_sleep.toFixed(1)} hrs` : '7.3 hrs'}
-          subtitle="per night"
-          trend="stable"
-          trendValue="0%"
-          icon={<Moon className="text-primary-600 h-6 w-6" />}
-        />
-        <StatsCard
-          title="Total Entries"
-          value={String(summary.data?.total_entries ?? routines.data?.total ?? 0)}
-          subtitle="this period"
-          trend="up"
-          trendValue="new"
-          icon={<Clock className="text-primary-600 h-6 w-6" />}
-        />
-        <StatsCard
-          title="Avg. Exercise"
-          value={
-            summary.data?.avg_exercise ? `${Math.round(summary.data.avg_exercise)} min` : '35 min'
-          }
-          subtitle="per day"
-          trend="up"
-          trendValue="+8%"
-          icon={<Zap className="text-primary-600 h-6 w-6" />}
-        />
-      </div>
-
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <ProductivityChart data={productivityChartData} />
-        <RoutineBarChart data={routineChartData} />
-      </div>
-
-      {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <div className="card">
-            <h3 className="mb-4 text-lg font-semibold text-slate-900">Recent Entries</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="px-4 py-3 text-left font-medium text-slate-600">Date</th>
-                    <th className="px-4 py-3 text-left font-medium text-slate-600">Wake Time</th>
-                    <th className="px-4 py-3 text-left font-medium text-slate-600">Sleep</th>
-                    <th className="px-4 py-3 text-left font-medium text-slate-600">Productivity</th>
-                    <th className="px-4 py-3 text-left font-medium text-slate-600">Mood</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentEntries.map((row) => (
-                    <tr key={row.date} className="border-b border-slate-100">
-                      <td className="px-4 py-3 text-slate-700">{row.date}</td>
-                      <td className="px-4 py-3 text-slate-700">{row.wake}</td>
-                      <td className="px-4 py-3 text-slate-700">{row.sleep}</td>
-                      <td className="px-4 py-3">
-                        {typeof row.prod === 'number' ? (
-                          <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                              row.prod >= 8
-                                ? 'bg-green-100 text-green-800'
-                                : row.prod >= 6
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-red-100 text-red-800'
-                            }`}
-                          >
-                            {row.prod}/10
-                          </span>
-                        ) : (
-                          <span className="text-slate-400">{row.prod}</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-slate-700">
-                        {typeof row.mood === 'number' ? `${row.mood}/10` : row.mood}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+      {/* Skeleton loading state — shown while the initial fetch is in progress */}
+      {isLoading && !hasData ? (
+        <DashboardSkeleton />
+      ) : (
+        <>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <StatsCard
+              title="Avg. Productivity"
+              value={summary.data?.avg_productivity?.toFixed(1) ?? '7.8'}
+              subtitle="out of 10"
+              trend={summary.data?.productivity_trend ?? 'up'}
+              trendValue={
+                summary.data?.productivity_trend === 'up'
+                  ? '+12%'
+                  : summary.data?.productivity_trend === 'down'
+                    ? '-5%'
+                    : '0%'
+              }
+              icon={<Target className="text-primary-600 h-6 w-6" />}
+            />
+            <StatsCard
+              title="Avg. Sleep"
+              value={
+                summary.data?.avg_sleep ? `${summary.data.avg_sleep.toFixed(1)} hrs` : '7.3 hrs'
+              }
+              subtitle="per night"
+              trend="stable"
+              trendValue="0%"
+              icon={<Moon className="text-primary-600 h-6 w-6" />}
+            />
+            <StatsCard
+              title="Total Entries"
+              value={String(summary.data?.total_entries ?? routines.data?.total ?? 0)}
+              subtitle="this period"
+              trend="up"
+              trendValue="new"
+              icon={<Clock className="text-primary-600 h-6 w-6" />}
+            />
+            <StatsCard
+              title="Avg. Exercise"
+              value={
+                summary.data?.avg_exercise
+                  ? `${Math.round(summary.data.avg_exercise)} min`
+                  : '35 min'
+              }
+              subtitle="per day"
+              trend="up"
+              trendValue="+8%"
+              icon={<Zap className="text-primary-600 h-6 w-6" />}
+            />
           </div>
-        </div>
-        <SleepDistributionChart data={sleepDistribution} />
-      </div>
+
+          {/* Charts Row 1 */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <ProductivityChart data={productivityChartData} />
+            <RoutineBarChart data={routineChartData} />
+          </div>
+
+          {/* Charts Row 2 */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+              <div className="card">
+                <h3 className="mb-4 text-lg font-semibold text-slate-900">Recent Entries</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-slate-200">
+                        <th className="px-4 py-3 text-left font-medium text-slate-600">Date</th>
+                        <th className="px-4 py-3 text-left font-medium text-slate-600">
+                          Wake Time
+                        </th>
+                        <th className="px-4 py-3 text-left font-medium text-slate-600">Sleep</th>
+                        <th className="px-4 py-3 text-left font-medium text-slate-600">
+                          Productivity
+                        </th>
+                        <th className="px-4 py-3 text-left font-medium text-slate-600">Mood</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentEntries.map((row) => (
+                        <tr key={row.date} className="border-b border-slate-100">
+                          <td className="px-4 py-3 text-slate-700">{row.date}</td>
+                          <td className="px-4 py-3 text-slate-700">{row.wake}</td>
+                          <td className="px-4 py-3 text-slate-700">{row.sleep}</td>
+                          <td className="px-4 py-3">
+                            {typeof row.prod === 'number' ? (
+                              <span
+                                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                  row.prod >= 8
+                                    ? 'bg-green-100 text-green-800'
+                                    : row.prod >= 6
+                                      ? 'bg-yellow-100 text-yellow-800'
+                                      : 'bg-red-100 text-red-800'
+                                }`}
+                              >
+                                {row.prod}/10
+                              </span>
+                            ) : (
+                              <span className="text-slate-400">{row.prod}</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 text-slate-700">
+                            {typeof row.mood === 'number' ? `${row.mood}/10` : row.mood}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <SleepDistributionChart data={sleepDistribution} />
+          </div>
+        </>
+      )}
     </div>
   );
 }
