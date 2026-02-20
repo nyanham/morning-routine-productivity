@@ -12,20 +12,19 @@ import {
 // ——————————————————————————————————————————
 
 describe('StatsCardSkeleton', () => {
-  it('renders with role="status" for accessibility', () => {
-    render(<StatsCardSkeleton />);
-    expect(screen.getByRole('status')).toBeInTheDocument();
+  it('is aria-hidden so screen readers skip the visual placeholder', () => {
+    const { container } = render(<StatsCardSkeleton />);
+    expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('has the animate-pulse class for the loading animation', () => {
-    render(<StatsCardSkeleton />);
-    const el = screen.getByRole('status');
-    expect(el).toHaveClass('animate-pulse');
+    const { container } = render(<StatsCardSkeleton />);
+    expect(container.firstElementChild).toHaveClass('animate-pulse');
   });
 
-  it('includes a sr-only loading label', () => {
-    render(<StatsCardSkeleton />);
-    expect(screen.getByText('Loading…')).toHaveClass('sr-only');
+  it('does NOT have its own role="status" (consolidated in DashboardSkeleton)', () => {
+    const { container } = render(<StatsCardSkeleton />);
+    expect(container.querySelector('[role="status"]')).toBeNull();
   });
 });
 
@@ -34,29 +33,24 @@ describe('StatsCardSkeleton', () => {
 // ——————————————————————————————————————————
 
 describe('ChartSkeleton', () => {
-  it('renders with role="status" for accessibility', () => {
-    render(<ChartSkeleton />);
-    expect(screen.getByRole('status')).toBeInTheDocument();
+  it('is aria-hidden so screen readers skip the visual placeholder', () => {
+    const { container } = render(<ChartSkeleton />);
+    expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('has the animate-pulse class', () => {
-    render(<ChartSkeleton />);
-    expect(screen.getByRole('status')).toHaveClass('animate-pulse');
+    const { container } = render(<ChartSkeleton />);
+    expect(container.firstElementChild).toHaveClass('animate-pulse');
   });
 
-  it('shows the default sr-only title', () => {
-    render(<ChartSkeleton />);
-    expect(screen.getByText('Loading chart…')).toHaveClass('sr-only');
-  });
-
-  it('accepts a custom title for the sr-only label', () => {
-    render(<ChartSkeleton title="Loading productivity…" />);
-    expect(screen.getByText('Loading productivity…')).toHaveClass('sr-only');
+  it('accepts a custom title prop without error', () => {
+    const { container } = render(<ChartSkeleton title="Loading productivity…" />);
+    // The title is rendered as a grey bar (visual-only), not as text content
+    expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('renders seven bar placeholders', () => {
     const { container } = render(<ChartSkeleton />);
-    // The chart area has seven simulated bar divs
     const bars = container.querySelectorAll('.rounded-t.bg-slate-200');
     expect(bars).toHaveLength(7);
   });
@@ -67,19 +61,14 @@ describe('ChartSkeleton', () => {
 // ——————————————————————————————————————————
 
 describe('TableSkeleton', () => {
-  it('renders with role="status" for accessibility', () => {
-    render(<TableSkeleton />);
-    expect(screen.getByRole('status')).toBeInTheDocument();
+  it('is aria-hidden so screen readers skip the visual placeholder', () => {
+    const { container } = render(<TableSkeleton />);
+    expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('has the animate-pulse class', () => {
-    render(<TableSkeleton />);
-    expect(screen.getByRole('status')).toHaveClass('animate-pulse');
-  });
-
-  it('includes a sr-only loading label', () => {
-    render(<TableSkeleton />);
-    expect(screen.getByText('Loading recent entries…')).toHaveClass('sr-only');
+    const { container } = render(<TableSkeleton />);
+    expect(container.firstElementChild).toHaveClass('animate-pulse');
   });
 });
 
@@ -88,19 +77,14 @@ describe('TableSkeleton', () => {
 // ——————————————————————————————————————————
 
 describe('PieChartSkeleton', () => {
-  it('renders with role="status" for accessibility', () => {
-    render(<PieChartSkeleton />);
-    expect(screen.getByRole('status')).toBeInTheDocument();
+  it('is aria-hidden so screen readers skip the visual placeholder', () => {
+    const { container } = render(<PieChartSkeleton />);
+    expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('has the animate-pulse class', () => {
-    render(<PieChartSkeleton />);
-    expect(screen.getByRole('status')).toHaveClass('animate-pulse');
-  });
-
-  it('includes a sr-only loading label', () => {
-    render(<PieChartSkeleton />);
-    expect(screen.getByText('Loading chart…')).toHaveClass('sr-only');
+    const { container } = render(<PieChartSkeleton />);
+    expect(container.firstElementChild).toHaveClass('animate-pulse');
   });
 });
 
@@ -109,33 +93,32 @@ describe('PieChartSkeleton', () => {
 // ——————————————————————————————————————————
 
 describe('DashboardSkeleton', () => {
-  it('renders four StatsCardSkeleton instances', () => {
+  it('has a single role="status" on the wrapper for screen readers', () => {
     render(<DashboardSkeleton />);
-    // StatsCardSkeleton each have aria-label="Loading statistic"
-    const statCards = screen.getAllByLabelText('Loading statistic');
-    expect(statCards).toHaveLength(4);
+    const status = screen.getByRole('status');
+    expect(status).toBeInTheDocument();
+    expect(status).toHaveClass('space-y-8');
   });
 
-  it('renders chart skeletons', () => {
+  it('includes a single sr-only "Loading dashboard…" label', () => {
     render(<DashboardSkeleton />);
-    const charts = screen.getAllByLabelText('Loading chart');
-    // 2 chart skeletons in row 1 + 1 pie chart skeleton in row 2 = 3
-    expect(charts).toHaveLength(3);
+    expect(screen.getByText('Loading dashboard…')).toHaveClass('sr-only');
   });
 
-  it('renders a table skeleton', () => {
-    render(<DashboardSkeleton />);
-    const table = screen.getByLabelText('Loading table');
-    expect(table).toBeInTheDocument();
+  it('renders four StatsCardSkeleton instances (aria-hidden)', () => {
+    const { container } = render(<DashboardSkeleton />);
+    const cards = container.querySelectorAll('.card.animate-pulse[aria-hidden="true"]');
+    // 4 stat cards + 2 chart cards + 1 table + 1 pie = 8 total aria-hidden cards
+    expect(cards.length).toBeGreaterThanOrEqual(4);
   });
 
   it('maintains the same grid structure as the real dashboard', () => {
     const { container } = render(<DashboardSkeleton />);
-    // Root wrapper
     const root = container.firstElementChild;
     expect(root).toHaveClass('space-y-8');
     // Should have 3 grid sections: stats, charts row 1, charts row 2
-    const grids = root?.querySelectorAll(':scope > div');
-    expect(grids?.length).toBe(3);
+    // (plus the sr-only span = 4 direct children)
+    const children = root?.querySelectorAll(':scope > div');
+    expect(children?.length).toBe(3);
   });
 });

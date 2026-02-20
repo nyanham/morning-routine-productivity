@@ -5,6 +5,11 @@
  * fetched, instead of showing template/demo data.  All skeletons use the
  * Tailwind `animate-pulse` utility for a consistent, gentle loading feel.
  *
+ * Accessibility: Only `DashboardSkeleton` carries `role="status"` and
+ * `aria-live="polite"` so assistive technologies receive a single
+ * "Loading dashboard…" announcement.  The individual skeleton pieces
+ * are marked `aria-hidden` to avoid noisy per-card announcements.
+ *
  * Components:
  * - `StatsCardSkeleton`  — replaces a single StatsCard while loading
  * - `ChartSkeleton`      — replaces a chart card (line, bar, or pie)
@@ -19,7 +24,7 @@
 /** A pulsing placeholder that mirrors the StatsCard layout. */
 export function StatsCardSkeleton() {
   return (
-    <div className="card animate-pulse" role="status" aria-label="Loading statistic">
+    <div className="card animate-pulse" aria-hidden="true">
       <div className="flex items-start justify-between">
         <div className="space-y-3">
           {/* Title */}
@@ -37,7 +42,6 @@ export function StatsCardSkeleton() {
         <div className="h-4 w-4 rounded bg-slate-200" />
         <div className="h-3 w-20 rounded bg-slate-200" />
       </div>
-      <span className="sr-only">Loading…</span>
     </div>
   );
 }
@@ -54,7 +58,7 @@ interface ChartSkeletonProps {
 /** A pulsing placeholder that mirrors a chart card (title + 320 px area). */
 export function ChartSkeleton({ title = 'Loading chart…' }: ChartSkeletonProps) {
   return (
-    <div className="card animate-pulse" role="status" aria-label="Loading chart">
+    <div className="card animate-pulse" aria-hidden="true">
       {/* Title bar */}
       <div className="mb-4 h-5 w-48 rounded bg-slate-200" />
       {/* Chart area — matches the h-80 used by real charts */}
@@ -64,7 +68,6 @@ export function ChartSkeleton({ title = 'Loading chart…' }: ChartSkeletonProps
           <div key={i} className="w-full rounded-t bg-slate-200" style={{ height: `${h}%` }} />
         ))}
       </div>
-      <span className="sr-only">{title}</span>
     </div>
   );
 }
@@ -76,7 +79,7 @@ export function ChartSkeleton({ title = 'Loading chart…' }: ChartSkeletonProps
 /** A pulsing placeholder that mirrors the Recent Entries table. */
 export function TableSkeleton() {
   return (
-    <div className="card animate-pulse" role="status" aria-label="Loading table">
+    <div className="card animate-pulse" aria-hidden="true">
       {/* Title */}
       <div className="mb-4 h-5 w-36 rounded bg-slate-200" />
       {/* Header row */}
@@ -93,7 +96,6 @@ export function TableSkeleton() {
           ))}
         </div>
       ))}
-      <span className="sr-only">Loading recent entries…</span>
     </div>
   );
 }
@@ -105,13 +107,12 @@ export function TableSkeleton() {
 /** A pulsing placeholder that mimics the donut-style sleep distribution chart. */
 export function PieChartSkeleton() {
   return (
-    <div className="card animate-pulse" role="status" aria-label="Loading chart">
+    <div className="card animate-pulse" aria-hidden="true">
       <div className="mb-4 h-5 w-52 rounded bg-slate-200" />
       <div className="flex h-80 items-center justify-center">
         {/* Donut ring */}
         <div className="h-48 w-48 rounded-full border-[32px] border-slate-200 bg-white" />
       </div>
-      <span className="sr-only">Loading chart…</span>
     </div>
   );
 }
@@ -126,7 +127,8 @@ export function PieChartSkeleton() {
  */
 export function DashboardSkeleton() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" role="status" aria-live="polite">
+      <span className="sr-only">Loading dashboard…</span>
       {/* Stats grid — 4 cards */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {[...Array(4)].map((_, i) => (
