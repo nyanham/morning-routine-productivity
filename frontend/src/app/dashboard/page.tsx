@@ -96,6 +96,10 @@ function DashboardContent() {
   const chartData = useChartData();
   const [dateRange] = useState({ days: 7 });
 
+  // Track whether the very first fetch cycle has completed so we never
+  // flash demo data before the skeleton has a chance to appear.
+  const [initialLoad, setInitialLoad] = useState(true);
+
   // Fetch data on mount
   useEffect(() => {
     const endDate = new Date().toISOString().split('T')[0];
@@ -103,10 +107,12 @@ function DashboardContent() {
       .toISOString()
       .split('T')[0];
 
-    routines.fetch({ pageSize: 10, startDate, endDate });
-    productivity.fetch({ pageSize: 10, startDate, endDate });
-    summary.fetch(startDate, endDate);
-    chartData.fetch(startDate, endDate);
+    Promise.allSettled([
+      routines.fetch({ pageSize: 10, startDate, endDate }),
+      productivity.fetch({ pageSize: 10, startDate, endDate }),
+      summary.fetch(startDate, endDate),
+      chartData.fetch(startDate, endDate),
+    ]).finally(() => setInitialLoad(false));
   }, [dateRange.days]);
 
   // Transform data for charts
@@ -237,7 +243,7 @@ function DashboardContent() {
       });
   }, [routines.data, productivity.data]);
 
-  const isLoading = routines.loading || productivity.loading || summary.loading;
+  const isLoading = initialLoad || routines.loading || productivity.loading || summary.loading;
   const hasError = routines.error || productivity.error || summary.error;
   const hasData = routines.data?.data?.length || productivity.data?.data?.length;
 
