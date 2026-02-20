@@ -305,33 +305,41 @@ function DashboardContent() {
                       </tr>
                     </thead>
                     <tbody>
-                      {recentEntries.map((row) => (
-                        <tr key={row.date} className="border-b border-slate-100">
-                          <td className="px-4 py-3 text-slate-700">{row.date}</td>
-                          <td className="px-4 py-3 text-slate-700">{row.wake}</td>
-                          <td className="px-4 py-3 text-slate-700">{row.sleep}</td>
-                          <td className="px-4 py-3">
-                            {typeof row.prod === 'number' ? (
-                              <span
-                                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                                  row.prod >= 8
-                                    ? 'bg-green-100 text-green-800'
-                                    : row.prod >= 6
-                                      ? 'bg-yellow-100 text-yellow-800'
-                                      : 'bg-red-100 text-red-800'
-                                }`}
-                              >
-                                {row.prod}/10
-                              </span>
-                            ) : (
-                              <span className="text-slate-400">{row.prod}</span>
-                            )}
-                          </td>
-                          <td className="px-4 py-3 text-slate-700">
-                            {typeof row.mood === 'number' ? `${row.mood}/10` : row.mood}
+                      {recentEntries.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
+                            No entries yet
                           </td>
                         </tr>
-                      ))}
+                      ) : (
+                        recentEntries.map((row) => (
+                          <tr key={row.date} className="border-b border-slate-100">
+                            <td className="px-4 py-3 text-slate-700">{row.date}</td>
+                            <td className="px-4 py-3 text-slate-700">{row.wake}</td>
+                            <td className="px-4 py-3 text-slate-700">{row.sleep}</td>
+                            <td className="px-4 py-3">
+                              {typeof row.prod === 'number' ? (
+                                <span
+                                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                    row.prod >= 8
+                                      ? 'bg-green-100 text-green-800'
+                                      : row.prod >= 6
+                                        ? 'bg-yellow-100 text-yellow-800'
+                                        : 'bg-red-100 text-red-800'
+                                  }`}
+                                >
+                                  {row.prod}/10
+                                </span>
+                              ) : (
+                                <span className="text-slate-400">{row.prod}</span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3 text-slate-700">
+                              {typeof row.mood === 'number' ? `${row.mood}/10` : row.mood}
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
