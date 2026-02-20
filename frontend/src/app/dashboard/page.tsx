@@ -50,11 +50,19 @@ function DashboardContent() {
       .toISOString()
       .split('T')[0];
 
+    let cancelled = false;
+
     Promise.allSettled([
       fetchRoutines({ pageSize: 10, startDate, endDate }),
       fetchProductivity({ pageSize: 10, startDate, endDate }),
       fetchSummary(startDate, endDate),
-    ]).finally(() => setInitialLoad(false));
+    ]).finally(() => {
+      if (!cancelled) setInitialLoad(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [dateRange.days, fetchRoutines, fetchProductivity, fetchSummary]);
 
   // Transform data for charts
@@ -91,7 +99,11 @@ function DashboardContent() {
       });
     });
 
-    return Array.from(dataByDate.values()).sort((a, b) => a.date.localeCompare(b.date));
+    // Sort by the ISO date key (chronological), then return the values
+    // whose `date` field is the formatted display string.
+    return Array.from(dataByDate.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([, v]) => v);
   }, [routines.data, productivity.data]);
 
   const routineChartData = useMemo(() => {
