@@ -233,8 +233,8 @@ function DashboardContent() {
         </div>
       )}
 
-      {/* Skeleton loading state — shown while the initial fetch is in progress */}
-      {isLoading && !hasData ? (
+      {/* Skeleton loading state — shown during initial load and manual refreshes */}
+      {isLoading ? (
         <DashboardSkeleton />
       ) : (
         <>
