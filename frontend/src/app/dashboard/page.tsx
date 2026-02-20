@@ -5,7 +5,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import StatsCard from '@/components/ui/StatsCard';
 import { ProductivityChart, RoutineBarChart, SleepDistributionChart } from '@/components/charts';
 import { RequireAuth } from '@/contexts/AuthContext';
-import { useRoutines, useProductivity, useAnalyticsSummary, useChartData } from '@/hooks/useApi';
+import { useRoutines, useProductivity, useAnalyticsSummary } from '@/hooks/useApi';
 import { DashboardSkeleton } from '@/components/ui/Skeleton';
 import { Clock, Target, Zap, Moon, AlertCircle, RefreshCw } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
@@ -30,8 +30,14 @@ function DashboardContent() {
   const routines = useRoutines();
   const productivity = useProductivity();
   const summary = useAnalyticsSummary();
-  const chartData = useChartData();
   const [dateRange] = useState({ days: 7 });
+
+  // Destructure the stable fetch callbacks so they can be listed
+  // directly in the useEffect dependency array without triggering
+  // the exhaustive-deps rule on the parent hook objects.
+  const { fetch: fetchRoutines } = routines;
+  const { fetch: fetchProductivity } = productivity;
+  const { fetch: fetchSummary } = summary;
 
   // Track whether the very first fetch cycle has completed so we never
   // flash demo data before the skeleton has a chance to appear.
@@ -45,15 +51,11 @@ function DashboardContent() {
       .split('T')[0];
 
     Promise.allSettled([
-      routines.fetch({ pageSize: 10, startDate, endDate }),
-      productivity.fetch({ pageSize: 10, startDate, endDate }),
-      summary.fetch(startDate, endDate),
-      chartData.fetch(startDate, endDate),
+      fetchRoutines({ pageSize: 10, startDate, endDate }),
+      fetchProductivity({ pageSize: 10, startDate, endDate }),
+      fetchSummary(startDate, endDate),
     ]).finally(() => setInitialLoad(false));
-    // We intentionally depend on the stable .fetch callbacks, not the
-    // entire hook objects, to avoid infinite re-render loops.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange.days, routines.fetch, productivity.fetch, summary.fetch, chartData.fetch]);
+  }, [dateRange.days, fetchRoutines, fetchProductivity, fetchSummary]);
 
   // Transform data for charts
   const productivityChartData = useMemo(() => {
@@ -177,9 +179,8 @@ function DashboardContent() {
       });
   }, [routines.data, productivity.data]);
 
-  const isLoading =
-    initialLoad || routines.loading || productivity.loading || summary.loading || chartData.loading;
-  const hasError = routines.error || productivity.error || summary.error || chartData.error;
+  const isLoading = initialLoad || routines.loading || productivity.loading || summary.loading;
+  const hasError = routines.error || productivity.error || summary.error;
   const hasData = routines.data?.data?.length || productivity.data?.data?.length;
 
   // Refresh data
@@ -192,7 +193,6 @@ function DashboardContent() {
     routines.fetch({ pageSize: 10, startDate, endDate });
     productivity.fetch({ pageSize: 10, startDate, endDate });
     summary.fetch(startDate, endDate);
-    chartData.fetch(startDate, endDate);
   };
 
   return (
@@ -221,7 +221,7 @@ function DashboardContent() {
           <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
           <div className="text-sm text-red-800">
             <p className="font-medium">Error loading data</p>
-            <p>{routines.error || productivity.error || summary.error || chartData.error}</p>
+            <p>{routines.error || productivity.error || summary.error}</p>
           </div>
         </div>
       )}
@@ -262,7 +262,9 @@ function DashboardContent() {
             />
             <StatsCard
               title="Avg. Sleep"
-              value={summary.data?.avg_sleep ? `${summary.data.avg_sleep.toFixed(1)} hrs` : '-'}
+              value={
+                summary.data?.avg_sleep != null ? `${summary.data.avg_sleep.toFixed(1)} hrs` : '-'
+              }
               subtitle="per night"
               icon={<Moon className="text-primary-600 h-6 w-6" />}
             />
@@ -275,7 +277,9 @@ function DashboardContent() {
             <StatsCard
               title="Avg. Exercise"
               value={
-                summary.data?.avg_exercise ? `${Math.round(summary.data.avg_exercise)} min` : '-'
+                summary.data?.avg_exercise != null
+                  ? `${Math.round(summary.data.avg_exercise)} min`
+                  : '-'
               }
               subtitle="per day"
               icon={<Zap className="text-primary-600 h-6 w-6" />}
