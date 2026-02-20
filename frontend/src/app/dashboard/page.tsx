@@ -50,6 +50,9 @@ function DashboardContent() {
       summary.fetch(startDate, endDate),
       chartData.fetch(startDate, endDate),
     ]).finally(() => setInitialLoad(false));
+    // We intentionally depend on the stable .fetch callbacks, not the
+    // entire hook objects, to avoid infinite re-render loops.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange.days, routines.fetch, productivity.fetch, summary.fetch, chartData.fetch]);
 
   // Transform data for charts
@@ -174,8 +177,9 @@ function DashboardContent() {
       });
   }, [routines.data, productivity.data]);
 
-  const isLoading = initialLoad || routines.loading || productivity.loading || summary.loading;
-  const hasError = routines.error || productivity.error || summary.error;
+  const isLoading =
+    initialLoad || routines.loading || productivity.loading || summary.loading || chartData.loading;
+  const hasError = routines.error || productivity.error || summary.error || chartData.error;
   const hasData = routines.data?.data?.length || productivity.data?.data?.length;
 
   // Refresh data
@@ -217,7 +221,7 @@ function DashboardContent() {
           <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
           <div className="text-sm text-red-800">
             <p className="font-medium">Error loading data</p>
-            <p>{routines.error || productivity.error || summary.error}</p>
+            <p>{routines.error || productivity.error || summary.error || chartData.error}</p>
           </div>
         </div>
       )}
