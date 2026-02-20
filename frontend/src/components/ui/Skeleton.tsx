@@ -50,13 +50,8 @@ export function StatsCardSkeleton() {
 // Chart skeleton
 // ——————————————————————————————————————————
 
-interface ChartSkeletonProps {
-  /** Chart title shown above the placeholder area. */
-  title?: string;
-}
-
-/** A pulsing placeholder that mirrors a chart card (title + 320 px area). */
-export function ChartSkeleton({ title = 'Loading chart…' }: ChartSkeletonProps) {
+/** A pulsing placeholder that mirrors a chart card (title bar + 320 px area). */
+export function ChartSkeleton() {
   return (
     <div className="card animate-pulse" aria-hidden="true">
       {/* Title bar */}
@@ -138,8 +133,8 @@ export function DashboardSkeleton() {
 
       {/* Charts row 1 — 2 columns */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <ChartSkeleton title="Loading productivity chart…" />
-        <ChartSkeleton title="Loading routine chart…" />
+        <ChartSkeleton />
+        <ChartSkeleton />
       </div>
 
       {/* Charts row 2 — table (2/3) + donut (1/3) */}

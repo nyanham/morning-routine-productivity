@@ -43,12 +43,6 @@ describe('ChartSkeleton', () => {
     expect(container.firstElementChild).toHaveClass('animate-pulse');
   });
 
-  it('accepts a custom title prop without error', () => {
-    const { container } = render(<ChartSkeleton title="Loading productivity…" />);
-    // The title is rendered as a grey bar (visual-only), not as text content
-    expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
-  });
-
   it('renders seven bar placeholders', () => {
     const { container } = render(<ChartSkeleton />);
     const bars = container.querySelectorAll('.rounded-t.bg-slate-200');
