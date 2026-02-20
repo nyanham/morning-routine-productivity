@@ -233,7 +233,7 @@ function DashboardContent() {
         </div>
       )}
 
-      {/* Skeleton loading state — shown during initial load and manual refreshes */}
+      {/* Skeleton loading state — shown whenever dashboard data is loading */}
       {isLoading ? (
         <DashboardSkeleton />
       ) : (
