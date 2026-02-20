@@ -47,7 +47,7 @@ export function StatsCardSkeleton() {
 // ——————————————————————————————————————————
 
 interface ChartSkeletonProps {
-  /** Chart title shown above the placeholder area. */
+  /** Accessible label for screen readers describing what chart is loading. */
   title?: string;
 }
 

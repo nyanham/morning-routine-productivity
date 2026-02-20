@@ -50,7 +50,7 @@ function DashboardContent() {
       summary.fetch(startDate, endDate),
       chartData.fetch(startDate, endDate),
     ]).finally(() => setInitialLoad(false));
-  }, [dateRange.days]);
+  }, [dateRange.days, routines.fetch, productivity.fetch, summary.fetch, chartData.fetch]);
 
   // Transform data for charts
   const productivityChartData = useMemo(() => {
