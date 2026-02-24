@@ -271,4 +271,54 @@ describe('DashboardPage — loading lifecycle', () => {
     expect(mockProductivity.fetch).toHaveBeenCalledTimes(1);
     expect(mockSummary.fetch).toHaveBeenCalledTimes(1);
   });
+
+  it('shows the skeleton during a manual refresh and hides it when fetches resolve', async () => {
+    // First, let the initial load cycle complete so we start with real content.
+    mockRoutines.data = { data: [], total: 0 };
+    mockProductivity.data = { data: [], total: 0 };
+    mockSummary.data = {
+      avg_productivity: 7.5,
+      avg_sleep: 7.2,
+      avg_exercise: 30,
+      total_entries: 12,
+      productivity_trend: 'up',
+    };
+
+    await act(async () => {
+      render(<DashboardPage />);
+    });
+
+    // Content should be visible, skeleton gone.
+    expect(screen.queryByRole('status')).toBeNull();
+    expect(screen.getByText('Avg. Productivity')).toBeInTheDocument();
+
+    // Set up pending promises so the refresh keeps the skeleton visible.
+    // Use mockImplementation on the *existing* mock references (the component
+    // destructured these at render time, so replacing the object property
+    // wouldn't affect the already-captured reference).
+    let resolveRefresh!: () => void;
+    const pendingRefresh = new Promise<void>((r) => {
+      resolveRefresh = r;
+    });
+    mockRoutines.fetch.mockImplementation(() => pendingRefresh);
+    mockProductivity.fetch.mockImplementation(() => pendingRefresh);
+    mockSummary.fetch.mockImplementation(() => pendingRefresh);
+
+    // Click the Refresh button
+    await act(async () => {
+      screen.getByRole('button', { name: /refresh/i }).click();
+    });
+
+    // Skeleton should reappear during the refresh.
+    expect(screen.getByRole('status')).toBeInTheDocument();
+    expect(screen.getByText('Loading dashboard…')).toBeInTheDocument();
+
+    // Resolve the refresh fetches
+    await act(async () => {
+      resolveRefresh();
+    });
+
+    // Skeleton should disappear again.
+    expect(screen.queryByRole('status')).toBeNull();
+  });
 });

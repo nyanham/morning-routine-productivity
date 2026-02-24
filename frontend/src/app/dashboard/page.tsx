@@ -195,16 +195,23 @@ function DashboardContent() {
   const hasError = routines.error || productivity.error || summary.error;
   const hasData = routines.data?.data?.length || productivity.data?.data?.length;
 
-  // Refresh data
+  // Refresh data — mirrors the initial useEffect pattern so the
+  // skeleton is shown while all three fetches are in flight.
   const handleRefresh = () => {
     const endDate = new Date().toISOString().split('T')[0];
     const startDate = new Date(Date.now() - dateRange.days * 24 * 60 * 60 * 1000)
       .toISOString()
       .split('T')[0];
 
-    routines.fetch({ pageSize: 10, startDate, endDate });
-    productivity.fetch({ pageSize: 10, startDate, endDate });
-    summary.fetch(startDate, endDate);
+    setInitialLoad(true);
+
+    Promise.allSettled([
+      fetchRoutines({ pageSize: 10, startDate, endDate }),
+      fetchProductivity({ pageSize: 10, startDate, endDate }),
+      fetchSummary(startDate, endDate),
+    ]).finally(() => {
+      setInitialLoad(false);
+    });
   };
 
   return (
