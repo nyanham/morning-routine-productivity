@@ -52,11 +52,11 @@ flowchart TB
     DepPR --> DepCI
 ```
 
-| Workflow          | File                                  | Triggers                                       | Purpose                                 |
-| ----------------- | ------------------------------------- | ---------------------------------------------- | --------------------------------------- |
-| **CI**            | `.github/workflows/ci.yml`            | Push to `main`/`develop`, PRs (non-Dependabot) | Lint, test, build, security scan        |
-| **CI Dependabot** | `.github/workflows/ci-dependabot.yml` | `pull_request_target` (Dependabot PRs only)    | Same checks with access to repo secrets |
-| **Deploy**        | `.github/workflows/deploy.yml`        | Push to `main`, manual dispatch                | Ship frontend + backend                 |
+| Workflow          | File                                  | Triggers                                         | Purpose                                 |
+| ----------------- | ------------------------------------- | ------------------------------------------------ | --------------------------------------- |
+| **CI**            | `.github/workflows/ci.yml`            | Push to `main`/`develop`, PRs (non-Dependabot)   | Lint, test, build, security scan        |
+| **CI Dependabot** | `.github/workflows/ci-dependabot.yml` | `pull_request_target` (jobs gated to Dependabot) | Same checks with access to repo secrets |
+| **Deploy**        | `.github/workflows/deploy.yml`        | Push to `main`, manual dispatch                  | Ship frontend + backend                 |
 
 ---
 

@@ -18,7 +18,7 @@ jobs:
     name: Frontend Lint & Type Check
     runs-on: ubuntu-latest
     # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
-    if: github.actor != 'dependabot[bot]'
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     defaults:
       run:
         working-directory: frontend
@@ -103,7 +103,7 @@ jobs:
     name: Backend Lint & Type Check
     runs-on: ubuntu-latest
     # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
-    if: github.actor != 'dependabot[bot]'
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     defaults:
       run:
         working-directory: backend
@@ -187,7 +187,7 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
     # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
-    if: github.actor != 'dependabot[bot]'
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     permissions:
       security-events: write
 
