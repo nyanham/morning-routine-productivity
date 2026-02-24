@@ -27,9 +27,7 @@ export default function ProductivityChart({
       <div className="h-80">
         {data.length === 0 ? (
           <div className="flex h-full items-center justify-center">
-            <p className="text-sm text-slate-400">
-              No data available for this period. Add your first entry to see this chart.
-            </p>
+            <p className="text-sm text-slate-400">No productivity data yet</p>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">

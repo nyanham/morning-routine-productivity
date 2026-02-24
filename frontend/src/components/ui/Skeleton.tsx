@@ -50,7 +50,7 @@ export function StatsCardSkeleton() {
 // Chart skeleton
 // ——————————————————————————————————————————
 
-/** A pulsing placeholder that mirrors a chart card (title bar + 320 px area). */
+/** A pulsing placeholder that mirrors a chart card (title bar + 20rem (h-80) chart area). */
 export function ChartSkeleton() {
   return (
     <div className="card animate-pulse" aria-hidden="true">
