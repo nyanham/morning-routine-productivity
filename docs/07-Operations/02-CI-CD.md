@@ -200,8 +200,9 @@ To solve this, a dedicated workflow
 event, which runs in the context of the **base branch** and can read
 secrets. Key safety measures:
 
-1. **Actor check** — the workflow only proceeds when
-   `github.actor == 'dependabot[bot]'`.
+1. **Author check** — the workflow only proceeds when
+   `github.event.pull_request.user.login == 'dependabot[bot]'` and the
+   PR head belongs to the same repository.
 2. **Explicit SHA checkout** — every job checks out
    `github.event.pull_request.head.sha` to test the actual dependency
    changes, not the base branch.
@@ -209,7 +210,8 @@ secrets. Key safety measures:
    `contents: read`; jobs widen only as needed (e.g. `security-events: write`
    for Trivy).
 4. **Duplicate prevention** — the standard `ci.yml` skips Dependabot PRs
-   via `if: github.actor != 'dependabot[bot]'` on root jobs.
+   via `if: github.event.pull_request.user.login != 'dependabot[bot]'`
+   on root jobs.
 
 ---
 
