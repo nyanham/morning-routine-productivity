@@ -260,7 +260,7 @@ function DashboardContent() {
               title="Avg. Productivity"
               value={summary.data?.avg_productivity?.toFixed(1) ?? '-'}
               subtitle="out of 10"
-              trend={summary.data?.productivity_trend}
+              trend={summary.data?.productivity_trend ?? undefined}
               trendValue={
                 summary.data?.productivity_trend === 'up'
                   ? 'trending up'

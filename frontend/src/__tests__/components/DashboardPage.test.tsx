@@ -223,6 +223,45 @@ describe('DashboardPage — loading lifecycle', () => {
     expect(screen.getByText('Network failure')).toBeInTheDocument();
   });
 
+  it('transitions from skeleton to loaded content when fetches resolve', async () => {
+    // Start with pending fetches so the skeleton is shown initially.
+    let resolveFetches!: () => void;
+    const pending = new Promise<void>((r) => {
+      resolveFetches = r;
+    });
+    mockRoutines.fetch = jest.fn(() => pending);
+    mockProductivity.fetch = jest.fn(() => pending);
+    mockSummary.fetch = jest.fn(() => pending);
+
+    const { rerender } = render(<DashboardPage />);
+
+    // Skeleton visible while fetches are pending
+    expect(screen.getByRole('status')).toBeInTheDocument();
+    expect(screen.queryByText('Avg. Productivity')).toBeNull();
+
+    // Simulate fetches resolving and data becoming available
+    mockRoutines.data = { data: [], total: 0 };
+    mockProductivity.data = { data: [], total: 0 };
+    mockSummary.data = {
+      avg_productivity: 8.0,
+      avg_sleep: 7.0,
+      avg_exercise: 25,
+      total_entries: 5,
+      productivity_trend: 'up',
+    };
+
+    await act(async () => {
+      resolveFetches();
+    });
+
+    rerender(<DashboardPage />);
+
+    // Skeleton gone, real content visible
+    expect(screen.queryByRole('status')).toBeNull();
+    expect(screen.getByText('Avg. Productivity')).toBeInTheDocument();
+    expect(screen.getByText('Avg. Sleep')).toBeInTheDocument();
+  });
+
   it('calls all three fetch functions on mount', async () => {
     await act(async () => {
       render(<DashboardPage />);
