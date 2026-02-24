@@ -12,6 +12,7 @@ flowchart TB
     subgraph Trigger["Trigger"]
         Push["Push to main / develop"]
         PR["Pull Request"]
+        DepPR["Dependabot PR\n(pull_request_target)"]
     end
 
     subgraph CI["CI  (.github/workflows/ci.yml)"]
@@ -27,24 +28,39 @@ flowchart TB
         BL --> BT
     end
 
+    subgraph DepCI["CI Dependabot  (.github/workflows/ci-dependabot.yml)"]
+        direction TB
+        DFL["Frontend Lint\n& Type Check"]
+        DFT["Frontend Tests"]
+        DFB["Frontend Build"]
+        DBL["Backend Lint\n& Type Check"]
+        DBT["Backend Tests"]
+        DSEC["Security Scan\n(Trivy)"]
+
+        DFL --> DFT --> DFB
+        DBL --> DBT
+    end
+
     subgraph CD["CD  (.github/workflows/deploy.yml)"]
         DF["Deploy Frontend\n(Vercel)"]
-        DB["Deploy Backend\n(SAM ↁELambda)"]
+        DB["Deploy Backend\n(SAM / Lambda)"]
         DF --> DB
     end
 
     Push --> CI & CD
     PR --> CI
+    DepPR --> DepCI
 ```
 
-| Workflow   | File                           | Triggers                        | Purpose                          |
-| ---------- | ------------------------------ | ------------------------------- | -------------------------------- |
-| **CI**     | `.github/workflows/ci.yml`     | Push to `main`/`develop`, PRs   | Lint, test, build, security scan |
-| **Deploy** | `.github/workflows/deploy.yml` | Push to `main`, manual dispatch | Ship frontend + backend          |
+| Workflow          | File                                  | Triggers                                         | Purpose                                 |
+| ----------------- | ------------------------------------- | ------------------------------------------------ | --------------------------------------- |
+| **CI**            | `.github/workflows/ci.yml`            | Push to `main`/`develop`, PRs (non-Dependabot)   | Lint, test, build, security scan        |
+| **CI Dependabot** | `.github/workflows/ci-dependabot.yml` | `pull_request_target` (jobs gated to Dependabot) | Same checks with access to repo secrets |
+| **Deploy**        | `.github/workflows/deploy.yml`        | Push to `main`, manual dispatch                  | Ship frontend + backend                 |
 
 ---
 
-## CI Workflow  — Jobs in Detail
+## CI Workflow — Jobs in Detail
 
 ### 1. Frontend Lint & Type Check
 
@@ -134,7 +150,7 @@ prepared to deploy to AWS. To activate:
    | `CORS_ORIGIN_REGEX`     | (optional) Origin regex        |
 
 2. Uncomment the `deploy-backend` job in `deploy.yml`.
-3. Push to `main`  — the backend deploys **after** the frontend succeeds.
+3. Push to `main` — the backend deploys **after** the frontend succeeds.
 
 The job uses:
 
@@ -164,14 +180,38 @@ key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('backend/poet
 
 Automated dependency updates are configured in `.github/dependabot.yml`:
 
-| Ecosystem      | Directory   | Schedule        | PR Limit | Grouping              |
-| -------------- | ----------- | --------------- | -------- | --------------------- |
-| npm            | `/frontend` | Weekly (Monday) | 5        | Minor + patch grouped |
-| pip            | `/backend`  | Weekly (Monday) | 5        | Minor + patch grouped |
-| GitHub Actions | `/`         | Weekly (Monday) | 3        |  —                     |
+| Ecosystem      | Directory   | Target Branch | Schedule        | PR Limit | Grouping              |
+| -------------- | ----------- | ------------- | --------------- | -------- | --------------------- |
+| npm            | `/frontend` | `develop`     | Weekly (Monday) | 5        | Minor + patch grouped |
+| pip            | `/backend`  | `develop`     | Weekly (Monday) | 5        | Minor + patch grouped |
+| GitHub Actions | `/`         | `develop`     | Weekly (Monday) | 3        | —                     |
 
 All PRs are labelled (`dependencies`, `frontend`/`backend`/`ci`) and commit
 messages are prefixed with `chore(deps)` or `chore(ci)`.
+
+### Dependabot & Secrets (`pull_request_target`)
+
+Dependabot PRs trigger the `pull_request` event which runs in a **read-only
+context** and **cannot access repository secrets**. This would cause the
+frontend build and backend test jobs to fail.
+
+To solve this, a dedicated workflow
+(`.github/workflows/ci-dependabot.yml`) uses the `pull_request_target`
+event, which runs in the context of the **base branch** and can read
+secrets. Key safety measures:
+
+1. **Author check** — the workflow only proceeds when
+   `github.event.pull_request.user.login == 'dependabot[bot]'` and the
+   PR head belongs to the same repository.
+2. **Explicit SHA checkout** — every job checks out
+   `github.event.pull_request.head.sha` to test the actual dependency
+   changes, not the base branch.
+3. **Minimal permissions** — the top-level `permissions` block is set to
+   `contents: read`; jobs widen only as needed (e.g. `security-events: write`
+   for Trivy).
+4. **Duplicate prevention** — the standard `ci.yml` skips Dependabot PRs
+   via `if: github.event.pull_request.user.login != 'dependabot[bot]'`
+   on root jobs.
 
 ---
 
@@ -209,9 +249,9 @@ Items labeled `ignore-for-release` are excluded from the changelog.
 
 ## Related Docs
 
-| Topic                | Link                                                   |
-| -------------------- | ------------------------------------------------------ |
+| Topic                | Link                                                      |
+| -------------------- | --------------------------------------------------------- |
 | Deployment details   | [Deployment.md](01-Deployment.md)                         |
 | Monitoring & logging | [Monitoring-and-Logging.md](03-Monitoring-and-Logging.md) |
-| Testing guide        | [../08-Testing/](../08-Testing/)                       |
+| Testing guide        | [../08-Testing/](../08-Testing/)                          |
 | Security             | [Security.md](04-Security.md)                             |

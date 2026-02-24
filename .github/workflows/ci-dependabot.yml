@@ -1,10 +1,29 @@
-name: CI
+# CI workflow for Dependabot pull requests.
+#
+# Why a separate workflow?
+# ────────────────────────
+# Dependabot PRs trigger the `pull_request` event, which runs with read-only
+# permissions and **cannot access repository secrets**. Jobs that require
+# secrets (frontend build, backend tests) would fail.
+#
+# `pull_request_target` runs in the context of the *base* branch, so it can
+# read secrets. We explicitly check out the PR head ref so we test the
+# updated dependencies, and we restrict this workflow to the trusted
+# `dependabot[bot]` actor to keep the attack surface minimal.
+#
+# See: https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
+
+name: CI (Dependabot)
 
 on:
-  push:
+  pull_request_target:
     branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
+
+# Only run for Dependabot PRs — regular PRs use the standard CI workflow.
+# This top-level permissions block limits the GITHUB_TOKEN to the minimum
+# needed; individual jobs can widen selectively.
+permissions:
+  contents: read
 
 env:
   NODE_VERSION: "22"
@@ -12,20 +31,33 @@ env:
 
 jobs:
   # ==========================================
+  # Gate — abort early for non-Dependabot actors
+  # ==========================================
+  check-actor:
+    name: Verify Dependabot Actor
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - run: echo "PR raised by Dependabot — proceeding."
+
+  # ==========================================
   # Frontend Jobs
   # ==========================================
   frontend-lint:
     name: Frontend Lint & Type Check
     runs-on: ubuntu-latest
-    # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
-    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
+    needs: check-actor
     defaults:
       run:
         working-directory: frontend
 
     steps:
-      - name: Checkout code
+      - name: Checkout PR head
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -52,8 +84,12 @@ jobs:
         working-directory: frontend
 
     steps:
-      - name: Checkout code
+      - name: Checkout PR head
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -77,8 +113,12 @@ jobs:
         working-directory: frontend
 
     steps:
-      - name: Checkout code
+      - name: Checkout PR head
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -102,15 +142,18 @@ jobs:
   backend-lint:
     name: Backend Lint & Type Check
     runs-on: ubuntu-latest
-    # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
-    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
+    needs: check-actor
     defaults:
       run:
         working-directory: backend
 
     steps:
-      - name: Checkout code
+      - name: Checkout PR head
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 2
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -149,8 +192,12 @@ jobs:
         working-directory: backend
 
     steps:
-      - name: Checkout code
+      - name: Checkout PR head
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 2
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -186,14 +233,17 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
-    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
+    needs: check-actor
     permissions:
       security-events: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout PR head
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 2
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master

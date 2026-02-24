@@ -7,6 +7,7 @@ updates:
   # Frontend (npm)
   - package-ecosystem: "npm"
     directory: "/frontend"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -27,6 +28,7 @@ updates:
   # Backend (pip/poetry)
   - package-ecosystem: "pip"
     directory: "/backend"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -47,6 +49,7 @@ updates:
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
       day: "monday"
