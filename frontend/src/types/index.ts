@@ -221,11 +221,15 @@ export interface DateRange {
 }
 
 export interface AnalyticsSummary {
-  avg_productivity: number;
-  avg_sleep: number;
-  avg_exercise: number;
+  /** Average productivity score. `null` when no data is available for the period. */
+  avg_productivity: number | null;
+  /** Average sleep duration in hours. `null` when no data is available. */
+  avg_sleep: number | null;
+  /** Average exercise duration in minutes. `null` when no data is available. */
+  avg_exercise: number | null;
   total_entries: number;
   best_day: string;
   worst_day: string;
-  productivity_trend: 'up' | 'down' | 'stable';
+  /** Overall productivity trend. `null` when insufficient data to determine a trend. */
+  productivity_trend: 'up' | 'down' | 'stable' | null;
 }
