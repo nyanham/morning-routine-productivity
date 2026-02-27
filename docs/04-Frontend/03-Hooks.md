@@ -70,6 +70,7 @@ export { useProductivity } from "./useApi";
 export { useAnalyticsSummary } from "./useApi";
 export { useChartData } from "./useApi";
 export { useCSVImport } from "./useApi";
+export { useScrollReveal } from "./useScrollReveal";
 ```
 
 ---
@@ -245,6 +246,39 @@ Read-only time-series data for chart components.
 | `fetch` | `GET /api/analytics/charts` | `ChartDataPoint[]` |
 
 `fetch` accepts optional `startDate` and `endDate` strings.
+
+---
+
+### `useScrollReveal()`
+
+> Source: `src/hooks/useScrollReveal.ts`
+
+A lightweight hook that returns a `ref` and an `isVisible` boolean. Wraps
+`IntersectionObserver` internally — once the observed element enters the
+viewport the flag is set to `true` and the observer disconnects (one-shot).
+
+| Return value | Type                           | Description                 |
+| ------------ | ------------------------------ | --------------------------- |
+| `ref`        | `React.RefObject<HTMLDivElement>` | Attach to the target element |
+| `isVisible`  | `boolean`                      | `true` after first intersection |
+
+**Options (all optional):**
+
+| Option       | Type     | Default                | Description                   |
+| ------------ | -------- | ---------------------- | ----------------------------- |
+| `threshold`  | `number` | `0.15`                 | Visibility ratio to trigger   |
+| `rootMargin` | `string` | `'0px 0px -60px 0px'`  | Observer root margin          |
+
+```tsx
+const { ref, isVisible } = useScrollReveal({ threshold: 0.2 });
+
+<div ref={ref} style={{ opacity: isVisible ? 1 : 0 }}>
+  Content fades in on scroll
+</div>
+```
+
+Used by `RevealSection` to power scroll-triggered animations across the
+landing page.
 
 ---
 

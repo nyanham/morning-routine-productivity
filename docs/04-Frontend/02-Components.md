@@ -13,6 +13,18 @@ graph TD
         SB["Sidebar"]
     end
 
+    subgraph Landing
+        HD["Header"]
+        HS["HeroSection"]
+        FT["Features"]
+        CP["CommunityPreview"]
+        HW["HowItWorks"]
+        CB["CTABanner"]
+        FO["Footer"]
+        FF["Fireflies"]
+        RS["RevealSection"]
+    end
+
     subgraph UI
         SC["StatsCard"]
         CSV["CSVUploader"]
@@ -31,8 +43,16 @@ graph TD
     DL --> SDC
     DL --> CSV
 
+    HS --> FF
+    FT --> RS
+    CP --> RS
+    HW --> RS
+    CB --> RS
+
     style Layout fill:#dbeafe,stroke:#2563eb
     style Layout color:black
+    style Landing fill:#e0f2fe,stroke:#0284c7
+    style Landing color:black
     style UI fill:#d1fae5,stroke:#059669
     style UI color:black
     style Charts fill:#fef3c7,stroke:#d97706
@@ -294,6 +314,100 @@ const sleepBuckets = [
 4. Follow existing patterns: accept typed props, use Tailwind + `cn()`, wrap
    in `.card` where appropriate.
 5. Add a test alongside in `__tests__/components/`.
+
+---
+
+## Landing Components
+
+All landing page section components live in `components/landing/` and are
+re-exported from a barrel file (`components/landing/index.ts`).
+
+### Header
+
+> `components/landing/Header.tsx` — `'use client'`
+
+Sticky, translucent top bar with the MorningFlow logo, desktop anchor links
+(`#features`, `#community`, `#how-it-works`), auth links (Log In / Get
+Started), and a hamburger toggle for mobile.
+
+| Prop | Type | Description |
+| ---- | ---- | ----------- |
+| —    | —    | No props    |
+
+### HeroSection
+
+> `components/landing/HeroSection.tsx`
+
+Full-width hero with a bold headline, one-liner description, two CTAs
+(primary + ghost), and animated `Fireflies` blob background.
+
+### Features
+
+> `components/landing/Features.tsx`
+
+Three-column grid of six feature cards. Each card has an icon badge, title,
+and short description. Cards are wrapped in `RevealSection` with staggered
+scale animations.
+
+**Feature cards:** Daily Entries, CSV Import, Interactive Charts, Powerful
+Filters, Period Comparison, Privacy First.
+
+### CommunityPreview
+
+> `components/landing/CommunityPreview.tsx`
+
+Dark-background section showing four anonymous aggregate statistic bubbles
+(Avg. Sleep, Avg. Productivity, Most Productive Day, Active Users). Each
+bubble is wrapped in `RevealSection` with staggered entry.
+
+### HowItWorks
+
+> `components/landing/HowItWorks.tsx`
+
+Three-step explanation: **Log → Explore → Improve**. Each step has a numbered
+badge, icon, title, and description. A decorative connector line runs between
+steps on desktop.
+
+### CTABanner
+
+> `components/landing/CTABanner.tsx`
+
+Full-width aqua gradient band with a headline, description, and "Get Started"
+CTA button. Wrapped in `RevealSection` with a scale animation.
+
+### Footer
+
+> `components/landing/Footer.tsx`
+
+Dark footer with three columns: brand + tagline, product links, and legal
+placeholders. Displays the current year in a copyright line.
+
+### Fireflies
+
+> `components/landing/Fireflies.tsx` — `'use client'`
+
+Purely decorative animated blurred circles that drift and fade in/out.
+Blobs are split across three **depth tiers** (back, mid, front) with
+differing sizes, blur levels, speeds, and opacities to create a parallax
+effect. Driven by the `blob-drift` CSS keyframe and CSS custom properties.
+
+| Prop    | Type     | Default | Description          |
+| ------- | -------- | ------- | -------------------- |
+| `count` | `number` | `10`    | Number of blob particles |
+
+### RevealSection
+
+> `components/landing/RevealSection.tsx` — `'use client'`
+
+Scroll-triggered reveal wrapper. Uses `useScrollReveal` hook internally.
+Supports two animation variants and a configurable delay for stagger effects.
+
+| Prop        | Type               | Default | Description                      |
+| ----------- | ------------------ | ------- | -------------------------------- |
+| `children`  | `React.ReactNode`  | —       | Content to reveal                |
+| `animation` | `'up' \| 'scale'`  | `'up'`  | `reveal-up` or `reveal-scale`    |
+| `delay`     | `number`           | `0`     | Animation delay in ms            |
+| `className` | `string`           | `''`    | Passed through to wrapper `div`  |
 
 ---
 

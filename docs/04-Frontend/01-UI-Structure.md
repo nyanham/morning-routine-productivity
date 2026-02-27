@@ -37,10 +37,11 @@ frontend/src/
 ━E      └── settings/page.tsx  # User settings (/dashboard/settings)
 ├── components/                # Reusable UI pieces
 ━E  ├── charts/                # Recharts wrappers
+━E  ├── landing/               # Landing page sections & decorations
 ━E  ├── layout/                # DashboardLayout, Sidebar
 ━E  └── ui/                    # Primitives: StatsCard, CSVUploader
 ├── contexts/                  # React Context providers
-├── hooks/                     # Custom hooks (useApi, useAuth)
+├── hooks/                     # Custom hooks (useApi, useAuth, useScrollReveal)
 ├── lib/                       # Utilities & clients
 ━E  ├── api.ts                 # REST client (apiClient, api namespace)
 ━E  ├── utils.ts               # cn(), formatDate(), colour helpers
@@ -177,14 +178,29 @@ or redirects.
 
 ## Landing Page
 
-The public landing page (`/`) is a self-contained marketing page with:
+The public landing page (`/`) is a full-width marketing page composed of
+seven section components, all exported from `components/landing/index.ts`:
 
-1. **Header**  — logo + Login / Sign Up links
-2. **Hero section**  — headline, subtitle, CTA buttons
-3. **Features grid**  — three `FeatureCard` components (CSV Import, Manual Input, Visual Analytics)
-4. **Footer**  — copyright
+| Order | Component          | Purpose                                            |
+| ----- | ------------------ | -------------------------------------------------- |
+| 1     | `Header`           | Sticky translucent nav — logo, anchor links, auth  |
+| 2     | `HeroSection`      | Headline, CTAs, animated blob background           |
+| 3     | `Features`         | 6-card grid (Daily Entries, CSV, Charts, …)        |
+| 4     | `CommunityPreview` | Dark section with 4 anonymous aggregate stat cards |
+| 5     | `HowItWorks`       | 3-step explanation (Log → Explore → Improve)       |
+| 6     | `CTABanner`        | Full-width aqua-gradient call-to-action            |
+| 7     | `Footer`           | 3-column footer (brand, product links, legal)      |
 
-It uses no shared dashboard layout and renders at full width.
+**Decorative / utility sub-components:**
+
+| Component       | Used by       | Purpose                                    |
+| --------------- | ------------- | ------------------------------------------ |
+| `Fireflies`     | `HeroSection` | Animated blurred-circle blobs (3 depth tiers) |
+| `RevealSection` | Several       | Scroll-triggered fade/slide wrapper        |
+
+The page uses no shared dashboard layout and renders at full width.
+Smooth scrolling is enabled via `scroll-behavior: smooth` in `globals.css`
+with a `prefers-reduced-motion` fallback.
 
 ---
 

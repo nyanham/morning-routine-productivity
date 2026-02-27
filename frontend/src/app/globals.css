@@ -2,33 +2,70 @@
 
 /* Custom theme configuration for Tailwind v4 */
 @theme {
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
+  /* ── Powder Blush ── */
+  --color-blush-100: #f9c4cc;
+  --color-blush-200: #f4a0ac;
+  --color-blush-400: #e06088;
+  --color-blush-600: #cc1034;
+  --color-blush-800: #6b0a1e;
 
-  --color-accent-50: #fdf4ff;
-  --color-accent-100: #fae8ff;
-  --color-accent-200: #f5d0fe;
-  --color-accent-300: #f0abfc;
-  --color-accent-400: #e879f9;
-  --color-accent-500: #d946ef;
-  --color-accent-600: #c026d3;
-  --color-accent-700: #a21caf;
-  --color-accent-800: #86198f;
-  --color-accent-900: #701a75;
+  /* ── Vanilla Cream ── */
+  --color-vanilla-100: #f5e6c8;
+  --color-vanilla-200: #edd9a3;
+  --color-vanilla-400: #c4a84d;
+  --color-vanilla-600: #9a8232;
+  --color-vanilla-800: #5c4e1f;
+
+  /* ── Icy Aqua (primary) ── */
+  --color-aqua-100: #b8f0ec;
+  --color-aqua-200: #80e5dd;
+  --color-aqua-400: #42d4c8;
+  --color-aqua-600: #14a89e;
+  --color-aqua-800: #0c706a;
+
+  /* ── Light Blue ── */
+  --color-sky-100: #bde4ef;
+  --color-sky-200: #8ecfdf;
+  --color-sky-400: #5ab4ca;
+  --color-sky-600: #2d8fa8;
+  --color-sky-800: #1a5e72;
+
+  /* ── Blue Slate ── */
+  --color-slate-100: #d0d5db;
+  --color-slate-200: #b0b8c1;
+  --color-slate-400: #7c8894;
+  --color-slate-600: #556170;
+  --color-slate-800: #2e3744;
+
+  /* Keep "primary" alias pointing to Icy Aqua for easy use */
+  --color-primary-50: #e6f9f7;
+  --color-primary-100: #b8f0ec;
+  --color-primary-200: #80e5dd;
+  --color-primary-300: #61ddd3;
+  --color-primary-400: #42d4c8;
+  --color-primary-500: #28beb3;
+  --color-primary-600: #14a89e;
+  --color-primary-700: #108c84;
+  --color-primary-800: #0c706a;
+  --color-primary-900: #084f4a;
+
+  /* Accent → Powder Blush */
+  --color-accent-50: #fef0f2;
+  --color-accent-100: #f9c4cc;
+  --color-accent-200: #f4a0ac;
+  --color-accent-300: #ec7e94;
+  --color-accent-400: #e06088;
+  --color-accent-500: #d63a60;
+  --color-accent-600: #cc1034;
+  --color-accent-700: #a00d2a;
+  --color-accent-800: #6b0a1e;
+  --color-accent-900: #450814;
 }
 
 :root {
-  --foreground-rgb: 15, 23, 42;
+  --foreground-rgb: 46, 55, 68;
   --background-start-rgb: 248, 250, 252;
-  --background-end-rgb: 241, 245, 249;
+  --background-end-rgb: 243, 246, 249;
 }
 
 body {
@@ -44,6 +81,67 @@ body {
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  /* Respect users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ── Blob-drift keyframe ── */
+/* Large blurred circles slowly fade in, drift, and fade out. */
+@keyframes blob-drift {
+  0% {
+    transform: translate(0, 0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(var(--drift-x, 40px), var(--drift-y, -60px)) scale(1.1);
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--drift-end-x, -20px), var(--drift-end-y, 30px)) scale(0.85);
+    opacity: 0;
+  }
+}
+
+/* ── Scroll-reveal keyframes ── */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
