@@ -391,15 +391,17 @@ background. Blobs are split across three **depth tiers** (back, mid,
 front) with differing sizes, blur levels, speeds, and opacities.
 
 **Fast entrance** — instead of waiting for a long animation cycle, blobs
-fade in quickly on page load via staggered CSS opacity transitions
-(≈ 0.15 s apart), so the full set is visible within ~2 seconds.
+use a short `blob-enter` keyframe animation (scale/opacity) with a
+staggered start (≈ 0.12 s apart), so the full set becomes visible
+within about 2 seconds on page load.
 
 **Parallax scroll** — a passive `scroll` listener shifts each depth tier
-at a different Y-axis rate (`back −0.04`, `mid −0.12`, `front −0.22`),
+at a different Y-axis rate (`back 0.26`, `mid 0.16`, `front 0.08`),
 creating a natural 3-D depth effect as the user scrolls.
 
-Driven by the `blob-drift` CSS keyframe (movement only) and CSS custom
-properties (`--drift-x`, `--drift-y`, `--drift-end-x`, `--drift-end-y`).
+Driven by the `blob-drift` (movement) and `blob-enter` (entrance) CSS
+keyframes and CSS custom properties (`--drift-x`, `--drift-y`,
+`--drift-end-x`, `--drift-end-y`).
 
 | Prop    | Type     | Default | Description              |
 | ------- | -------- | ------- | ------------------------ |
