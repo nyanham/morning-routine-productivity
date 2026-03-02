@@ -83,7 +83,8 @@ body {
 
 @layer base {
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    /* Font is applied by next/font's generated className on <html>.
+       We only need to set scroll-behavior here. */
     scroll-behavior: smooth;
   }
 

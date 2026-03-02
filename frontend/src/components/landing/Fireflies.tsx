@@ -207,10 +207,30 @@ export default function Fireflies({ count = 10 }: { count?: number }) {
   }, []);
 
   useEffect(() => {
+    // Skip scroll-driven motion when the user prefers reduced motion.
+    // CSS animations are already neutralised by the global reduced-motion
+    // block in globals.css, but this JS-driven parallax must be gated here.
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (motionQuery.matches) return;
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // set initial position
+
+    // If the preference changes while mounted, tear down the listener.
+    const onChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        window.removeEventListener('scroll', handleScroll);
+        setParallaxY([0, 0, 0]);
+      } else {
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+      }
+    };
+    motionQuery.addEventListener('change', onChange);
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      motionQuery.removeEventListener('change', onChange);
       // Clean up any pending animation frame when the effect is torn down.
       if (frameIdRef.current !== null) {
         cancelAnimationFrame(frameIdRef.current);
