@@ -76,7 +76,7 @@ const DEPTH_TIERS: DepthTier[] = [
     durationRange: [18, 26],
     opacityMultiplier: 0.6,
     zIndex: 0,
-    parallaxSpeed: 0.26,
+    parallaxSpeed: -0.04,
   },
   // Mid — moderate parallax
   {
@@ -85,7 +85,7 @@ const DEPTH_TIERS: DepthTier[] = [
     durationRange: [13, 20],
     opacityMultiplier: 0.85,
     zIndex: 1,
-    parallaxSpeed: 0.16,
+    parallaxSpeed: -0.12,
   },
   // Front — crisper, faster, most pronounced scroll shift
   {
@@ -94,7 +94,7 @@ const DEPTH_TIERS: DepthTier[] = [
     durationRange: [10, 16],
     opacityMultiplier: 1,
     zIndex: 2,
-    parallaxSpeed: 0.08,
+    parallaxSpeed: -0.22,
   },
 ];
 

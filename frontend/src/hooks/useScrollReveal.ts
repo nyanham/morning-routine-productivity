@@ -25,7 +25,7 @@ export function useScrollReveal(options?: { threshold?: number; rootMargin?: str
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.unobserve(el);
+          observer.disconnect();
         }
       },
       {

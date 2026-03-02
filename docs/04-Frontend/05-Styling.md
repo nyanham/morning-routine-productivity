@@ -297,10 +297,11 @@ the `Fireflies` component so we can control entrance speed independently.
 
 The `Fireflies` component pairs this with:
 
-- **Fast entrance** — staggered `transition: opacity 1s` so blobs appear
-  within ~2 s of page load instead of waiting for a full drift cycle.
-- **Parallax scroll** — per-tier `marginTop` offsets driven by a passive
-  scroll listener create a 3-D depth illusion.
+- **Fast entrance** — staggered `blob-enter` CSS animation (opacity 0 → 1,
+  scale 0.7 → 1 over 0.8 s) so blobs appear within ~2 s of page load
+  instead of waiting for a full drift cycle.
+- **Parallax scroll** — per-tier `transform: translateY()` offsets driven
+  by a passive scroll listener create a 3-D depth illusion.
 
 ### `reveal-up`
 

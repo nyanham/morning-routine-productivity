@@ -396,7 +396,7 @@ staggered start (≈ 0.12 s apart), so the full set becomes visible
 within about 2 seconds on page load.
 
 **Parallax scroll** — a passive `scroll` listener shifts each depth tier
-at a different Y-axis rate (`back 0.26`, `mid 0.16`, `front 0.08`),
+at a different Y-axis rate (`back −0.04`, `mid −0.12`, `front −0.22`),
 creating a natural 3-D depth effect as the user scrolls.
 
 Driven by the `blob-drift` (movement) and `blob-enter` (entrance) CSS

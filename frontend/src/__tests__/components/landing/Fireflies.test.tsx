@@ -106,11 +106,11 @@ describe('Fireflies', () => {
     const transforms = Array.from(blobs).map((b) => b.style.transform);
 
     // Each tier should have a different parallax offset
-    // Back  (i=0, speed 0.26): 200 * 0.26 = 52
-    // Mid   (i=1, speed 0.16): 200 * 0.16 = 32
-    // Front (i=2, speed 0.08): 200 * 0.08 = 16
-    expect(transforms[0]).toBe('translateY(52px)');
-    expect(transforms[1]).toBe('translateY(32px)');
-    expect(transforms[2]).toBe('translateY(16px)');
+    // Back  (i=0, speed -0.04): 200 * -0.04 = -8
+    // Mid   (i=1, speed -0.12): 200 * -0.12 = -24
+    // Front (i=2, speed -0.22): 200 * -0.22 = -44
+    expect(transforms[0]).toBe('translateY(-8px)');
+    expect(transforms[1]).toBe('translateY(-24px)');
+    expect(transforms[2]).toBe('translateY(-44px)');
   });
 });
