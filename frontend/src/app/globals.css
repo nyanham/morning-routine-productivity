@@ -33,8 +33,11 @@
   /* ── Blue Slate ── */
   --color-slate-100: #d0d5db;
   --color-slate-200: #b0b8c1;
+  --color-slate-300: #9aa5b3;
   --color-slate-400: #7c8894;
+  --color-slate-500: #697483;
   --color-slate-600: #556170;
+  --color-slate-700: #414b5b;
   --color-slate-800: #2e3744;
 
   /* Keep "primary" alias pointing to Icy Aqua for easy use */
