@@ -186,8 +186,9 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
-    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
+    # Runs for ALL PRs including Dependabot — Trivy needs no secrets and
+    # using a single workflow avoids SARIF configuration mismatches in
+    # GitHub code scanning.
     permissions:
       security-events: write
 

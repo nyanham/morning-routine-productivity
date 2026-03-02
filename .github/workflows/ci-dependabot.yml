@@ -227,35 +227,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
-  # ==========================================
-  # Security Scanning
-  # ==========================================
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    needs: check-actor
-    permissions:
-      security-events: write
-
-    steps:
-      - name: Checkout PR head
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          persist-credentials: false
-          fetch-depth: 2
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: "fs"
-          scan-ref: "."
-          severity: "CRITICAL,HIGH"
-          format: "sarif"
-          output: "trivy-results.sarif"
-
-      - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: "trivy-results.sarif"
+  # NOTE: Security scanning (Trivy) is handled by the main ci.yml workflow
+  # for ALL PRs including Dependabot, since it requires no repository secrets.
+  # Keeping a duplicate here would create a separate SARIF "configuration" that
+  # causes code-scanning warnings on non-Dependabot PRs.
