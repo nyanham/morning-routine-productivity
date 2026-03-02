@@ -178,23 +178,47 @@ export default function Fireflies({ count = 10 }: { count?: number }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   /** Per-tier translateY values driven by scroll. */
   const [parallaxY, setParallaxY] = useState<number[]>([0, 0, 0]);
+  /**
+   * ID of the currently scheduled animation frame for scroll handling.
+   *
+   * We throttle scroll-driven work to once per animation frame to avoid
+   * redundant layout reads (`getBoundingClientRect`) and React re-renders
+   * during very fast scrolling.
+   */
+  const frameIdRef = useRef<number | null>(null);
 
   // ── parallax scroll handler ──────────────────────────────────────
   const handleScroll = useCallback(() => {
-    if (!wrapperRef.current) return;
-    const rect = wrapperRef.current.getBoundingClientRect();
-    // How many pixels the section has scrolled past the viewport top.
-    // Positive when the section has begun leaving the viewport.
-    const scrollOffset = -rect.top;
-    setParallaxY(
-      DEPTH_TIERS.map((tier) => Math.round(scrollOffset * tier.parallaxSpeed * 10) / 10)
-    );
+    // If a frame is already scheduled, coalesce this scroll event.
+    if (frameIdRef.current !== null) return;
+
+    frameIdRef.current = window.requestAnimationFrame(() => {
+      frameIdRef.current = null;
+      if (!wrapperRef.current) return;
+
+      const rect = wrapperRef.current.getBoundingClientRect();
+      // How many pixels the section has scrolled past the viewport top.
+      // Positive when the section has begun leaving the viewport.
+      const scrollOffset = -rect.top;
+      setParallaxY(
+        DEPTH_TIERS.map(
+          (tier) => Math.round(scrollOffset * tier.parallaxSpeed * 10) / 10
+        )
+      );
+    });
   }, []);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // set initial position
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      // Clean up any pending animation frame when the effect is torn down.
+      if (frameIdRef.current !== null) {
+        cancelAnimationFrame(frameIdRef.current);
+        frameIdRef.current = null;
+      }
+    };
   }, [handleScroll]);
 
   return (
