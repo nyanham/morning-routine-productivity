@@ -28,15 +28,15 @@ Defined in `globals.css` via the `@theme` directive. The landing page
 introduced a warm, morning-inspired palette alongside the existing primary
 and accent scales:
 
-| Scale     | Name          | Sample hex | Usage                          |
-| --------- | ------------- | ---------- | ------------------------------ |
-| `blush-*` | Powder Blush  | `#f4a0ac`  | Accent badges, step numbers    |
-| `vanilla-*` | Vanilla Cream | `#edd9a3` | Warm decorative blobs          |
-| `aqua-*`  | Icy Aqua      | `#14a89e`  | Primary brand, CTAs, icons     |
-| `sky-*`   | Light Blue    | `#5ab4ca`  | Decorative blobs               |
-| `slate-*` | Blue Slate    | `#556170`  | Text, borders, dark sections   |
-| `primary-*` | (alias → aqua) | `#14a89e` | Semantic alias for easy use  |
-| `accent-*` | (alias → blush) | `#cc1034` | Semantic accent alias        |
+| Scale       | Name            | Sample hex | Usage                        |
+| ----------- | --------------- | ---------- | ---------------------------- |
+| `blush-*`   | Powder Blush    | `#f4a0ac`  | Accent badges, step numbers  |
+| `vanilla-*` | Vanilla Cream   | `#edd9a3`  | Warm decorative blobs        |
+| `aqua-*`    | Icy Aqua        | `#14a89e`  | Primary brand, CTAs, icons   |
+| `sky-*`     | Light Blue      | `#5ab4ca`  | Decorative blobs             |
+| `slate-*`   | Blue Slate      | `#556170`  | Text, borders, dark sections |
+| `primary-*` | (alias → aqua)  | `#14a89e`  | Semantic alias for easy use  |
+| `accent-*`  | (alias → blush) | `#cc1034`  | Semantic accent alias        |
 
 Each scale includes shades at `100`, `200`, `400`, `600`, and `800`.
 
@@ -264,7 +264,7 @@ The project uses Tailwind's default breakpoints:
 
 | Prefix | Min-width | Typical use                     |
 | ------ | --------- | ------------------------------- |
-| `sm`   | 640px     |  —                               |
+| `sm`   | 640px     | —                               |
 | `md`   | 768px     | 2-column grids                  |
 | `lg`   | 1024px    | 4-column stats, 2-column charts |
 | `xl`   | 1280px    | Max-width containers            |
@@ -272,6 +272,7 @@ The project uses Tailwind's default breakpoints:
 The dashboard layout has a **fixed 256px sidebar** (`w-64`), so the primary
 content area effectively starts at `md` + sidebar width. The landing page uses
 `max-w-7xl` centred containers.
+
 ---
 
 ## CSS Animations
@@ -281,17 +282,25 @@ components. All animations respect `prefers-reduced-motion: reduce`.
 
 ### `blob-drift`
 
-Slowly fades in large blurred circles, drifts them via CSS custom properties
-(`--drift-x`, `--drift-y`, `--drift-end-x`, `--drift-end-y`), then fades
-out. Used by the `Fireflies` component in the hero section.
+**Movement-only** keyframe — translates and scales large blurred circles
+via CSS custom properties (`--drift-x`, `--drift-y`, `--drift-end-x`,
+`--drift-end-y`). Opacity is handled separately by a CSS transition in
+the `Fireflies` component so we can control entrance speed independently.
 
 ```
-0%   → opacity 0, scale 0.8
-20%  → opacity 1
-50%  → translate(--drift-x, --drift-y), scale 1.1
-80%  → opacity 1
-100% → translate(--drift-end-x, --drift-end-y), scale 0.85, opacity 0
+0%   → translate(0, 0), scale 0.95
+25%  → translate(--drift-x, --drift-y), scale 1.08
+50%  → translate(--drift-end-x, --drift-end-y), scale 1.02
+75%  → translate(−0.4 × drift-x, −0.4 × drift-y), scale 0.92
+100% → translate(0, 0), scale 0.95
 ```
+
+The `Fireflies` component pairs this with:
+
+- **Fast entrance** — staggered `transition: opacity 1s` so blobs appear
+  within ~2 s of page load instead of waiting for a full drift cycle.
+- **Parallax scroll** — per-tier `marginTop` offsets driven by a passive
+  scroll listener create a 3-D depth illusion.
 
 ### `reveal-up`
 
@@ -307,12 +316,13 @@ with `animation="scale"` on feature cards and stat bubbles.
 
 Enabled globally via `scroll-behavior: smooth` in the `@layer base` block.
 Falls back to `auto` when `prefers-reduced-motion: reduce` is active.
+
 ---
 
 ## Related Docs
 
-| Topic         | Link                                                                             |
-| ------------- | -------------------------------------------------------------------------------- |
-| Components    | [Components.md](02-Components.md)                                                   |
-| UI structure  | [UI-Structure.md](01-UI-Structure.md)                                               |
+| Topic         | Link                                                                                   |
+| ------------- | -------------------------------------------------------------------------------------- |
+| Components    | [Components.md](02-Components.md)                                                      |
+| UI structure  | [UI-Structure.md](01-UI-Structure.md)                                                  |
 | Configuration | [../01-Getting-Started/02-Configuration.md](../01-Getting-Started/02-Configuration.md) |

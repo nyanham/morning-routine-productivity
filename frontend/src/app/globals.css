@@ -100,25 +100,29 @@ body {
 }
 
 /* ── Blob-drift keyframe ── */
-/* Large blurred circles slowly fade in, drift, and fade out. */
+/* Movement-only: translate + scale in a smooth loop.
+   Opacity is handled separately via CSS transition so we can
+   control entrance speed independently of the drift cycle. */
 @keyframes blob-drift {
   0% {
-    transform: translate(0, 0) scale(0.8);
-    opacity: 0;
+    translate: 0 0;
+    scale: 0.95;
   }
-  20% {
-    opacity: 1;
+  25% {
+    translate: var(--drift-x, 40px) var(--drift-y, -60px);
+    scale: 1.08;
   }
   50% {
-    transform: translate(var(--drift-x, 40px), var(--drift-y, -60px)) scale(1.1);
-    opacity: 0.9;
+    translate: var(--drift-end-x, -20px) var(--drift-end-y, 30px);
+    scale: 1.02;
   }
-  80% {
-    opacity: 1;
+  75% {
+    translate: calc(var(--drift-x, 40px) * -0.4) calc(var(--drift-y, -60px) * -0.4);
+    scale: 0.92;
   }
   100% {
-    transform: translate(var(--drift-end-x, -20px), var(--drift-end-y, 30px)) scale(0.85);
-    opacity: 0;
+    translate: 0 0;
+    scale: 0.95;
   }
 }
 

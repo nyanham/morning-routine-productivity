@@ -1,6 +1,6 @@
 # Components
 
-> Catalogue of reusable React components  — layout, UI primitives, and charts.
+> Catalogue of reusable React components — layout, UI primitives, and charts.
 
 ---
 
@@ -221,7 +221,7 @@ Line chart displaying three daily metrics over time.
 
 | Prop    | Type               | Default                    |
 | ------- | ------------------ | -------------------------- |
-| `data`  | `ChartDataPoint[]` |  —                          |
+| `data`  | `ChartDataPoint[]` | —                          |
 | `title` | `string`           | `"Productivity Over Time"` |
 
 **Series:**
@@ -251,7 +251,7 @@ Grouped bar chart for morning routine activity durations.
 
 | Prop    | Type               | Default                        |
 | ------- | ------------------ | ------------------------------ |
-| `data`  | `ChartDataPoint[]` |  —                              |
+| `data`  | `ChartDataPoint[]` | —                              |
 | `title` | `string`           | `"Morning Routine Activities"` |
 
 **Series:**
@@ -280,7 +280,7 @@ Donut (pie) chart showing how sleep durations are distributed across buckets.
 
 | Prop    | Type                                               | Default                         |
 | ------- | -------------------------------------------------- | ------------------------------- |
-| `data`  | `{ name: string; value: number; color: string }[]` |  —                               |
+| `data`  | `{ name: string; value: number; color: string }[]` | —                               |
 | `title` | `string`                                           | `"Sleep Duration Distribution"` |
 
 **Appearance:**
@@ -386,13 +386,23 @@ placeholders. Displays the current year in a copyright line.
 
 > `components/landing/Fireflies.tsx` — `'use client'`
 
-Purely decorative animated blurred circles that drift and fade in/out.
-Blobs are split across three **depth tiers** (back, mid, front) with
-differing sizes, blur levels, speeds, and opacities to create a parallax
-effect. Driven by the `blob-drift` CSS keyframe and CSS custom properties.
+Purely decorative animated blurred circles that drift across the hero
+background. Blobs are split across three **depth tiers** (back, mid,
+front) with differing sizes, blur levels, speeds, and opacities.
 
-| Prop    | Type     | Default | Description          |
-| ------- | -------- | ------- | -------------------- |
+**Fast entrance** — instead of waiting for a long animation cycle, blobs
+fade in quickly on page load via staggered CSS opacity transitions
+(≈ 0.15 s apart), so the full set is visible within ~2 seconds.
+
+**Parallax scroll** — a passive `scroll` listener shifts each depth tier
+at a different Y-axis rate (`back −0.04`, `mid −0.12`, `front −0.22`),
+creating a natural 3-D depth effect as the user scrolls.
+
+Driven by the `blob-drift` CSS keyframe (movement only) and CSS custom
+properties (`--drift-x`, `--drift-y`, `--drift-end-x`, `--drift-end-y`).
+
+| Prop    | Type     | Default | Description              |
+| ------- | -------- | ------- | ------------------------ |
 | `count` | `number` | `10`    | Number of blob particles |
 
 ### RevealSection
@@ -402,19 +412,19 @@ effect. Driven by the `blob-drift` CSS keyframe and CSS custom properties.
 Scroll-triggered reveal wrapper. Uses `useScrollReveal` hook internally.
 Supports two animation variants and a configurable delay for stagger effects.
 
-| Prop        | Type               | Default | Description                      |
-| ----------- | ------------------ | ------- | -------------------------------- |
-| `children`  | `React.ReactNode`  | —       | Content to reveal                |
-| `animation` | `'up' \| 'scale'`  | `'up'`  | `reveal-up` or `reveal-scale`    |
-| `delay`     | `number`           | `0`     | Animation delay in ms            |
-| `className` | `string`           | `''`    | Passed through to wrapper `div`  |
+| Prop        | Type              | Default | Description                     |
+| ----------- | ----------------- | ------- | ------------------------------- |
+| `children`  | `React.ReactNode` | —       | Content to reveal               |
+| `animation` | `'up' \| 'scale'` | `'up'`  | `reveal-up` or `reveal-scale`   |
+| `delay`     | `number`          | `0`     | Animation delay in ms           |
+| `className` | `string`          | `''`    | Passed through to wrapper `div` |
 
 ---
 
 ## Related Docs
 
-| Topic            | Link                                       |
-| ---------------- | ------------------------------------------ |
+| Topic            | Link                                          |
+| ---------------- | --------------------------------------------- |
 | UI structure     | [UI-Structure.md](01-UI-Structure.md)         |
 | Styling system   | [Styling.md](05-Styling.md)                   |
 | Custom hooks     | [Hooks.md](03-Hooks.md)                       |
