@@ -81,7 +81,23 @@ describe('Fireflies', () => {
   // ── parallax tests ──────────────────────────────────────────
 
   it('applies parallax translateY based on scroll', () => {
+    // The scroll handler uses rAF to throttle work.  jsdom's rAF is
+    // backed by setTimeout(cb, 0) which isn't flushed automatically
+    // within act().  We collect scheduled callbacks and flush them
+    // manually so the parallax state update actually runs.
+    const rafQueue: FrameRequestCallback[] = [];
+    const rafSpy = jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rafQueue.push(cb);
+      return rafQueue.length;
+    });
+
     const { container } = render(<Fireflies count={3} />);
+
+    // Flush the initial handleScroll() call that fires on mount.
+    act(() => {
+      rafQueue.forEach((cb) => cb(0));
+      rafQueue.length = 0;
+    });
 
     // Simulate the wrapper being 200px above the viewport
     const wrapper = container.firstElementChild as HTMLElement;
@@ -97,20 +113,26 @@ describe('Fireflies', () => {
       toJSON: () => {},
     });
 
-    // Fire scroll
+    // Fire scroll and flush the resulting rAF callback.
     act(() => {
       window.dispatchEvent(new Event('scroll'));
+    });
+    act(() => {
+      rafQueue.forEach((cb) => cb(0));
+      rafQueue.length = 0;
     });
 
     const blobs = container.querySelectorAll('span');
     const transforms = Array.from(blobs).map((b) => b.style.transform);
 
     // Each tier should have a different parallax offset
-    // Back  (i=0, speed -0.04): 200 * -0.04 = -8
-    // Mid   (i=1, speed -0.12): 200 * -0.12 = -24
-    // Front (i=2, speed -0.22): 200 * -0.22 = -44
-    expect(transforms[0]).toBe('translateY(-8px)');
-    expect(transforms[1]).toBe('translateY(-24px)');
-    expect(transforms[2]).toBe('translateY(-44px)');
+    // Back  (i=0, speed 0.08): 200 * 0.08 = 16
+    // Mid   (i=1, speed 0.16): 200 * 0.16 = 32
+    // Front (i=2, speed 0.26): 200 * 0.26 = 52
+    expect(transforms[0]).toBe('translateY(16px)');
+    expect(transforms[1]).toBe('translateY(32px)');
+    expect(transforms[2]).toBe('translateY(52px)');
+
+    rafSpy.mockRestore();
   });
 });

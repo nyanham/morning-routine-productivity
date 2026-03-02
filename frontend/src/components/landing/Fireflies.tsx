@@ -17,8 +17,8 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
  *
  * **Parallax scroll** — a lightweight scroll listener shifts each
  * depth tier at a different rate along the Y axis, creating a
- * natural 3-D parallax feel.  Back-layer blobs move slowest;
- * front-layer blobs move fastest.
+ * natural 3-D parallax feel.  Back-layer blobs move slowest
+ * (`0.08`); front-layer blobs move fastest (`0.26`).
  *
  * The component is purely decorative — wrapped in `aria-hidden`
  * and `pointer-events-none` so it never blocks interactive content.
@@ -62,8 +62,8 @@ interface DepthTier {
   /**
    * Parallax speed multiplier.  The scroll offset (in px) is
    * multiplied by this value to produce the tier's Y-translation.
-   * Negative values push the layer *up* as the user scrolls down,
-   * mimicking elements that are farther away.
+   * Smaller positive values move the layer less, mimicking elements
+   * that are farther away (back = 0.08, front = 0.26).
    */
   parallaxSpeed: number;
 }
@@ -76,7 +76,7 @@ const DEPTH_TIERS: DepthTier[] = [
     durationRange: [18, 26],
     opacityMultiplier: 0.6,
     zIndex: 0,
-    parallaxSpeed: -0.04,
+    parallaxSpeed: 0.08,
   },
   // Mid — moderate parallax
   {
@@ -85,7 +85,7 @@ const DEPTH_TIERS: DepthTier[] = [
     durationRange: [13, 20],
     opacityMultiplier: 0.85,
     zIndex: 1,
-    parallaxSpeed: -0.12,
+    parallaxSpeed: 0.16,
   },
   // Front — crisper, faster, most pronounced scroll shift
   {
@@ -94,7 +94,7 @@ const DEPTH_TIERS: DepthTier[] = [
     durationRange: [10, 16],
     opacityMultiplier: 1,
     zIndex: 2,
-    parallaxSpeed: -0.22,
+    parallaxSpeed: 0.26,
   },
 ];
 
@@ -201,9 +201,7 @@ export default function Fireflies({ count = 10 }: { count?: number }) {
       // Positive when the section has begun leaving the viewport.
       const scrollOffset = -rect.top;
       setParallaxY(
-        DEPTH_TIERS.map(
-          (tier) => Math.round(scrollOffset * tier.parallaxSpeed * 10) / 10
-        )
+        DEPTH_TIERS.map((tier) => Math.round(scrollOffset * tier.parallaxSpeed * 10) / 10)
       );
     });
   }, []);
