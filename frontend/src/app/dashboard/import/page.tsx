@@ -5,7 +5,6 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { RequireAuth } from '@/contexts/AuthContext';
 import { useCSVImport } from '@/hooks/useApi';
 import { FileSpreadsheet, Info, Upload, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
-import type { CSVImportResult } from '@/types';
 
 function ImportContent() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

@@ -15,7 +15,7 @@
 | Recharts     | 2.x     | Data visualisation (line, bar, pie) |
 | Lucide React | 0.5.x   | Icon library                        |
 | Supabase JS  | 2.x     | Auth & real-time client             |
-| PapaParse    |  —       | Client-side CSV parsing             |
+| PapaParse    | —       | Client-side CSV parsing             |
 
 ---
 
@@ -193,10 +193,10 @@ seven section components, all exported from `components/landing/index.ts`:
 
 **Decorative / utility sub-components:**
 
-| Component       | Used by       | Purpose                                    |
-| --------------- | ------------- | ------------------------------------------ |
+| Component       | Used by       | Purpose                                       |
+| --------------- | ------------- | --------------------------------------------- |
 | `Fireflies`     | `HeroSection` | Animated blurred-circle blobs (3 depth tiers) |
-| `RevealSection` | Several       | Scroll-triggered fade/slide wrapper        |
+| `RevealSection` | Several       | Scroll-triggered fade/slide wrapper           |
 
 The page uses no shared dashboard layout and renders at full width.
 Smooth scrolling is enabled via `scroll-behavior: smooth` in `globals.css`
@@ -223,10 +223,10 @@ current user's email and a **Sign Out** button.
 
 ## Related Docs
 
-| Topic                | Link                                                   |
-| -------------------- | ------------------------------------------------------ |
-| State management     | [State-Management.md](04-State-Management.md)             |
-| Components catalogue | [Components.md](02-Components.md)                         |
-| Custom hooks         | [Hooks.md](03-Hooks.md)                                   |
-| Styling system       | [Styling.md](05-Styling.md)                               |
+| Topic                | Link                                                         |
+| -------------------- | ------------------------------------------------------------ |
+| State management     | [State-Management.md](04-State-Management.md)                |
+| Components catalogue | [Components.md](02-Components.md)                            |
+| Custom hooks         | [Hooks.md](03-Hooks.md)                                      |
+| Styling system       | [Styling.md](05-Styling.md)                                  |
 | API layer            | [../03-API/01-API-Overview.md](../03-API/01-API-Overview.md) |

@@ -1,6 +1,6 @@
 # Hooks
 
-> Custom React hooks  — the shared async pattern, domain-specific hooks, and TypeScript types.
+> Custom React hooks — the shared async pattern, domain-specific hooks, and TypeScript types.
 
 ---
 
@@ -158,7 +158,7 @@ Manage user goals.
 | `fetch`  | `GET  /api/users/me/goals`           | `UserGoal[]` |
 | `create` | `POST /api/users/me/goals`           | `UserGoal`   |
 | `update` | `PATCH /api/users/me/goals/:goalId`  | `UserGoal`   |
-| `remove` | `DELETE /api/users/me/goals/:goalId` |  —            |
+| `remove` | `DELETE /api/users/me/goals/:goalId` | —            |
 
 `fetch` accepts an optional `activeOnly` boolean. After `create`, `update`,
 or `remove`, the local `data` array is updated optimistically.
@@ -174,7 +174,7 @@ Morning routine CRUD with pagination.
 | `fetch`  | `GET  /api/routines`       | `PaginatedResponse<MorningRoutine>` |
 | `create` | `POST /api/routines`       | `MorningRoutine`                    |
 | `update` | `PUT  /api/routines/:id`   | `MorningRoutine`                    |
-| `remove` | `DELETE /api/routines/:id` |  —                                   |
+| `remove` | `DELETE /api/routines/:id` | —                                   |
 
 **Fetch parameters:**
 
@@ -221,7 +221,7 @@ Productivity entry CRUD with pagination. Same shape as `useRoutines()`.
 | `fetch`  | `GET  /api/productivity`       | `PaginatedResponse<ProductivityEntry>` |
 | `create` | `POST /api/productivity`       | `ProductivityEntry`                    |
 | `update` | `PUT  /api/productivity/:id`   | `ProductivityEntry`                    |
-| `remove` | `DELETE /api/productivity/:id` |  —                                      |
+| `remove` | `DELETE /api/productivity/:id` | —                                      |
 
 ---
 
@@ -257,24 +257,24 @@ A lightweight hook that returns a `ref` and an `isVisible` boolean. Wraps
 `IntersectionObserver` internally — once the observed element enters the
 viewport the flag is set to `true` and the observer disconnects (one-shot).
 
-| Return value | Type                           | Description                 |
-| ------------ | ------------------------------ | --------------------------- |
-| `ref`        | `React.RefObject<HTMLDivElement>` | Attach to the target element |
-| `isVisible`  | `boolean`                      | `true` after first intersection |
+| Return value | Type                              | Description                     |
+| ------------ | --------------------------------- | ------------------------------- |
+| `ref`        | `React.RefObject<HTMLDivElement>` | Attach to the target element    |
+| `isVisible`  | `boolean`                         | `true` after first intersection |
 
 **Options (all optional):**
 
-| Option       | Type     | Default                | Description                   |
-| ------------ | -------- | ---------------------- | ----------------------------- |
-| `threshold`  | `number` | `0.15`                 | Visibility ratio to trigger   |
-| `rootMargin` | `string` | `'0px 0px -60px 0px'`  | Observer root margin          |
+| Option       | Type     | Default               | Description                 |
+| ------------ | -------- | --------------------- | --------------------------- |
+| `threshold`  | `number` | `0.15`                | Visibility ratio to trigger |
+| `rootMargin` | `string` | `'0px 0px -60px 0px'` | Observer root margin        |
 
 ```tsx
 const { ref, isVisible } = useScrollReveal({ threshold: 0.2 });
 
 <div ref={ref} style={{ opacity: isVisible ? 1 : 0 }}>
   Content fades in on scroll
-</div>
+</div>;
 ```
 
 Used by `RevealSection` to power scroll-triggered animations across the
@@ -398,10 +398,10 @@ export function useMyFeature() {
 
 ## Related Docs
 
-| Topic            | Link                                                       |
-| ---------------- | ---------------------------------------------------------- |
-| State management | [State-Management.md](04-State-Management.md)                 |
-| Components       | [Components.md](02-Components.md)                             |
+| Topic            | Link                                                             |
+| ---------------- | ---------------------------------------------------------------- |
+| State management | [State-Management.md](04-State-Management.md)                    |
+| Components       | [Components.md](02-Components.md)                                |
 | API client       | [../03-API/01-API-Overview.md](../03-API/01-API-Overview.md)     |
-| API endpoints    | [../03-API/Endpoints/](../03-API/Endpoints/)               |
+| API endpoints    | [../03-API/Endpoints/](../03-API/Endpoints/)                     |
 | Error handling   | [../03-API/03-Error-Handling.md](../03-API/03-Error-Handling.md) |

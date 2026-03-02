@@ -5,8 +5,8 @@
 import React, { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 
-// Mock AuthContext
-const mockAuthContext = {
+// Mock AuthContext (retained for external test use)
+const _mockAuthContext = {
   user: null,
   session: null,
   loading: false,
