@@ -99,10 +99,24 @@ body {
   }
 }
 
+/* ── Blob-enter keyframe ── */
+/* Quick fade-in for blob entrance. Combined with blob-drift via
+   comma-separated animation shorthand on each blob element.
+   `animation-fill-mode: both` keeps opacity 0 during the stagger
+   delay and holds opacity 1 after completing. */
+@keyframes blob-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* ── Blob-drift keyframe ── */
 /* Movement-only: translate + scale in a smooth loop.
-   Opacity is handled separately via CSS transition so we can
-   control entrance speed independently of the drift cycle. */
+   Opacity is handled by the `blob-enter` animation so the two
+   can run independently with different timing. */
 @keyframes blob-drift {
   0% {
     translate: 0 0;

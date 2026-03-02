@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 
 /**
  * Animated blurred-circle blobs for the hero section background.
@@ -11,8 +11,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * no two feel identical.
  *
  * **Fast entrance** — on page load every blob fades in quickly via
- * a staggered CSS opacity transition (≈ 0.15 s apart) instead of
- * waiting for the full `blob-drift` cycle.  The drift animation
+ * a staggered CSS `blob-enter` animation (≈ 0.12 s apart) instead
+ * of waiting for the full `blob-drift` cycle.  The drift animation
  * (translate + scale) is purely spatial, so the two never conflict.
  *
  * **Parallax scroll** — a lightweight scroll listener shifts each
@@ -25,7 +25,30 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  *
  * CSS custom properties (`--drift-x`, `--drift-y`, etc.) drive the
  * `blob-drift` keyframe defined in `globals.css`.
+ *
+ * **Hydration safety** — we use `useSyncExternalStore` to detect
+ * whether we are on the client.  This avoids calling `setState`
+ * inside an effect (which triggers the `react-hooks/set-state-in-
+ * effect` lint rule) while still preventing SSR/client mismatches.
  */
+
+/* ────────────────────────────── client detection ─────────────── */
+
+/**
+ * Returns `true` on the client and `false` during SSR.
+ *
+ * Uses `useSyncExternalStore` with a separate server snapshot so
+ * React replays the render on the client without a hydration
+ * mismatch — the officially blessed pattern for client-only content.
+ */
+const emptySubscribe = () => () => {};
+function useHydrated(): boolean {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+}
 
 /* ────────────────────────────── depth tiers ───────────────────── */
 
@@ -77,12 +100,12 @@ const DEPTH_TIERS: DepthTier[] = [
 
 /* ───────────────────────────── blob shape ─────────────────────── */
 
-interface Blob {
+interface BlobData {
   id: number;
   top: string;
   left: string;
   size: number;
-  /** Entrance stagger — short delay used for the opacity transition. */
+  /** Stagger delay for the `blob-enter` CSS animation. */
   enterDelay: string;
   duration: string;
   driftX: string;
@@ -115,46 +138,46 @@ function randomBetween(min: number, max: number) {
 
 /* ═══════════════════════ component ═══════════════════════════ */
 
-export default function Fireflies({ count = 10 }: { count?: number }) {
-  const [blobs, setBlobs] = useState<Blob[]>([]);
-  const [entered, setEntered] = useState(false);
+/** Builds the blob array. Extracted so `useMemo` stays readable. */
+function generateBlobs(count: number): BlobData[] {
+  return Array.from({ length: count }, (_, i) => {
+    const tier = DEPTH_TIERS[i % DEPTH_TIERS.length];
+    const [r, g, b, a] = BASE_COLORS[i % BASE_COLORS.length];
+    return {
+      id: i,
+      top: `${randomBetween(-10, 80)}%`,
+      left: `${randomBetween(-10, 90)}%`,
+      size: Math.round(randomBetween(...tier.sizeRange)),
+      enterDelay: `${(i * 0.12).toFixed(2)}s`,
+      duration: `${randomBetween(...tier.durationRange).toFixed(1)}s`,
+      driftX: `${randomBetween(-120, 120).toFixed(0)}px`,
+      driftY: `${randomBetween(-100, 100).toFixed(0)}px`,
+      driftEndX: `${randomBetween(-80, 80).toFixed(0)}px`,
+      driftEndY: `${randomBetween(-60, 60).toFixed(0)}px`,
+      color: `rgba(${r}, ${g}, ${b}, ${(a * tier.opacityMultiplier).toFixed(3)})`,
+      blurClass: tier.blurClass,
+      zIndex: tier.zIndex,
+      tierIndex: i % DEPTH_TIERS.length,
+    };
+  });
+}
 
-  /** Ref to the wrapper so we can read bounding‐rect for parallax. */
+export default function Fireflies({ count = 10 }: { count?: number }) {
+  const hydrated = useHydrated();
+
+  // Blob data is computed once on the client.  `useMemo` avoids
+  // calling setState inside an effect (which would cascade renders).
+  // During SSR `hydrated` is false so we return an empty array,
+  // matching the server-rendered HTML.
+  const blobs = useMemo<BlobData[]>(
+    () => (hydrated ? generateBlobs(count) : []),
+    [hydrated, count]
+  );
+
+  /** Ref to the wrapper so we can read bounding-rect for parallax. */
   const wrapperRef = useRef<HTMLDivElement>(null);
   /** Per-tier translateY values driven by scroll. */
   const [parallaxY, setParallaxY] = useState<number[]>([0, 0, 0]);
-
-  // ── generate blobs on the client only (avoids hydration mismatch) ──
-  useEffect(() => {
-    setBlobs(
-      Array.from({ length: count }, (_, i) => {
-        const tier = DEPTH_TIERS[i % DEPTH_TIERS.length];
-        const [r, g, b, a] = BASE_COLORS[i % BASE_COLORS.length];
-        return {
-          id: i,
-          top: `${randomBetween(-10, 80)}%`,
-          left: `${randomBetween(-10, 90)}%`,
-          size: Math.round(randomBetween(...tier.sizeRange)),
-          enterDelay: `${(i * 0.15).toFixed(2)}s`,
-          duration: `${randomBetween(...tier.durationRange).toFixed(1)}s`,
-          driftX: `${randomBetween(-120, 120).toFixed(0)}px`,
-          driftY: `${randomBetween(-100, 100).toFixed(0)}px`,
-          driftEndX: `${randomBetween(-80, 80).toFixed(0)}px`,
-          driftEndY: `${randomBetween(-60, 60).toFixed(0)}px`,
-          color: `rgba(${r}, ${g}, ${b}, ${(a * tier.opacityMultiplier).toFixed(3)})`,
-          blurClass: tier.blurClass,
-          zIndex: tier.zIndex,
-          tierIndex: i % DEPTH_TIERS.length,
-        };
-      })
-    );
-
-    // Trigger entrance after two frames so the browser has
-    // painted the opacity-0 state and the transition fires.
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => setEntered(true));
-    });
-  }, [count]);
 
   // ── parallax scroll handler ──────────────────────────────────────
   const handleScroll = useCallback(() => {
@@ -192,22 +215,18 @@ export default function Fireflies({ count = 10 }: { count?: number }) {
               height: blob.size,
               backgroundColor: blob.color,
               zIndex: blob.zIndex,
-              /* ── entrance ── */
-              opacity: entered ? 1 : 0,
-              transition: `opacity 1s ease-out ${blob.enterDelay}`,
-              /* ── continuous drift (movement only, no opacity) ── */
-              animationName: 'blob-drift',
-              animationDuration: blob.duration,
-              animationTimingFunction: 'ease-in-out',
-              animationIterationCount: 'infinite',
+              /* ── entrance + drift (two CSS animations) ── */
+              animation: [
+                `blob-enter 0.8s ease-out ${blob.enterDelay} both`,
+                `blob-drift ${blob.duration} ease-in-out infinite`,
+              ].join(', '),
               '--drift-x': blob.driftX,
               '--drift-y': blob.driftY,
               '--drift-end-x': blob.driftEndX,
               '--drift-end-y': blob.driftEndY,
               /* ── parallax scroll shift ── */
               willChange: 'opacity, translate',
-              '--parallax-y': `${parallaxY[blob.tierIndex]}px`,
-              marginTop: `var(--parallax-y)`,
+              transform: `translateY(${parallaxY[blob.tierIndex]}px)`,
             } as React.CSSProperties
           }
         />
