@@ -24,41 +24,39 @@
 
 ### Colours
 
-Defined in `globals.css` via the `@theme` directive:
+Defined in `globals.css` via the `@theme` directive. The landing page
+introduced a warm, morning-inspired palette alongside the existing primary
+and accent scales:
+
+| Scale       | Name            | Sample hex | Usage                        |
+| ----------- | --------------- | ---------- | ---------------------------- |
+| `blush-*`   | Powder Blush    | `#f4a0ac`  | Accent badges, step numbers  |
+| `vanilla-*` | Vanilla Cream   | `#edd9a3`  | Warm decorative blobs        |
+| `aqua-*`    | Icy Aqua        | `#14a89e`  | Primary brand, CTAs, icons   |
+| `sky-*`     | Light Blue      | `#5ab4ca`  | Decorative blobs             |
+| `slate-*`   | Blue Slate      | `#556170`  | Text, borders, dark sections |
+| `primary-*` | (alias → aqua)  | `#14a89e`  | Semantic alias for easy use  |
+| `accent-*`  | (alias → blush) | `#cc1034`  | Semantic accent alias        |
+
+Each scale includes shades at `100`, `200`, `400`, `600`, and `800`.
 
 ```css
 @theme {
-  /* Primary  — Blue */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb; /* ↁEmain brand colour */
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
-
-  /* Accent  — Purple / Fuchsia */
-  --color-accent-50: #fdf4ff;
-  --color-accent-100: #fae8ff;
-  --color-accent-200: #f5d0fe;
-  --color-accent-300: #f0abfc;
-  --color-accent-400: #e879f9;
-  --color-accent-500: #d946ef;
-  --color-accent-600: #c026d3;
-  --color-accent-700: #a21caf;
-  --color-accent-800: #86198f;
-  --color-accent-900: #701a75;
+  /* Icy Aqua (primary brand) */
+  --color-aqua-100: #b8f0ec;
+  --color-aqua-200: #80e5dd;
+  --color-aqua-400: #42d4c8;
+  --color-aqua-600: #14a89e;
+  --color-aqua-800: #0c706a;
+  /* … plus blush-*, vanilla-*, sky-*, slate-*, primary-*, accent-* */
 }
 ```
 
 In templates, use them as regular Tailwind classes:
 
 ```html
-<button class="bg-primary-600 hover:bg-primary-700 text-white">Save</button>
-<span class="text-accent-500">Highlight</span>
+<button class="bg-aqua-600 hover:bg-aqua-800 text-white">Get Started</button>
+<span class="text-blush-400">Highlight</span>
 ```
 
 ### Background Gradient
@@ -266,7 +264,7 @@ The project uses Tailwind's default breakpoints:
 
 | Prefix | Min-width | Typical use                     |
 | ------ | --------- | ------------------------------- |
-| `sm`   | 640px     |  —                               |
+| `sm`   | 640px     | —                               |
 | `md`   | 768px     | 2-column grids                  |
 | `lg`   | 1024px    | 4-column stats, 2-column charts |
 | `xl`   | 1280px    | Max-width containers            |
@@ -277,10 +275,55 @@ content area effectively starts at `md` + sidebar width. The landing page uses
 
 ---
 
+## CSS Animations
+
+Custom keyframes are defined in `globals.css` and used by landing page
+components. All animations respect `prefers-reduced-motion: reduce`.
+
+### `blob-drift`
+
+**Movement-only** keyframe — translates and scales large blurred circles
+via CSS custom properties (`--drift-x`, `--drift-y`, `--drift-end-x`,
+`--drift-end-y`). Opacity is handled separately by a CSS transition in
+the `Fireflies` component so we can control entrance speed independently.
+
+```
+0%   → translate(0, 0), scale 0.95
+25%  → translate(--drift-x, --drift-y), scale 1.08
+50%  → translate(--drift-end-x, --drift-end-y), scale 1.02
+75%  → translate(−0.4 × drift-x, −0.4 × drift-y), scale 0.92
+100% → translate(0, 0), scale 0.95
+```
+
+The `Fireflies` component pairs this with:
+
+- **Fast entrance** — staggered `blob-enter` CSS animation (opacity 0 → 1,
+  scale 0.7 → 1 over 0.8 s) so blobs appear within ~2 s of page load
+  instead of waiting for a full drift cycle.
+- **Parallax scroll** — per-tier `transform: translateY()` offsets driven
+  by a passive scroll listener create a 3-D depth illusion.
+
+### `reveal-up`
+
+Slides content up 32 px while fading in. Used by `RevealSection` (default
+variant) and the hero content wrapper.
+
+### `reveal-scale`
+
+Scales content from `0.92` to `1` while fading in. Used by `RevealSection`
+with `animation="scale"` on feature cards and stat bubbles.
+
+### Smooth Scrolling
+
+Enabled globally via `scroll-behavior: smooth` in the `@layer base` block.
+Falls back to `auto` when `prefers-reduced-motion: reduce` is active.
+
+---
+
 ## Related Docs
 
-| Topic         | Link                                                                             |
-| ------------- | -------------------------------------------------------------------------------- |
-| Components    | [Components.md](02-Components.md)                                                   |
-| UI structure  | [UI-Structure.md](01-UI-Structure.md)                                               |
+| Topic         | Link                                                                                   |
+| ------------- | -------------------------------------------------------------------------------------- |
+| Components    | [Components.md](02-Components.md)                                                      |
+| UI structure  | [UI-Structure.md](01-UI-Structure.md)                                                  |
 | Configuration | [../01-Getting-Started/02-Configuration.md](../01-Getting-Started/02-Configuration.md) |

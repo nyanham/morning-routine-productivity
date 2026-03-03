@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { RequireAuth } from '@/contexts/AuthContext';
 import { useRoutines, useProductivity } from '@/hooks/useApi';
@@ -54,7 +53,6 @@ function ManualEntryContent() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   const routines = useRoutines();
   const productivity = useProductivity();

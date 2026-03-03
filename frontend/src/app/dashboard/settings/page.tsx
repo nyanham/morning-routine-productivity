@@ -38,6 +38,7 @@ function SettingsContent() {
   useEffect(() => {
     profile.fetch();
     settings.fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount-only fetch
   }, []);
 
   // Populate forms when data loads

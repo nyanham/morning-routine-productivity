@@ -1,6 +1,6 @@
 # Components
 
-> Catalogue of reusable React components  — layout, UI primitives, and charts.
+> Catalogue of reusable React components — layout, UI primitives, and charts.
 
 ---
 
@@ -11,6 +11,18 @@ graph TD
     subgraph Layout
         DL["DashboardLayout"]
         SB["Sidebar"]
+    end
+
+    subgraph Landing
+        HD["Header"]
+        HS["HeroSection"]
+        FT["Features"]
+        CP["CommunityPreview"]
+        HW["HowItWorks"]
+        CB["CTABanner"]
+        FO["Footer"]
+        FF["Fireflies"]
+        RS["RevealSection"]
     end
 
     subgraph UI
@@ -31,8 +43,16 @@ graph TD
     DL --> SDC
     DL --> CSV
 
+    HS --> FF
+    FT --> RS
+    CP --> RS
+    HW --> RS
+    CB --> RS
+
     style Layout fill:#dbeafe,stroke:#2563eb
     style Layout color:black
+    style Landing fill:#e0f2fe,stroke:#0284c7
+    style Landing color:black
     style UI fill:#d1fae5,stroke:#059669
     style UI color:black
     style Charts fill:#fef3c7,stroke:#d97706
@@ -201,7 +221,7 @@ Line chart displaying three daily metrics over time.
 
 | Prop    | Type               | Default                    |
 | ------- | ------------------ | -------------------------- |
-| `data`  | `ChartDataPoint[]` |  —                          |
+| `data`  | `ChartDataPoint[]` | —                          |
 | `title` | `string`           | `"Productivity Over Time"` |
 
 **Series:**
@@ -231,7 +251,7 @@ Grouped bar chart for morning routine activity durations.
 
 | Prop    | Type               | Default                        |
 | ------- | ------------------ | ------------------------------ |
-| `data`  | `ChartDataPoint[]` |  —                              |
+| `data`  | `ChartDataPoint[]` | —                              |
 | `title` | `string`           | `"Morning Routine Activities"` |
 
 **Series:**
@@ -260,7 +280,7 @@ Donut (pie) chart showing how sleep durations are distributed across buckets.
 
 | Prop    | Type                                               | Default                         |
 | ------- | -------------------------------------------------- | ------------------------------- |
-| `data`  | `{ name: string; value: number; color: string }[]` |  —                               |
+| `data`  | `{ name: string; value: number; color: string }[]` | —                               |
 | `title` | `string`                                           | `"Sleep Duration Distribution"` |
 
 **Appearance:**
@@ -297,10 +317,116 @@ const sleepBuckets = [
 
 ---
 
+## Landing Components
+
+All landing page section components live in `components/landing/` and are
+re-exported from a barrel file (`components/landing/index.ts`).
+
+### Header
+
+> `components/landing/Header.tsx` — `'use client'`
+
+Sticky, translucent top bar with the MorningFlow logo, desktop anchor links
+(`#features`, `#community`, `#how-it-works`), auth links (Log In / Get
+Started), and a hamburger toggle for mobile.
+
+| Prop | Type | Description |
+| ---- | ---- | ----------- |
+| —    | —    | No props    |
+
+### HeroSection
+
+> `components/landing/HeroSection.tsx`
+
+Full-width hero with a bold headline, one-liner description, two CTAs
+(primary + ghost), and animated `Fireflies` blob background.
+
+### Features
+
+> `components/landing/Features.tsx`
+
+Three-column grid of six feature cards. Each card has an icon badge, title,
+and short description. Cards are wrapped in `RevealSection` with staggered
+scale animations.
+
+**Feature cards:** Daily Entries, CSV Import, Interactive Charts, Powerful
+Filters, Period Comparison, Privacy First.
+
+### CommunityPreview
+
+> `components/landing/CommunityPreview.tsx`
+
+Dark-background section showing four anonymous aggregate statistic bubbles
+(Avg. Sleep, Avg. Productivity, Most Productive Day, Active Users). Each
+bubble is wrapped in `RevealSection` with staggered entry.
+
+### HowItWorks
+
+> `components/landing/HowItWorks.tsx`
+
+Three-step explanation: **Log → Explore → Improve**. Each step has a numbered
+badge, icon, title, and description. A decorative connector line runs between
+steps on desktop.
+
+### CTABanner
+
+> `components/landing/CTABanner.tsx`
+
+Full-width aqua gradient band with a headline, description, and "Get Started"
+CTA button. Wrapped in `RevealSection` with a scale animation.
+
+### Footer
+
+> `components/landing/Footer.tsx`
+
+Dark footer with three columns: brand + tagline, product links, and legal
+placeholders. Displays the current year in a copyright line.
+
+### Fireflies
+
+> `components/landing/Fireflies.tsx` — `'use client'`
+
+Purely decorative animated blurred circles that drift across the hero
+background. Blobs are split across three **depth tiers** (back, mid,
+front) with differing sizes, blur levels, speeds, and opacities.
+
+**Fast entrance** — instead of waiting for a long animation cycle, blobs
+use a short `blob-enter` keyframe animation (opacity-only) with a
+staggered start (≈ 0.12 s apart), so the full set becomes visible
+within about 2 seconds on page load.
+
+**Parallax scroll** — a passive `scroll` listener shifts each depth tier
+at a different Y-axis rate (`back 0.08`, `mid 0.16`, `front 0.26`),
+creating a natural 3-D depth effect as the user scrolls.
+
+Driven by the `blob-drift` (movement) and `blob-enter` (entrance) CSS
+keyframes and CSS custom properties (`--drift-x`, `--drift-y`,
+`--drift-end-x`, `--drift-end-y`).
+
+| Prop    | Type     | Default | Description              |
+| ------- | -------- | ------- | ------------------------ |
+| `count` | `number` | `10`    | Number of blob particles |
+
+### RevealSection
+
+> `components/landing/RevealSection.tsx` — `'use client'`
+
+Scroll-triggered reveal wrapper. Uses `useScrollReveal` hook internally.
+Supports two animation variants and a configurable delay for stagger effects.
+
+| Prop        | Type              | Default | Description                     |
+| ----------- | ----------------- | ------- | ------------------------------- |
+| `children`  | `React.ReactNode` | —       | Content to reveal               |
+| `animation` | `'up' \| 'scale'` | `'up'`  | `reveal-up` or `reveal-scale`   |
+| `delay`     | `number`          | `0`     | Animation delay in ms           |
+| `className` | `string`          | `''`    | Passed through to wrapper `div` |
+
+---
+
 ## Related Docs
 
-| Topic            | Link                                       |
-| ---------------- | ------------------------------------------ |
+| Topic            | Link                                          |
+| ---------------- | --------------------------------------------- |
 | UI structure     | [UI-Structure.md](01-UI-Structure.md)         |
 | Styling system   | [Styling.md](05-Styling.md)                   |
 | Custom hooks     | [Hooks.md](03-Hooks.md)                       |

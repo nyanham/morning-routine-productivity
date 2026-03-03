@@ -1,5 +1,5 @@
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { cn, getProductivityColor, getProductivityBgColor } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface StatsCardProps {
   title: string;

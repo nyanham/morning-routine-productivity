@@ -1,20 +1,24 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Upload, FileText, CheckCircle, XCircle } from 'lucide-react';
+import { Upload, CheckCircle, XCircle } from 'lucide-react';
 import Papa from 'papaparse';
 
 interface CSVUploaderProps {
-  onUpload: (data: any[]) => void;
+  onUpload: (data: Record<string, unknown>[]) => void;
   onError?: (error: string) => void;
   acceptedFields?: string[];
 }
 
-export default function CSVUploader({ onUpload, onError, acceptedFields }: CSVUploaderProps) {
+export default function CSVUploader({
+  onUpload,
+  onError,
+  acceptedFields: _acceptedFields,
+}: CSVUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [preview, setPreview] = useState<any[] | null>(null);
+  const [preview, setPreview] = useState<Record<string, unknown>[] | null>(null);
 
   const handleFile = useCallback(
     (file: File) => {
@@ -26,7 +30,7 @@ export default function CSVUploader({ onUpload, onError, acceptedFields }: CSVUp
 
       setFileName(file.name);
 
-      Papa.parse(file, {
+      Papa.parse<Record<string, unknown>>(file, {
         header: true,
         skipEmptyLines: true,
         complete: (results) => {
@@ -143,7 +147,7 @@ export default function CSVUploader({ onUpload, onError, acceptedFields }: CSVUp
               <tbody>
                 {preview.map((row, i) => (
                   <tr key={i} className="border-b border-slate-100">
-                    {Object.values(row).map((value: any, j) => (
+                    {Object.values(row).map((value: unknown, j) => (
                       <td key={j} className="px-3 py-2 text-slate-700">
                         {String(value).substring(0, 30)}
                       </td>

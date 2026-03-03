@@ -10,3 +10,4 @@ export {
   useChartData,
   useCSVImport,
 } from './useApi';
+export { useScrollReveal } from './useScrollReveal';

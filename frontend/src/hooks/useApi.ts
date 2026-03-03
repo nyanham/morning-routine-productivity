@@ -41,8 +41,20 @@ function useAsyncState<T>(initialData: T | null = null) {
     setState((prev) => ({ ...prev, loading: true, error: null }));
   }, []);
 
-  const setData = useCallback((data: T) => {
-    setState({ data, loading: false, error: null });
+  /**
+   * Accepts either a value or a functional updater `(prev) => next`.
+   * The updater form lets callers read the latest data without adding it
+   * as a dependency — mirrors React's `setState(prev => ...)` pattern.
+   */
+  const setData = useCallback((dataOrUpdater: T | ((prev: T | null) => T)) => {
+    setState((prev) => ({
+      data:
+        typeof dataOrUpdater === 'function'
+          ? (dataOrUpdater as (prev: T | null) => T)(prev.data)
+          : dataOrUpdater,
+      loading: false,
+      error: null,
+    }));
   }, []);
 
   const setError = useCallback((error: string) => {
@@ -58,43 +70,45 @@ function useAsyncState<T>(initialData: T | null = null) {
 
 export function useCurrentUser() {
   const { getAccessToken } = useAuthContext();
-  const state = useAsyncState<CurrentUser>();
+  const asyncState = useAsyncState<CurrentUser>();
+  const { setLoading, setData, setError } = asyncState;
 
   const fetch = useCallback(async () => {
     const token = await getAccessToken();
     if (!token) {
-      state.setError('Not authenticated');
+      setError('Not authenticated');
       return;
     }
 
-    state.setLoading();
+    setLoading();
     try {
       const data = await api.users.me(token);
-      state.setData(data);
+      setData(data);
     } catch (err) {
-      state.setError(getApiErrorMessage(err, 'Failed to fetch user'));
+      setError(getApiErrorMessage(err, 'Failed to fetch user'));
     }
-  }, [getAccessToken]);
+  }, [getAccessToken, setLoading, setData, setError]);
 
-  return { ...state, fetch };
+  return { ...asyncState, fetch };
 }
 
 export function useUserProfile() {
   const { getAccessToken } = useAuthContext();
-  const state = useAsyncState<UserProfile>();
+  const asyncState = useAsyncState<UserProfile>();
+  const { setLoading, setData, setError } = asyncState;
 
   const fetch = useCallback(async () => {
     const token = await getAccessToken();
     if (!token) return;
 
-    state.setLoading();
+    setLoading();
     try {
       const data = await api.users.getProfile(token);
-      state.setData(data);
+      setData(data);
     } catch (err) {
-      state.setError(getApiErrorMessage(err, 'Failed to fetch profile'));
+      setError(getApiErrorMessage(err, 'Failed to fetch profile'));
     }
-  }, [getAccessToken]);
+  }, [getAccessToken, setLoading, setData, setError]);
 
   const update = useCallback(
     async (data: UserProfileUpdate) => {
@@ -102,31 +116,32 @@ export function useUserProfile() {
       if (!token) throw new Error('Not authenticated');
 
       const updated = await api.users.updateProfile(token, data);
-      state.setData(updated);
+      setData(updated);
       return updated;
     },
-    [getAccessToken]
+    [getAccessToken, setData]
   );
 
-  return { ...state, fetch, update };
+  return { ...asyncState, fetch, update };
 }
 
 export function useUserSettings() {
   const { getAccessToken } = useAuthContext();
-  const state = useAsyncState<UserSettings>();
+  const asyncState = useAsyncState<UserSettings>();
+  const { setLoading, setData, setError } = asyncState;
 
   const fetch = useCallback(async () => {
     const token = await getAccessToken();
     if (!token) return;
 
-    state.setLoading();
+    setLoading();
     try {
       const data = await api.users.getSettings(token);
-      state.setData(data);
+      setData(data);
     } catch (err) {
-      state.setError(getApiErrorMessage(err, 'Failed to fetch settings'));
+      setError(getApiErrorMessage(err, 'Failed to fetch settings'));
     }
-  }, [getAccessToken]);
+  }, [getAccessToken, setLoading, setData, setError]);
 
   const update = useCallback(
     async (data: UserSettingsUpdate) => {
@@ -134,33 +149,34 @@ export function useUserSettings() {
       if (!token) throw new Error('Not authenticated');
 
       const updated = await api.users.updateSettings(token, data);
-      state.setData(updated);
+      setData(updated);
       return updated;
     },
-    [getAccessToken]
+    [getAccessToken, setData]
   );
 
-  return { ...state, fetch, update };
+  return { ...asyncState, fetch, update };
 }
 
 export function useUserGoals() {
   const { getAccessToken } = useAuthContext();
-  const state = useAsyncState<UserGoal[]>();
+  const asyncState = useAsyncState<UserGoal[]>();
+  const { setLoading, setData, setError } = asyncState;
 
   const fetch = useCallback(
     async (activeOnly = false) => {
       const token = await getAccessToken();
       if (!token) return;
 
-      state.setLoading();
+      setLoading();
       try {
         const data = await api.users.listGoals(token, activeOnly);
-        state.setData(data);
+        setData(data);
       } catch (err) {
-        state.setError(getApiErrorMessage(err, 'Failed to fetch goals'));
+        setError(getApiErrorMessage(err, 'Failed to fetch goals'));
       }
     },
-    [getAccessToken]
+    [getAccessToken, setLoading, setData, setError]
   );
 
   const create = useCallback(
@@ -169,10 +185,10 @@ export function useUserGoals() {
       if (!token) throw new Error('Not authenticated');
 
       const goal = await api.users.createGoal(token, data);
-      state.setData([...(state.data || []), goal]);
+      setData((prev) => [...(prev || []), goal]);
       return goal;
     },
-    [getAccessToken, state.data]
+    [getAccessToken, setData]
   );
 
   const update = useCallback(
@@ -181,10 +197,10 @@ export function useUserGoals() {
       if (!token) throw new Error('Not authenticated');
 
       const updated = await api.users.updateGoal(token, goalId, data);
-      state.setData((state.data || []).map((g) => (g.id === goalId ? updated : g)));
+      setData((prev) => (prev || []).map((g) => (g.id === goalId ? updated : g)));
       return updated;
     },
-    [getAccessToken, state.data]
+    [getAccessToken, setData]
   );
 
   const remove = useCallback(
@@ -193,12 +209,12 @@ export function useUserGoals() {
       if (!token) throw new Error('Not authenticated');
 
       await api.users.deleteGoal(token, goalId);
-      state.setData((state.data || []).filter((g) => g.id !== goalId));
+      setData((prev) => (prev || []).filter((g) => g.id !== goalId));
     },
-    [getAccessToken, state.data]
+    [getAccessToken, setData]
   );
 
-  return { ...state, fetch, create, update, remove };
+  return { ...asyncState, fetch, create, update, remove };
 }
 
 // ==========================================
@@ -214,22 +230,23 @@ interface RoutinesParams {
 
 export function useRoutines() {
   const { getAccessToken } = useAuthContext();
-  const state = useAsyncState<PaginatedResponse<MorningRoutine>>();
+  const asyncState = useAsyncState<PaginatedResponse<MorningRoutine>>();
+  const { setLoading, setData, setError } = asyncState;
 
   const fetch = useCallback(
     async (params: RoutinesParams = {}) => {
       const token = await getAccessToken();
       if (!token) return;
 
-      state.setLoading();
+      setLoading();
       try {
         const data = await api.routines.list(token, params);
-        state.setData(data);
+        setData(data);
       } catch (err) {
-        state.setError(getApiErrorMessage(err, 'Failed to fetch routines'));
+        setError(getApiErrorMessage(err, 'Failed to fetch routines'));
       }
     },
-    [getAccessToken]
+    [getAccessToken, setLoading, setData, setError]
   );
 
   const create = useCallback(
@@ -262,7 +279,7 @@ export function useRoutines() {
     [getAccessToken]
   );
 
-  return { ...state, fetch, create, update, remove };
+  return { ...asyncState, fetch, create, update, remove };
 }
 
 // ==========================================
@@ -278,22 +295,23 @@ interface ProductivityParams {
 
 export function useProductivity() {
   const { getAccessToken } = useAuthContext();
-  const state = useAsyncState<PaginatedResponse<ProductivityEntry>>();
+  const asyncState = useAsyncState<PaginatedResponse<ProductivityEntry>>();
+  const { setLoading, setData, setError } = asyncState;
 
   const fetch = useCallback(
     async (params: ProductivityParams = {}) => {
       const token = await getAccessToken();
       if (!token) return;
 
-      state.setLoading();
+      setLoading();
       try {
         const data = await api.productivity.list(token, params);
-        state.setData(data);
+        setData(data);
       } catch (err) {
-        state.setError(getApiErrorMessage(err, 'Failed to fetch productivity data'));
+        setError(getApiErrorMessage(err, 'Failed to fetch productivity data'));
       }
     },
-    [getAccessToken]
+    [getAccessToken, setLoading, setData, setError]
   );
 
   const create = useCallback(
@@ -326,7 +344,7 @@ export function useProductivity() {
     [getAccessToken]
   );
 
-  return { ...state, fetch, create, update, remove };
+  return { ...asyncState, fetch, create, update, remove };
 }
 
 // ==========================================
@@ -335,48 +353,50 @@ export function useProductivity() {
 
 export function useAnalyticsSummary() {
   const { getAccessToken } = useAuthContext();
-  const state = useAsyncState<AnalyticsSummary>();
+  const asyncState = useAsyncState<AnalyticsSummary>();
+  const { setLoading, setData, setError } = asyncState;
 
   const fetch = useCallback(
     async (startDate?: string, endDate?: string) => {
       const token = await getAccessToken();
       if (!token) return;
 
-      state.setLoading();
+      setLoading();
       try {
         const data = await api.analytics.summary(token, startDate, endDate);
-        state.setData(data);
+        setData(data);
       } catch (err) {
-        state.setError(getApiErrorMessage(err, 'Failed to fetch summary'));
+        setError(getApiErrorMessage(err, 'Failed to fetch summary'));
       }
     },
-    [getAccessToken]
+    [getAccessToken, setLoading, setData, setError]
   );
 
-  return { ...state, fetch };
+  return { ...asyncState, fetch };
 }
 
 export function useChartData() {
   const { getAccessToken } = useAuthContext();
-  const state = useAsyncState<ChartDataPoint[]>();
+  const asyncState = useAsyncState<ChartDataPoint[]>();
+  const { setLoading, setData, setError } = asyncState;
 
   const fetch = useCallback(
     async (startDate?: string, endDate?: string) => {
       const token = await getAccessToken();
       if (!token) return;
 
-      state.setLoading();
+      setLoading();
       try {
         const data = await api.analytics.charts(token, startDate, endDate);
-        state.setData(data);
+        setData(data);
       } catch (err) {
-        state.setError(getApiErrorMessage(err, 'Failed to fetch chart data'));
+        setError(getApiErrorMessage(err, 'Failed to fetch chart data'));
       }
     },
-    [getAccessToken]
+    [getAccessToken, setLoading, setData, setError]
   );
 
-  return { ...state, fetch };
+  return { ...asyncState, fetch };
 }
 
 // ==========================================
@@ -385,29 +405,30 @@ export function useChartData() {
 
 export function useCSVImport() {
   const { getAccessToken } = useAuthContext();
-  const state = useAsyncState<CSVImportResult>();
+  const asyncState = useAsyncState<CSVImportResult>();
+  const { setLoading, setData, setError } = asyncState;
 
   const importFile = useCallback(
     async (file: File) => {
       const token = await getAccessToken();
       if (!token) {
-        state.setError('Not authenticated');
+        setError('Not authenticated');
         return;
       }
 
-      state.setLoading();
+      setLoading();
       try {
         const result = await api.import.csv(token, file);
-        state.setData(result);
+        setData(result);
         return result;
       } catch (err) {
         const message = getApiErrorMessage(err, 'Import failed');
-        state.setError(message);
+        setError(message);
         throw err;
       }
     },
-    [getAccessToken]
+    [getAccessToken, setLoading, setData, setError]
   );
 
-  return { ...state, importFile };
+  return { ...asyncState, importFile };
 }

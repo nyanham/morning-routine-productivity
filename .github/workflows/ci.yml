@@ -186,8 +186,10 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
-    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
+    # Runs on pushes and same-repo PRs. For PRs from forks, this job is
+    # skipped because GitHub does not grant `security-events: write`,
+    # which would cause SARIF upload to fail and block CI for contributors.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       security-events: write
 
