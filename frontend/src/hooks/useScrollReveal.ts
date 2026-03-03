@@ -44,11 +44,11 @@ export function useScrollReveal(options?: { threshold?: number; rootMargin?: str
   );
 
   const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(prefersReducedMotion);
+  const [hasIntersected, setHasIntersected] = useState(false);
 
   useEffect(() => {
-    // Nothing to observe when reduced motion is active — content is
-    // already visible via the initial state.
+    // Nothing to observe when reduced motion is active — visibility
+    // is derived below without waiting for intersection.
     if (prefersReducedMotion) return;
 
     const el = ref.current;
@@ -57,7 +57,7 @@ export function useScrollReveal(options?: { threshold?: number; rootMargin?: str
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsVisible(true);
+          setHasIntersected(true);
           observer.disconnect();
         }
       },
@@ -71,5 +71,10 @@ export function useScrollReveal(options?: { threshold?: number; rootMargin?: str
     return () => observer.disconnect();
   }, [prefersReducedMotion, options?.threshold, options?.rootMargin]);
 
-  return { ref, isVisible };
+  // Derive visibility: visible when reduced motion is active OR the
+  // element has intersected.  This avoids a separate effect with
+  // setState and responds instantly to runtime preference changes.
+  const isVisible = prefersReducedMotion || hasIntersected;
+
+  return { ref, isVisible, prefersReducedMotion };
 }

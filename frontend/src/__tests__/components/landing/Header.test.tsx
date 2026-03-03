@@ -55,11 +55,17 @@ describe('Header', () => {
     const communityLinks = screen.getAllByText('Community');
     const initialCount = communityLinks.length;
 
+    // Button should expose collapsed state
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(toggle).toHaveAttribute('aria-controls', 'mobile-nav');
+
     // Open mobile menu
     fireEvent.click(toggle);
     expect(screen.getAllByText('Community').length).toBeGreaterThanOrEqual(initialCount);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
 
     // Close mobile menu
     fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 });

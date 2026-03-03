@@ -28,19 +28,22 @@ export default function RevealSection({
   delay = 0,
   className = '',
 }: RevealSectionProps) {
-  const { ref, isVisible } = useScrollReveal();
+  const { ref, isVisible, prefersReducedMotion } = useScrollReveal();
 
   const animationName = animation === 'scale' ? 'reveal-scale' : 'reveal-up';
 
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
+  // When reduced motion is active content is already visible (isVisible
+  // starts true) and we skip the animation entirely — not even the
+  // near-instant global override is applied.
+  const style: React.CSSProperties = prefersReducedMotion
+    ? {}
+    : {
         opacity: isVisible ? undefined : 0,
         animation: isVisible ? `${animationName} 0.7s ease-out ${delay}ms both` : 'none',
-      }}
-    >
+      };
+
+  return (
+    <div ref={ref} className={className} style={style}>
       {children}
     </div>
   );

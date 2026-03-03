@@ -62,6 +62,8 @@ export default function Header() {
           className="text-slate-700 md:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle navigation menu"
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-nav"
         >
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
@@ -69,7 +71,10 @@ export default function Header() {
 
       {/* ── Mobile menu ── */}
       {mobileOpen && (
-        <nav className="flex flex-col gap-3 border-t border-slate-100 bg-white px-4 pt-3 pb-4 md:hidden">
+        <nav
+          id="mobile-nav"
+          className="flex flex-col gap-3 border-t border-slate-100 bg-white px-4 pt-3 pb-4 md:hidden"
+        >
           <a
             href="#features"
             className="text-sm font-medium text-slate-600"
