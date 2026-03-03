@@ -1,8 +1,7 @@
 # Continuous Integration — runs on every push and pull request.
 #
 # Frontend and backend CI logic lives in reusable workflows
-# (_ci-frontend.yml, _ci-backend.yml) so it stays DRY across
-# this workflow and ci-dependabot.yml.
+# (_ci-frontend.yml, _ci-backend.yml) to keep things DRY.
 
 name: CI
 
@@ -18,8 +17,6 @@ jobs:
   # ==========================================
   frontend:
     name: Frontend
-    # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
-    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     uses: ./.github/workflows/_ci-frontend.yml
     secrets: inherit
 
@@ -28,8 +25,6 @@ jobs:
   # ==========================================
   backend:
     name: Backend
-    # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
-    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     uses: ./.github/workflows/_ci-backend.yml
     secrets: inherit
 
@@ -39,9 +34,8 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    # Runs on pushes and same-repo PRs. For PRs from forks, this job is
-    # skipped because GitHub does not grant `security-events: write`,
-    # which would cause SARIF upload to fail and block CI for contributors.
+    # Skipped for fork PRs — GitHub does not grant `security-events: write`
+    # in that context, which would cause SARIF upload to fail.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       security-events: write

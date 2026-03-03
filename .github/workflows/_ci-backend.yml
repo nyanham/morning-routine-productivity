@@ -1,5 +1,4 @@
 # Reusable backend CI workflow.
-# Called by ci.yml and ci-dependabot.yml to keep CI logic DRY.
 #
 # Usage:
 #   jobs:
@@ -12,21 +11,6 @@ name: Backend CI
 on:
   workflow_call:
     inputs:
-      ref:
-        description: "Git ref to check out (empty = default event ref)"
-        required: false
-        type: string
-        default: ""
-      persist-credentials:
-        description: "Persist Git credentials after checkout"
-        required: false
-        type: boolean
-        default: true
-      fetch-depth:
-        description: "Number of commits to fetch (0 = all history)"
-        required: false
-        type: number
-        default: 1
       python-version:
         description: "Python version"
         required: false
@@ -44,10 +28,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-        with:
-          ref: ${{ inputs.ref }}
-          persist-credentials: ${{ inputs.persist-credentials }}
-          fetch-depth: ${{ inputs.fetch-depth }}
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -88,10 +68,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-        with:
-          ref: ${{ inputs.ref }}
-          persist-credentials: ${{ inputs.persist-credentials }}
-          fetch-depth: ${{ inputs.fetch-depth }}
 
       - name: Setup Python
         uses: actions/setup-python@v6
