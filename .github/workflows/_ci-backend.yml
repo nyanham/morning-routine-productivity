@@ -94,5 +94,6 @@ jobs:
       - name: Run tests
         run: poetry run pytest -v
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          # Fall back to dummy values so fork PRs (no secrets) and Dependabot can still run unit tests.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://supabase.invalid' }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY || 'test-key-for-ci-only' }}
