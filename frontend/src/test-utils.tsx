@@ -5,17 +5,6 @@
 import React, { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 
-// Mock AuthContext (retained for external test use)
-const _mockAuthContext = {
-  user: null,
-  session: null,
-  loading: false,
-  signIn: jest.fn(),
-  signUp: jest.fn(),
-  signOut: jest.fn(),
-  getAccessToken: jest.fn().mockResolvedValue('mock-token'),
-};
-
 // Mock Auth Provider
 const MockAuthProvider = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
