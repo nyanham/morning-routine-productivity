@@ -267,7 +267,7 @@ export default function Fireflies({ count = 10 }: { count?: number }) {
               '--drift-end-x': blob.driftEndX,
               '--drift-end-y': blob.driftEndY,
               /* ── parallax scroll shift ── */
-              willChange: 'opacity, translate',
+              willChange: 'opacity, transform',
               transform: `translateY(${parallaxY[blob.tierIndex]}px)`,
             } as React.CSSProperties
           }

@@ -391,7 +391,7 @@ background. Blobs are split across three **depth tiers** (back, mid,
 front) with differing sizes, blur levels, speeds, and opacities.
 
 **Fast entrance** — instead of waiting for a long animation cycle, blobs
-use a short `blob-enter` keyframe animation (scale/opacity) with a
+use a short `blob-enter` keyframe animation (opacity-only) with a
 staggered start (≈ 0.12 s apart), so the full set becomes visible
 within about 2 seconds on page load.
 
