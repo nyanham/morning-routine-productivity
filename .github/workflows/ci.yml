@@ -186,9 +186,10 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    # Runs for ALL PRs including Dependabot — Trivy needs no secrets and
-    # using a single workflow avoids SARIF configuration mismatches in
-    # GitHub code scanning.
+    # Runs on pushes and same-repo PRs. For PRs from forks, this job is
+    # skipped because GitHub does not grant `security-events: write`,
+    # which would cause SARIF upload to fail and block CI for contributors.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       security-events: write
 
