@@ -1,3 +1,14 @@
+# Deployment workflow — runs on push to main or manual dispatch.
+#
+# Deploys the frontend to Vercel and the backend to AWS Lambda via SAM.
+# Both jobs run in parallel since they are independent.
+#
+# Required GitHub Secrets:
+#   Frontend: VERCEL_TOKEN
+#   Backend:  AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
+#             SUPABASE_URL, SUPABASE_KEY
+#   Optional: CORS_ORIGINS, CORS_ORIGIN_REGEX
+
 name: Deploy
 
 on:
@@ -14,7 +25,7 @@ jobs:
   # Deploy Frontend to Vercel
   # ==========================================
   deploy-frontend:
-    name: Deploy Frontend
+    name: Deploy Frontend to Vercel
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -46,54 +57,49 @@ jobs:
   # ==========================================
   # Deploy Backend to AWS Lambda (via SAM)
   # ==========================================
-  # Uncomment this job when you're ready to deploy the backend.
-  # Required GitHub Secrets:
-  #   - AWS_ACCESS_KEY_ID
-  #   - AWS_SECRET_ACCESS_KEY
-  #   - SUPABASE_URL
-  #   - SUPABASE_KEY
-  #   - CORS_ORIGINS (optional, exact-match origins)
-  #   - CORS_ORIGIN_REGEX (optional, regex for wildcard subdomains)
-  #
-  # deploy-backend:
-  #   name: Deploy Backend to AWS Lambda
-  #   runs-on: ubuntu-latest
-  #   needs: deploy-frontend
-  #   defaults:
-  #     run:
-  #       working-directory: backend
-  #
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v6
-  #
-  #     - name: Setup Python
-  #       uses: actions/setup-python@v6
-  #       with:
-  #         python-version: ${{ env.PYTHON_VERSION }}
-  #
-  #     - name: Install AWS SAM CLI
-  #       uses: aws-actions/setup-sam@v2
-  #       with:
-  #         use-installer: true
-  #
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: us-east-1
-  #
-  #     - name: SAM Build
-  #       run: sam build
-  #
-  #     - name: SAM Deploy
-  #       run: |
-  #         sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
-  #           --stack-name morning-routine-api-prod \
-  #           --parameter-overrides \
-  #             Environment=production \
-  #             SupabaseUrl=${{ secrets.SUPABASE_URL }} \
-  #             SupabaseKey=${{ secrets.SUPABASE_KEY }} \
-  #             CorsOrigins="${{ secrets.CORS_ORIGINS || 'https://your-production-domain.vercel.app' }}" \
-  #             CorsOriginRegex="${{ secrets.CORS_ORIGIN_REGEX || '' }}"
+  deploy-backend:
+    name: Deploy Backend to AWS Lambda
+    runs-on: ubuntu-latest
+    # Optional: enable GitHub Environments for deployment protection rules.
+    # environment: production
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install AWS SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Validate SAM template
+        run: sam validate --lint
+
+      - name: SAM Build
+        run: sam build
+
+      - name: SAM Deploy
+        run: |
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
+            --config-env prod \
+            --parameter-overrides \
+              Environment=production \
+              SupabaseUrl=${{ secrets.SUPABASE_URL }} \
+              SupabaseKey=${{ secrets.SUPABASE_KEY }} \
+              CorsOrigins="${{ secrets.CORS_ORIGINS || 'https://your-production-domain.vercel.app' }}" \
+              CorsOriginRegex="${{ secrets.CORS_ORIGIN_REGEX || '' }}"

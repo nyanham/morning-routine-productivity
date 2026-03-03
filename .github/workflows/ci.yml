@@ -1,3 +1,9 @@
+# Continuous Integration — runs on every push and pull request.
+#
+# Frontend and backend CI logic lives in reusable workflows
+# (_ci-frontend.yml, _ci-backend.yml) so it stays DRY across
+# this workflow and ci-dependabot.yml.
+
 name: CI
 
 on:
@@ -6,179 +12,26 @@ on:
   pull_request:
     branches: [main, develop]
 
-env:
-  NODE_VERSION: "22"
-  PYTHON_VERSION: "3.12"
-
 jobs:
   # ==========================================
-  # Frontend Jobs
+  # Frontend CI (lint → test → build)
   # ==========================================
-  frontend-lint:
-    name: Frontend Lint & Type Check
-    runs-on: ubuntu-latest
+  frontend:
+    name: Frontend
     # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
     if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
-    defaults:
-      run:
-        working-directory: frontend
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run ESLint
-        run: npm run lint
-
-      - name: Run TypeScript check
-        run: npx tsc --noEmit
-
-  frontend-test:
-    name: Frontend Tests
-    runs-on: ubuntu-latest
-    needs: frontend-lint
-    defaults:
-      run:
-        working-directory: frontend
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test -- --coverage --passWithNoTests
-
-  frontend-build:
-    name: Frontend Build
-    runs-on: ubuntu-latest
-    needs: [frontend-lint, frontend-test]
-    defaults:
-      run:
-        working-directory: frontend
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+    uses: ./.github/workflows/_ci-frontend.yml
+    secrets: inherit
 
   # ==========================================
-  # Backend Jobs
+  # Backend CI (lint → test)
   # ==========================================
-  backend-lint:
-    name: Backend Lint & Type Check
-    runs-on: ubuntu-latest
+  backend:
+    name: Backend
     # Dependabot PRs are handled by ci-dependabot.yml (pull_request_target)
     if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
-    defaults:
-      run:
-        working-directory: backend
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v5
-        with:
-          path: backend/.venv
-          key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('backend/poetry.lock') }}
-
-      - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
-
-      - name: Run Ruff linter
-        run: poetry run ruff check .
-
-      - name: Run Ruff formatter check
-        run: poetry run ruff format --check .
-
-  backend-test:
-    name: Backend Tests
-    runs-on: ubuntu-latest
-    needs: backend-lint
-    defaults:
-      run:
-        working-directory: backend
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v5
-        with:
-          path: backend/.venv
-          key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('backend/poetry.lock') }}
-
-      - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
-
-      - name: Run tests
-        run: poetry run pytest -v
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+    uses: ./.github/workflows/_ci-backend.yml
+    secrets: inherit
 
   # ==========================================
   # Security Scanning

@@ -4,10 +4,11 @@
 
 default_language_version:
   python: python3
-  node: "22.0.0"
+  node: 22.0.0
 
 # Define hook stages
-default_stages: [pre-commit]
+default_stages:
+  - pre-commit
 
 repos:
   # ===========================================
@@ -18,7 +19,8 @@ repos:
     hooks:
       # Prevent giant files from being committed
       - id: check-added-large-files
-        args: ["--maxkb=1000"]
+        args:
+          - '--maxkb=1000'
       # Check for files that would conflict in case-insensitive filesystems
       - id: check-case-conflict
       # Check for merge conflict strings
@@ -29,7 +31,9 @@ repos:
       - id: check-json
       # Ensure YAML files are valid
       - id: check-yaml
-        args: ["--unsafe"] # Allow custom tags
+        args:
+          - '--unsafe'
+          # Allow custom tags
       # Ensure TOML files are valid
       - id: check-toml
       # Ensure symlinks point to something
@@ -38,15 +42,19 @@ repos:
       - id: detect-private-key
       # Ensure files end with a newline
       - id: end-of-file-fixer
-        exclude: '\.svg$'
+        exclude: \.svg$
       # Remove trailing whitespace
       - id: trailing-whitespace
-        exclude: '\.md$'
+        exclude: \.md$
       # Check for debugger imports in Python
       - id: debug-statements
       # Prevent committing to main/master directly
       - id: no-commit-to-branch
-        args: ["--branch", "main", "--branch", "master"]
+        args:
+          - '--branch'
+          - main
+          - '--branch'
+          - master
 
   # ===========================================
   # Python Backend Hooks
@@ -83,6 +91,18 @@ repos:
         exclude: ^backend/(tests|scripts)/
         pass_filenames: false
 
+  # Pytest - Backend unit tests (fail-fast for quick pre-commit feedback)
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: poetry run -C backend pytest -x -q
+        language: system
+        files: ^backend/.*\.py$
+        pass_filenames: false
+        stages:
+          - pre-commit
+
   # ===========================================
   # Frontend (TypeScript/JavaScript) Hooks
   # Uses locally installed tools via npm to ensure version consistency with CI.
@@ -108,7 +128,8 @@ repos:
         language: system
         files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|scss|md)$
         pass_filenames: false
-        stages: [pre-commit]
+        stages:
+          - pre-commit
 
   # TypeScript type checking (cross-platform using npm script)
   - repo: local
@@ -119,7 +140,20 @@ repos:
         language: system
         files: ^frontend/src/.*\.(ts|tsx)$
         pass_filenames: false
-        stages: [pre-commit]
+        stages:
+          - pre-commit
+
+  # Jest - Frontend unit tests (fail-fast for quick pre-commit feedback)
+  - repo: local
+    hooks:
+      - id: jest
+        name: jest
+        entry: npm test --prefix frontend -- --passWithNoTests --bail
+        language: system
+        files: ^frontend/src/.*\.[jt]sx?$
+        pass_filenames: false
+        stages:
+          - pre-commit
 
   # ===========================================
   # Commit Message Linting
@@ -128,15 +162,25 @@ repos:
     rev: v4.1.1
     hooks:
       - id: commitizen
-        stages: [commit-msg]
+        stages:
+          - commit-msg
 
 # CI configuration
 ci:
   autofix_commit_msg: |
     [pre-commit.ci] auto fixes from pre-commit hooks
   autofix_prs: true
-  autoupdate_branch: "develop"
-  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+  autoupdate_branch: develop
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
   autoupdate_schedule: weekly
-  skip: [ruff, ruff-format, bandit, eslint, prettier, typescript] # Skip local hooks in CI; they depend on local tool installations
+  skip:
+    - ruff
+    - ruff-format
+    - bandit
+    - pytest
+    - eslint
+    - prettier
+    - typescript
+    - jest
+    # Skip local hooks in CI; they depend on local tool installations
   submodules: false
