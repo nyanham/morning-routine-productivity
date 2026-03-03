@@ -10,8 +10,9 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
  * - `'up'`    — slides up 32 px and fades in  (default)
  * - `'scale'` — scales from 0.92 → 1 and fades in
  *
- * The animation only fires once when the element scrolls into view,
- * and is disabled for users who prefer reduced motion.
+ * The animation only fires once when the element scrolls into view.
+ * When the user prefers reduced motion, content is shown immediately
+ * (no intersection wait, no animation).
  */
 interface RevealSectionProps {
   children: React.ReactNode;
