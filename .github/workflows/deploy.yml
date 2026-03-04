@@ -64,7 +64,7 @@ jobs:
       id-token: write   # Required for OIDC authentication with AWS
       contents: read
     # Optional: enable GitHub Environments for deployment protection rules.
-    # environment: production
+    # environment: development
     defaults:
       run:
         working-directory: backend
@@ -98,7 +98,7 @@ jobs:
       - name: SAM Deploy
         run: |
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
-            --config-env prod \
+            --config-env dev \
             --parameter-overrides \
               Environment=development \
               SupabaseUrl=${{ secrets.SUPABASE_URL }} \
