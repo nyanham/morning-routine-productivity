@@ -100,7 +100,7 @@ jobs:
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
             --config-env prod \
             --parameter-overrides \
-              Environment=production \
+              Environment=development \
               SupabaseUrl=${{ secrets.SUPABASE_URL }} \
               SupabaseKey=${{ secrets.SUPABASE_KEY }} \
               CorsOrigins="${{ secrets.CORS_ORIGINS }}"
