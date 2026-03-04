@@ -99,6 +99,7 @@ jobs:
         run: |
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
             --config-env dev \
+            --stack-name morning-routine-api-dev \
             --parameter-overrides \
               Environment=development \
               SupabaseUrl=${{ secrets.SUPABASE_URL }} \
