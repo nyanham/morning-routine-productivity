@@ -101,6 +101,7 @@ jobs:
             --config-env dev \
             --stack-name morning-routine-api-dev \
             --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-0mbllpcd84sn \
+            --capabilities CAPABILITY_IAM \
             --parameter-overrides \
               Environment=development \
               SupabaseUrl=${{ secrets.SUPABASE_URL }} \
