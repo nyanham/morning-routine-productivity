@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Sun, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import FullPageSpinner from '@/components/ui/FullPageSpinner';
+import BrandShapes from '@/components/auth/BrandShapes';
 
 /**
  * Signup page with a two-column layout matching the login page.
@@ -94,15 +95,8 @@ export default function SignUpPage() {
     <div className="flex min-h-screen">
       {/* ── Brand panel (hidden on mobile) ── */}
       <div className="from-aqua-600 to-aqua-800 relative hidden flex-col justify-center overflow-hidden bg-gradient-to-br px-12 md:flex md:w-2/5 lg:w-1/2">
-        {/* Decorative shapes — angular geometry conveying a fresh-start energy */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-12 -right-12 h-52 w-52 rotate-45 rounded-md bg-white/10" />
-          <div className="absolute -bottom-8 -left-8 h-40 w-40 rotate-12 border-2 border-white/15" />
-          <div className="absolute top-1/4 right-10 h-16 w-16 rotate-45 bg-white/5" />
-          <div className="absolute bottom-1/3 left-1/4 h-24 w-24 rotate-[30deg] border border-white/10" />
-          <div className="absolute top-2/3 right-1/3 h-8 w-8 rotate-45 bg-white/15" />
-          <div className="absolute top-12 right-1/4 h-0 w-0 border-r-[24px] border-b-[40px] border-l-[24px] border-r-transparent border-b-white/10 border-l-transparent" />
-        </div>
+        {/* Randomised decorative shapes — blush-toned angular geometry */}
+        <BrandShapes variant="signup" />
 
         <Link href="/" className="relative mb-10 flex items-center gap-3">
           <Sun className="h-10 w-10 text-white/90" />

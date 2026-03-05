@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Sun, Eye, EyeOff } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import FullPageSpinner from '@/components/ui/FullPageSpinner';
+import BrandShapes from '@/components/auth/BrandShapes';
 
 /**
  * Inner login form wrapped by `<Suspense>` so `useSearchParams` works
@@ -66,14 +67,8 @@ function LoginForm() {
     <div className="flex min-h-screen">
       {/* ── Brand panel (hidden on mobile) ── */}
       <div className="from-aqua-600 to-aqua-800 relative hidden flex-col justify-center overflow-hidden bg-gradient-to-br px-12 md:flex md:w-2/5 lg:w-1/2">
-        {/* Decorative shapes — soft circles & rings that echo a sunrise motif */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-white/10" />
-          <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full border-2 border-white/20" />
-          <div className="absolute top-1/3 right-12 h-20 w-20 rounded-full bg-white/5" />
-          <div className="absolute top-16 left-1/4 h-32 w-32 rounded-full border border-white/10" />
-          <div className="absolute right-1/3 bottom-24 h-10 w-10 rounded-full bg-white/15" />
-        </div>
+        {/* Randomised decorative shapes — vanilla-toned circles & rings */}
+        <BrandShapes variant="login" />
 
         <Link href="/" className="relative mb-10 flex items-center gap-3">
           <Sun className="h-10 w-10 text-white/90" />
