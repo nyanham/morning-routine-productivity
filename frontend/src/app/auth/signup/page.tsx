@@ -143,6 +143,7 @@ export default function SignUpPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Jane Doe"
+                  aria-describedby={error ? 'signup-error' : undefined}
                   className="input"
                 />
               </div>
