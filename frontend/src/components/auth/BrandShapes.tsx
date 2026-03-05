@@ -38,8 +38,9 @@ const pick = <T,>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.le
 
 /* ── Palette tokens ─────────────────────────────────────────────────────
  * We use CSS custom-property values from the theme so the colours stay in
- * sync if the palette is ever tweaked.  The rgb(...) wrapper + opacity
- * channel lets us set per-shape transparency via inline styles.
+ * sync if the palette is ever tweaked. Per-shape transparency is controlled
+ * via the descriptor's `opacity` field and applied at the element level,
+ * rather than through an rgb(...) wrapper or alpha channel on the colour.
  * ──────────────────────────────────────────────────────────────────────── */
 
 /**
@@ -176,16 +177,13 @@ function renderShape(s: ShapeDescriptor, index: number) {
         <div
           key={index}
           style={{
-            position: 'absolute',
-            top: `${s.top}%`,
-            left: `${s.left}%`,
+            ...style,
             width: 0,
             height: 0,
+            backgroundColor: 'transparent',
             borderLeft: `${half}px solid transparent`,
             borderRight: `${half}px solid transparent`,
             borderBottom: `${s.size}px solid ${s.color}`,
-            opacity: s.opacity,
-            transform: `rotate(${s.rotation}deg)`,
           }}
         />
       );

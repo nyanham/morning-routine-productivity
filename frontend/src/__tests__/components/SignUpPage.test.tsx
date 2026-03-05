@@ -57,7 +57,7 @@ async function fillForm(
     confirm = 'secret123',
   } = overrides;
 
-  if (name) await user.type(screen.getByLabelText('Full Name'), name);
+  if (name !== undefined) await user.type(screen.getByLabelText('Full Name'), name);
   await user.type(screen.getByLabelText('Email'), email);
   await user.type(screen.getByLabelText('Password'), password);
   await user.type(screen.getByLabelText('Confirm Password'), confirm);
