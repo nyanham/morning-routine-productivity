@@ -40,7 +40,7 @@ export default function SignUpPage() {
   }, [user, router]);
 
   // Show a loading spinner while we verify the session.
-  //This avoids a flash of the signup form when the user is already signed in.
+  // This avoids a flash of the signup form when the user is already signed in.
   if (authLoading || user) {
     return <FullPageSpinner message="Checking session…" />;
   }

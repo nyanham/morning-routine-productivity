@@ -229,6 +229,7 @@ describe('SignUpPage — accessibility', () => {
 
     await screen.findByRole('alert');
 
+    expect(screen.getByLabelText('Full Name')).toHaveAttribute('aria-describedby', 'signup-error');
     expect(screen.getByLabelText('Email')).toHaveAttribute('aria-describedby', 'signup-error');
     expect(screen.getByLabelText('Password')).toHaveAttribute('aria-describedby', 'signup-error');
     expect(screen.getByLabelText('Confirm Password')).toHaveAttribute(
