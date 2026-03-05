@@ -144,6 +144,104 @@ All tests stub `global.fetch` via `jest.fn()`  — no network calls.
 Uses `@testing-library/react` queries (`getByText`, `getByTestId`) and
 the custom `render` from `test-utils.tsx`.
 
+### `__tests__/components/BrandShapes.test.tsx` — Auth Decorations
+
+**Rendering** (5 tests):
+
+| Test                                         | What It Checks                                         |
+| -------------------------------------------- | ------------------------------------------------------ |
+| Renders aria-hidden container                | Wrapper has `aria-hidden="true"`                        |
+| Renders pointer-events-none                  | Wrapper class includes `pointer-events-none`           |
+| Generates 7–14 shapes for login               | 20 seeds all produce counts within range               |
+| Generates 7–14 shapes for signup              | Same range check for signup variant                    |
+| Inline styles with position absolute         | All child elements use `position: absolute`            |
+
+**Variant differentiation** (4 tests):
+
+| Test                                         | What It Checks                                         |
+| -------------------------------------------- | ------------------------------------------------------ |
+| Login shapes use `border-radius: 50%`        | All shapes are circles/rings                           |
+| Signup shapes are not all circles            | At least one shape has angular border-radius           |
+| Login references vanilla CSS properties      | HTML contains `var(--color-vanilla-*)`                 |
+| Signup references blush CSS properties       | HTML contains `var(--color-blush-*)`                   |
+
+**Accessibility** (2 tests):
+
+| Test                                         | What It Checks                                         |
+| -------------------------------------------- | ------------------------------------------------------ |
+| Wrapper is aria-hidden                       | Screen readers skip decorative shapes                  |
+| Wrapper has pointer-events-none              | Shapes don’t intercept clicks                          |
+
+**Stability** (1 test):
+
+| Test                                         | What It Checks                                         |
+| -------------------------------------------- | ------------------------------------------------------ |
+| Same shapes on re-render                     | Lazy `useState` keeps shapes stable across re-renders  |
+
+Tests seed `Math.random` with a deterministic PRNG to avoid flaky assertions.
+
+### `__tests__/components/LoginPage.test.tsx` — Login Page
+
+**Session precheck** (5 tests):
+
+| Test                         | What It Checks                                       |
+| ---------------------------- | ---------------------------------------------------- |
+| Spinner while loading        | Shows "Checking session…" when `authLoading` is true |
+| Spinner with user            | Shows spinner when user already exists               |
+| Form rendered                | Form visible when loading=false and user=null        |
+| Redirect to /dashboard       | `router.push('/dashboard')` when user exists         |
+| Redirect to returnUrl        | Reads `returnUrl` search param for redirect          |
+
+**Form submission** (3 tests):
+
+| Test                         | What It Checks                                       |
+| ---------------------------- | ---------------------------------------------------- |
+| signIn success + redirect    | Calls `signIn`, then pushes to `/dashboard`          |
+| signIn rejection → error     | Error message shown in `role="alert"`                 |
+| Loading state → disabled btn | Button disabled and shows "Signing in…"              |
+
+**Accessibility** (3 tests):
+
+| Test                         | What It Checks                                       |
+| ---------------------------- | ---------------------------------------------------- |
+| Label–input linking           | `htmlFor`/`id` match on email and password           |
+| Password toggle              | Toggles between `type="password"` and `type="text"`  |
+| aria-describedby on error    | Inputs reference the error alert via aria-describedby|
+
+### `__tests__/components/SignUpPage.test.tsx` — Signup Page
+
+**Session precheck** (4 tests):
+
+| Test                         | What It Checks                                       |
+| ---------------------------- | ---------------------------------------------------- |
+| Spinner while loading        | Shows "Checking session…" when `authLoading` is true |
+| Spinner with user            | Shows spinner when user already exists               |
+| Form rendered                | Form visible when loading=false and user=null        |
+| Redirect to /dashboard       | `router.push('/dashboard')` when user exists         |
+
+**Client-side validation** (2 tests):
+
+| Test                         | What It Checks                                       |
+| ---------------------------- | ---------------------------------------------------- |
+| Password mismatch            | Shows error, `signUp` not called                     |
+| Short password               | Shows error when password < 6 chars                  |
+
+**Form submission** (3 tests):
+
+| Test                         | What It Checks                                       |
+| ---------------------------- | ---------------------------------------------------- |
+| signUp success → success screen | Shows "Check Your Email" with user email           |
+| signUp rejection → error     | Error message shown in `role="alert"`                 |
+| Loading state → disabled btn | Button disabled and shows "Creating account…"        |
+
+**Accessibility** (3 tests):
+
+| Test                         | What It Checks                                       |
+| ---------------------------- | ---------------------------------------------------- |
+| Label–input linking           | All 4 inputs linked via `htmlFor`/`id`               |
+| Password toggles             | Both password fields toggle visibility               |
+| aria-describedby on error    | All inputs reference error alert via aria-describedby|
+
 ---
 
 ## Writing a New Frontend Test

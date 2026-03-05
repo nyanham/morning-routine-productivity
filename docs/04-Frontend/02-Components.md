@@ -25,6 +25,10 @@ graph TD
         RS["RevealSection"]
     end
 
+    subgraph Auth
+        BS["BrandShapes"]
+    end
+
     subgraph UI
         SC["StatsCard"]
         CSV["CSVUploader"]
@@ -53,6 +57,8 @@ graph TD
     style Layout color:black
     style Landing fill:#e0f2fe,stroke:#0284c7
     style Landing color:black
+    style Auth fill:#fef9c3,stroke:#ca8a04
+    style Auth color:black
     style UI fill:#d1fae5,stroke:#059669
     style UI color:black
     style Charts fill:#fef3c7,stroke:#d97706
@@ -314,6 +320,57 @@ const sleepBuckets = [
 4. Follow existing patterns: accept typed props, use Tailwind + `cn()`, wrap
    in `.card` where appropriate.
 5. Add a test alongside in `__tests__/components/`.
+
+---
+
+## Auth Components
+
+Components specific to the authentication pages, located in `components/auth/`.
+
+### BrandShapes
+
+> `components/auth/BrandShapes.tsx` — `'use client'`
+
+Renders a randomised set of **7–14 decorative abstract shapes** inside the
+auth brand panel. Shapes are generated once per mount via a lazy `useState`
+initialiser, so they stay stable during interaction but produce a fresh
+arrangement on each page load.
+
+| Prop      | Type                 | Required | Description                              |
+| --------- | -------------------- | -------- | ---------------------------------------- |
+| `variant` | `'login' \| 'signup'` | Yes      | Determines palette, shape types & ranges |
+
+**Variant comparison:**
+
+| Aspect          | `login`                       | `signup`                        |
+| --------------- | ----------------------------- | ------------------------------- |
+| Palette         | Vanilla (warm golden)         | Blush (vibrant pink)            |
+| Shape types     | Circles, rings                | Squares, diamonds, triangles    |
+| Rotation range  | 0–360°                        | 0–90°                           |
+| Visual feel     | Soft, organic, warm           | Angular, energetic, fresh       |
+
+**Randomised properties per shape:**
+
+- **Position** — `top` / `left` in percent (`-8%` to `95%`)
+- **Size** — `24px` to `180px`
+- **Rotation** — variant-dependent range
+- **Opacity** — `0.08` to `0.30`
+- **Colour** — random pick from the variant's palette tokens
+- **Shape count** — `7` to `14` per page load
+
+Colours reference CSS custom properties (`var(--color-vanilla-*)`,
+`var(--color-blush-*)`) so they stay in sync with the design system.
+
+**Accessibility:** The wrapper is `aria-hidden="true"` and
+`pointer-events-none` — purely decorative, invisible to assistive tech.
+
+```tsx
+import BrandShapes from '@/components/auth/BrandShapes';
+
+// Inside a brand panel:
+<BrandShapes variant="login" />
+<BrandShapes variant="signup" />
+```
 
 ---
 
