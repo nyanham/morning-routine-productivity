@@ -36,7 +36,9 @@ frontend/src/
 ━E      ├── import/page.tsx    # CSV import (/dashboard/import)
 ━E      └── settings/page.tsx  # User settings (/dashboard/settings)
 ├── components/                # Reusable UI pieces
-━E  ├── charts/                # Recharts wrappers─E  ├── auth/                  # Auth page decorations (BrandShapes)━E  ├── landing/               # Landing page sections & decorations
+━E  ├── charts/                # Recharts wrappers
+─E  ├── auth/                  # Auth page decorations (BrandShapes)
+━E  ├── landing/               # Landing page sections & decorations
 ━E  ├── layout/                # DashboardLayout, Sidebar
 ━E  └── ui/                    # Primitives: StatsCard, CSVUploader
 ├── contexts/                  # React Context providers
