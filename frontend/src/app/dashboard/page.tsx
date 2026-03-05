@@ -1,13 +1,25 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import StatsCard from '@/components/ui/StatsCard';
 import { ProductivityChart, RoutineBarChart, SleepDistributionChart } from '@/components/charts';
 import { RequireAuth } from '@/contexts/AuthContext';
 import { useRoutines, useProductivity, useAnalyticsSummary } from '@/hooks/useApi';
 import { DashboardSkeleton } from '@/components/ui/Skeleton';
-import { Clock, Target, Zap, Moon, AlertCircle, RefreshCw } from 'lucide-react';
+import {
+  Clock,
+  Target,
+  Zap,
+  Moon,
+  AlertCircle,
+  RefreshCw,
+  PenLine,
+  BarChart3,
+  Upload,
+  ArrowRight,
+} from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
 // Format date for display
@@ -24,6 +36,46 @@ function formatTime(timeStr: string): string {
   const ampm = h >= 12 ? 'PM' : 'AM';
   const displayHour = h % 12 || 12;
   return `${displayHour}:${minutes} ${ampm}`;
+}
+
+/**
+ * Compact card that links to a key area of the app — rendered in the
+ * quick-actions row on the dashboard overview.
+ *
+ * Each card uses a different palette from the design system so the
+ * three actions are visually distinct at a glance.
+ */
+function QuickActionCard({
+  href,
+  icon: Icon,
+  title,
+  description,
+  iconClass,
+}: {
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+  /** Tailwind classes for the icon badge (background + text colour). */
+  iconClass: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="card group hover:border-aqua-200 flex items-center gap-4 transition-all hover:shadow-md"
+    >
+      <div className={`rounded-xl p-3 ${iconClass}`}>
+        <Icon className="h-6 w-6" />
+      </div>
+      <div className="flex-1">
+        <h3 className="group-hover:text-aqua-600 text-sm font-semibold text-slate-900 transition-colors">
+          {title}
+        </h3>
+        <p className="text-xs text-slate-500">{description}</p>
+      </div>
+      <ArrowRight className="group-hover:text-aqua-500 h-4 w-4 text-slate-300 transition-colors" />
+    </Link>
+  );
 }
 
 function DashboardContent() {
@@ -216,7 +268,7 @@ function DashboardContent() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
+      {/* ── Header ── */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
@@ -234,7 +286,32 @@ function DashboardContent() {
         </button>
       </div>
 
-      {/* Error Banner */}
+      {/* ── Quick Actions ── */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <QuickActionCard
+          href="/dashboard/entry"
+          icon={PenLine}
+          title="Log Entry"
+          description="Record today's morning routine"
+          iconClass="bg-aqua-100 text-aqua-600"
+        />
+        <QuickActionCard
+          href="/dashboard/stats"
+          icon={BarChart3}
+          title="Statistics"
+          description="View charts and trends"
+          iconClass="bg-vanilla-100 text-vanilla-600"
+        />
+        <QuickActionCard
+          href="/dashboard/import"
+          icon={Upload}
+          title="Import CSV"
+          description="Bulk-import from a file"
+          iconClass="bg-blush-100 text-blush-600"
+        />
+      </div>
+
+      {/* ── Error Banner ── */}
       {hasError && (
         <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
           <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
@@ -245,18 +322,18 @@ function DashboardContent() {
         </div>
       )}
 
-      {/* No Data Banner */}
+      {/* ── No Data Banner ── */}
       {!isLoading && !hasData && !hasError && (
-        <div className="flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4">
-          <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" />
-          <div className="text-sm text-blue-800">
+        <div className="border-aqua-200 bg-aqua-100/40 flex items-start gap-3 rounded-xl border p-4">
+          <AlertCircle className="text-aqua-600 mt-0.5 h-5 w-5 flex-shrink-0" />
+          <div className="text-aqua-800 text-sm">
             <p className="font-medium">No data yet</p>
             <p>Start by importing a CSV file or adding entries manually.</p>
           </div>
         </div>
       )}
 
-      {/* Skeleton loading state — shown whenever dashboard data is loading */}
+      {/* ── Loading / Content ── */}
       {isLoading ? (
         <DashboardSkeleton />
       ) : (
@@ -277,7 +354,7 @@ function DashboardContent() {
                       ? 'stable'
                       : undefined
               }
-              icon={<Target className="text-primary-600 h-6 w-6" />}
+              icon={<Target className="text-aqua-600 h-6 w-6" />}
             />
             <StatsCard
               title="Avg. Sleep"
@@ -285,13 +362,13 @@ function DashboardContent() {
                 summary.data?.avg_sleep != null ? `${summary.data.avg_sleep.toFixed(1)} hrs` : '-'
               }
               subtitle="per night"
-              icon={<Moon className="text-primary-600 h-6 w-6" />}
+              icon={<Moon className="h-6 w-6 text-sky-600" />}
             />
             <StatsCard
               title="Total Entries"
               value={String(summary.data?.total_entries ?? routines.data?.total ?? 0)}
               subtitle="this period"
-              icon={<Clock className="text-primary-600 h-6 w-6" />}
+              icon={<Clock className="text-vanilla-600 h-6 w-6" />}
             />
             <StatsCard
               title="Avg. Exercise"
@@ -301,7 +378,7 @@ function DashboardContent() {
                   : '-'
               }
               subtitle="per day"
-              icon={<Zap className="text-primary-600 h-6 w-6" />}
+              icon={<Zap className="text-blush-400 h-6 w-6" />}
             />
           </div>
 
@@ -320,15 +397,21 @@ function DashboardContent() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-200">
-                        <th className="px-4 py-3 text-left font-medium text-slate-600">Date</th>
-                        <th className="px-4 py-3 text-left font-medium text-slate-600">
+                        <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
+                          Date
+                        </th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
                           Wake Time
                         </th>
-                        <th className="px-4 py-3 text-left font-medium text-slate-600">Sleep</th>
-                        <th className="px-4 py-3 text-left font-medium text-slate-600">
+                        <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
+                          Sleep
+                        </th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
                           Productivity
                         </th>
-                        <th className="px-4 py-3 text-left font-medium text-slate-600">Mood</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
+                          Mood
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -340,10 +423,13 @@ function DashboardContent() {
                         </tr>
                       ) : (
                         recentEntries.map((row) => (
-                          <tr key={row.date} className="border-b border-slate-100">
-                            <td className="px-4 py-3 text-slate-700">{row.date}</td>
-                            <td className="px-4 py-3 text-slate-700">{row.wake}</td>
-                            <td className="px-4 py-3 text-slate-700">{row.sleep}</td>
+                          <tr
+                            key={row.date}
+                            className="border-b border-slate-100 transition-colors hover:bg-slate-50"
+                          >
+                            <td className="px-4 py-3 font-medium text-slate-700">{row.date}</td>
+                            <td className="px-4 py-3 text-slate-600">{row.wake}</td>
+                            <td className="px-4 py-3 text-slate-600">{row.sleep}</td>
                             <td className="px-4 py-3">
                               {typeof row.prod === 'number' ? (
                                 <span
@@ -361,7 +447,7 @@ function DashboardContent() {
                                 <span className="text-slate-400">{row.prod}</span>
                               )}
                             </td>
-                            <td className="px-4 py-3 text-slate-700">
+                            <td className="px-4 py-3 text-slate-600">
                               {typeof row.mood === 'number' ? `${row.mood}/10` : row.mood}
                             </td>
                           </tr>

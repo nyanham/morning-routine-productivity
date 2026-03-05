@@ -2,15 +2,33 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, Home, Upload, PenLine, Settings, LogOut, User } from 'lucide-react';
+import {
+  Sun,
+  LayoutDashboard,
+  ClipboardList,
+  BarChart3,
+  UserCircle,
+  LogOut,
+  User,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthContext } from '@/contexts/AuthContext';
 
+/**
+ * Dashboard sidebar with MorningFlow branding and primary navigation.
+ *
+ * Mirrors the visual language of the landing and auth pages — aqua accent
+ * highlights, Sun logo, and clean typography on a dark-slate gradient.
+ *
+ * Navigation items follow the new user flow:
+ *   Overview → My Entries → Statistics → Profile
+ */
+
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/dashboard/import', label: 'Import Data', icon: Upload },
-  { href: '/dashboard/entry', label: 'Manual Entry', icon: PenLine },
-  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
+  { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+  { href: '/dashboard/entries', label: 'My Entries', icon: ClipboardList },
+  { href: '/dashboard/stats', label: 'Statistics', icon: BarChart3 },
+  { href: '/dashboard/profile', label: 'Profile', icon: UserCircle },
 ];
 
 export default function Sidebar() {
@@ -18,30 +36,34 @@ export default function Sidebar() {
   const { user, signOut } = useAuthContext();
 
   return (
-    <aside className="fixed top-0 left-0 flex h-screen w-64 flex-col bg-slate-900 text-white">
+    <aside className="fixed top-0 left-0 flex h-screen w-64 flex-col bg-gradient-to-b from-slate-900 to-slate-800 text-white">
       {/* Logo */}
-      <div className="border-b border-slate-700 p-6">
+      <div className="border-b border-white/10 p-6">
         <Link href="/dashboard" className="flex items-center gap-3">
-          <BarChart3 className="text-primary-400 h-8 w-8" />
-          <span className="text-lg font-bold">Productivity</span>
+          <Sun className="text-aqua-400 h-8 w-8" />
+          <span className="text-lg font-bold tracking-tight">MorningFlow</span>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
+      <nav className="flex-1 px-3 py-4">
+        <ul className="space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href;
+            // Exact match for /dashboard; prefix match for sub-routes
+            const isActive =
+              item.href === '/dashboard'
+                ? pathname === '/dashboard'
+                : pathname.startsWith(item.href);
             return (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-3 rounded-lg px-4 py-3 transition-colors',
+                    'flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors',
                     isActive
-                      ? 'bg-primary-600 text-white'
-                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                      ? 'bg-aqua-600/15 text-aqua-400'
+                      : 'text-slate-400 hover:bg-white/5 hover:text-white'
                   )}
                 >
                   <Icon className="h-5 w-5" />
@@ -54,14 +76,14 @@ export default function Sidebar() {
       </nav>
 
       {/* User section */}
-      <div className="border-t border-slate-700 p-4">
-        <div className="flex items-center gap-3 px-4 py-3 text-slate-300">
+      <div className="border-t border-white/10 p-3">
+        <div className="flex items-center gap-3 px-4 py-2.5 text-slate-400">
           <User className="h-5 w-5" />
           <span className="truncate text-sm">{user?.email}</span>
         </div>
         <button
           onClick={() => signOut()}
-          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+          className="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
         >
           <LogOut className="h-5 w-5" />
           <span>Sign Out</span>
