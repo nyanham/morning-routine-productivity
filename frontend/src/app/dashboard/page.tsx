@@ -1,82 +1,30 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import StatsCard from '@/components/ui/StatsCard';
 import { ProductivityChart, RoutineBarChart, SleepDistributionChart } from '@/components/charts';
 import { RequireAuth } from '@/contexts/AuthContext';
 import { useRoutines, useProductivity, useAnalyticsSummary } from '@/hooks/useApi';
 import { DashboardSkeleton } from '@/components/ui/Skeleton';
-import {
-  Clock,
-  Target,
-  Zap,
-  Moon,
-  AlertCircle,
-  RefreshCw,
-  PenLine,
-  BarChart3,
-  Upload,
-  ArrowRight,
-} from 'lucide-react';
+import { Clock, Target, Zap, Moon, AlertCircle, RefreshCw } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
-// Format date for display
+// ── helpers ──
+
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-// Format time for display
 function formatTime(timeStr: string): string {
   if (!timeStr) return '-';
   const [hours, minutes] = timeStr.split(':');
   const h = parseInt(hours);
   const ampm = h >= 12 ? 'PM' : 'AM';
-  const displayHour = h % 12 || 12;
-  return `${displayHour}:${minutes} ${ampm}`;
+  return `${h % 12 || 12}:${minutes} ${ampm}`;
 }
 
-/**
- * Compact card that links to a key area of the app — rendered in the
- * quick-actions row on the dashboard overview.
- *
- * Each card uses a different palette from the design system so the
- * three actions are visually distinct at a glance.
- */
-function QuickActionCard({
-  href,
-  icon: Icon,
-  title,
-  description,
-  iconClass,
-}: {
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  description: string;
-  /** Tailwind classes for the icon badge (background + text colour). */
-  iconClass: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="card group hover:border-aqua-200 flex items-center gap-4 transition-all hover:shadow-md"
-    >
-      <div className={`rounded-xl p-3 ${iconClass}`}>
-        <Icon className="h-6 w-6" />
-      </div>
-      <div className="flex-1">
-        <h3 className="group-hover:text-aqua-600 text-sm font-semibold text-slate-900 transition-colors">
-          {title}
-        </h3>
-        <p className="text-xs text-slate-500">{description}</p>
-      </div>
-      <ArrowRight className="group-hover:text-aqua-500 h-4 w-4 text-slate-300 transition-colors" />
-    </Link>
-  );
-}
+// ── main content ──
 
 function DashboardContent() {
   const routines = useRoutines();
@@ -267,51 +215,26 @@ function DashboardContent() {
   };
 
   return (
-    <div className="space-y-8">
-      {/* ── Header ── */}
-      <div className="flex items-start justify-between">
+    <div className="space-y-6">
+      {/* ── Page header ── */}
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-          <p className="mt-1 text-slate-600">
+          <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+          <p className="text-sm text-slate-500">
             Track your morning routine and productivity patterns
           </p>
         </div>
         <button
           onClick={handleRefresh}
           disabled={isLoading}
-          className="btn-secondary flex items-center gap-2"
+          className="btn-secondary flex items-center gap-2 text-sm"
         >
           <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           Refresh
         </button>
       </div>
 
-      {/* ── Quick Actions ── */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <QuickActionCard
-          href="/dashboard/entry"
-          icon={PenLine}
-          title="Log Entry"
-          description="Record today's morning routine"
-          iconClass="bg-aqua-100 text-aqua-600"
-        />
-        <QuickActionCard
-          href="/dashboard/stats"
-          icon={BarChart3}
-          title="Statistics"
-          description="View charts and trends"
-          iconClass="bg-vanilla-100 text-vanilla-600"
-        />
-        <QuickActionCard
-          href="/dashboard/import"
-          icon={Upload}
-          title="Import CSV"
-          description="Bulk-import from a file"
-          iconClass="bg-blush-100 text-blush-600"
-        />
-      </div>
-
-      {/* ── Error Banner ── */}
+      {/* ── Error banner ── */}
       {hasError && (
         <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
           <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
@@ -322,7 +245,7 @@ function DashboardContent() {
         </div>
       )}
 
-      {/* ── No Data Banner ── */}
+      {/* ── Empty-state banner ── */}
       {!isLoading && !hasData && !hasError && (
         <div className="border-aqua-200 bg-aqua-100/40 flex items-start gap-3 rounded-xl border p-4">
           <AlertCircle className="text-aqua-600 mt-0.5 h-5 w-5 flex-shrink-0" />
@@ -338,8 +261,8 @@ function DashboardContent() {
         <DashboardSkeleton />
       ) : (
         <>
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {/* Row 1 — Stats cards */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <StatsCard
               title="Avg. Productivity"
               value={summary.data?.avg_productivity?.toFixed(1) ?? '-'}
@@ -382,83 +305,79 @@ function DashboardContent() {
             />
           </div>
 
-          {/* Charts Row 1 */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <ProductivityChart data={productivityChartData} />
-            <RoutineBarChart data={routineChartData} />
-          </div>
+          {/* Row 2 — Full-width productivity chart */}
+          <ProductivityChart data={productivityChartData} />
 
-          {/* Charts Row 2 */}
+          {/* Row 3 — Routine bar chart + Sleep distribution side-by-side */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              <div className="card">
-                <h3 className="mb-4 text-lg font-semibold text-slate-900">Recent Entries</h3>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-slate-200">
-                        <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
-                          Date
-                        </th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
-                          Wake Time
-                        </th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
-                          Sleep
-                        </th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
-                          Productivity
-                        </th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
-                          Mood
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {recentEntries.length === 0 ? (
-                        <tr>
-                          <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
-                            No entries yet
-                          </td>
-                        </tr>
-                      ) : (
-                        recentEntries.map((row) => (
-                          <tr
-                            key={row.date}
-                            className="border-b border-slate-100 transition-colors hover:bg-slate-50"
-                          >
-                            <td className="px-4 py-3 font-medium text-slate-700">{row.date}</td>
-                            <td className="px-4 py-3 text-slate-600">{row.wake}</td>
-                            <td className="px-4 py-3 text-slate-600">{row.sleep}</td>
-                            <td className="px-4 py-3">
-                              {typeof row.prod === 'number' ? (
-                                <span
-                                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                                    row.prod >= 8
-                                      ? 'bg-green-100 text-green-800'
-                                      : row.prod >= 6
-                                        ? 'bg-yellow-100 text-yellow-800'
-                                        : 'bg-red-100 text-red-800'
-                                  }`}
-                                >
-                                  {row.prod}/10
-                                </span>
-                              ) : (
-                                <span className="text-slate-400">{row.prod}</span>
-                              )}
-                            </td>
-                            <td className="px-4 py-3 text-slate-600">
-                              {typeof row.mood === 'number' ? `${row.mood}/10` : row.mood}
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <RoutineBarChart data={routineChartData} />
             </div>
             <SleepDistributionChart data={sleepDistribution} />
+          </div>
+
+          {/* Row 4 — Recent entries table */}
+          <div className="card">
+            <h3 className="mb-4 text-lg font-semibold text-slate-900">Recent Entries</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">Date</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
+                      Wake Time
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
+                      Sleep
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
+                      Productivity
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">Mood</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentEntries.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
+                        No entries yet
+                      </td>
+                    </tr>
+                  ) : (
+                    recentEntries.map((row) => (
+                      <tr
+                        key={row.date}
+                        className="border-b border-slate-100 transition-colors hover:bg-slate-50"
+                      >
+                        <td className="px-4 py-3 font-medium text-slate-700">{row.date}</td>
+                        <td className="px-4 py-3 text-slate-600">{row.wake}</td>
+                        <td className="px-4 py-3 text-slate-600">{row.sleep}</td>
+                        <td className="px-4 py-3">
+                          {typeof row.prod === 'number' ? (
+                            <span
+                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                row.prod >= 8
+                                  ? 'bg-green-100 text-green-800'
+                                  : row.prod >= 6
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-red-100 text-red-800'
+                              }`}
+                            >
+                              {row.prod}/10
+                            </span>
+                          ) : (
+                            <span className="text-slate-400">{row.prod}</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-slate-600">
+                          {typeof row.mood === 'number' ? `${row.mood}/10` : row.mood}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </>
       )}
