@@ -2,17 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  Sun,
-  LayoutDashboard,
-  ClipboardList,
-  BarChart3,
-  UserCircle,
-  LogOut,
-  User,
-} from 'lucide-react';
+import { Sun, LayoutDashboard, ClipboardList, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAuthContext } from '@/contexts/AuthContext';
 
 /**
  * Dashboard sidebar with MorningFlow branding and primary navigation.
@@ -21,19 +12,19 @@ import { useAuthContext } from '@/contexts/AuthContext';
  * highlights, Sun logo, and clean typography on a dark-slate gradient.
  *
  * Navigation items follow the new user flow:
- *   Overview → My Entries → Statistics → Profile
+ *   Overview → My Entries → Statistics
+ *
+ * Profile and Settings live in the top-right header dropdown instead.
  */
 
 const navItems = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
   { href: '/dashboard/entries', label: 'My Entries', icon: ClipboardList },
   { href: '/dashboard/stats', label: 'Statistics', icon: BarChart3 },
-  { href: '/dashboard/profile', label: 'Profile', icon: UserCircle },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { user, signOut } = useAuthContext();
 
   return (
     <aside className="fixed top-0 left-0 flex h-screen w-64 flex-col bg-gradient-to-b from-slate-900 to-slate-800 text-white">
@@ -74,21 +65,6 @@ export default function Sidebar() {
           })}
         </ul>
       </nav>
-
-      {/* User section */}
-      <div className="border-t border-white/10 p-3">
-        <div className="flex items-center gap-3 px-4 py-2.5 text-slate-400">
-          <User className="h-5 w-5" />
-          <span className="truncate text-sm">{user?.email}</span>
-        </div>
-        <button
-          onClick={() => signOut()}
-          className="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
-        >
-          <LogOut className="h-5 w-5" />
-          <span>Sign Out</span>
-        </button>
-      </div>
     </aside>
   );
 }
