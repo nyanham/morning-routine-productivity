@@ -135,7 +135,7 @@ describe('DashboardSkeleton', () => {
     render(<DashboardSkeleton />);
     const status = screen.getByRole('status');
     expect(status).toBeInTheDocument();
-    expect(status).toHaveClass('space-y-6');
+    expect(status).toHaveClass('space-y-8');
   });
 
   it('includes a single sr-only "Loading dashboard…" label', () => {
@@ -146,7 +146,7 @@ describe('DashboardSkeleton', () => {
   it('renders a two-column grid layout', () => {
     const { container } = render(<DashboardSkeleton />);
     const root = container.firstElementChild;
-    expect(root).toHaveClass('space-y-6');
+    expect(root).toHaveClass('space-y-8');
     // Should have 1 grid wrapper (plus the sr-only span)
     const grid = root?.querySelector('.grid');
     expect(grid).toBeInTheDocument();

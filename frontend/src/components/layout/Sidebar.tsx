@@ -27,17 +27,17 @@ export default function Sidebar() {
 
   return (
     <aside className="fixed top-4 left-4 z-30 flex flex-col gap-3" aria-label="Main navigation">
-      {/* Logo capsule */}
+      {/* Logo capsule — sized to match the nav capsule width */}
       <Link
         href="/dashboard"
         title="MorningFlow — Go to dashboard"
-        className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/40 backdrop-blur-sm transition-colors hover:bg-white/60"
+        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/60 backdrop-blur-md transition-colors hover:bg-white/80"
       >
-        <Sun className="text-aqua-500 h-6 w-6" />
+        <Sun className="text-aqua-500 h-7 w-7" />
       </Link>
 
       {/* Navigation capsule */}
-      <nav className="flex flex-col items-center gap-1.5 rounded-2xl bg-white/40 p-2.5 backdrop-blur-sm">
+      <nav className="flex flex-col items-center gap-1.5 rounded-2xl bg-white/60 p-2.5 backdrop-blur-md">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =

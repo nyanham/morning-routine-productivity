@@ -26,7 +26,7 @@
 export function ProfileBannerSkeleton() {
   return (
     <div
-      className="flex animate-pulse items-center gap-5 rounded-2xl bg-white/50 px-6 py-5 backdrop-blur-sm"
+      className="flex animate-pulse items-center gap-5 rounded-2xl bg-white/65 px-6 py-5 backdrop-blur-md"
       aria-hidden="true"
     >
       <div className="h-16 w-16 shrink-0 rounded-full bg-slate-200" />
@@ -60,7 +60,7 @@ export function TabsSkeleton() {
 /** A pulsing placeholder that mirrors a chart card (title bar + 20rem (h-80) chart area). */
 export function ChartSkeleton() {
   return (
-    <div className="animate-pulse rounded-2xl bg-white/40 p-5 backdrop-blur-sm" aria-hidden="true">
+    <div className="animate-pulse rounded-2xl bg-white/60 p-5 backdrop-blur-md" aria-hidden="true">
       <div className="mb-4 h-5 w-48 rounded bg-slate-200" />
       <div className="flex h-60 items-end justify-between gap-2 px-4 pb-4">
         {[40, 65, 50, 80, 55, 70, 60].map((h, i) => (
@@ -78,7 +78,7 @@ export function ChartSkeleton() {
 export function EntryPanelSkeleton() {
   return (
     <div
-      className="flex animate-pulse items-center gap-3 rounded-xl bg-white/30 px-5 py-4 backdrop-blur-sm"
+      className="flex animate-pulse items-center gap-3 rounded-xl bg-white/50 px-5 py-4 backdrop-blur-md"
       aria-hidden="true"
     >
       <div className="h-5 w-5 rounded bg-slate-200" />
@@ -97,7 +97,7 @@ export function EntryPanelSkeleton() {
 
 export function SidebarCardSkeleton({ lines = 3 }: { lines?: number }) {
   return (
-    <div className="animate-pulse rounded-2xl bg-white/50 p-5 backdrop-blur-sm" aria-hidden="true">
+    <div className="animate-pulse rounded-2xl bg-white/65 p-5 backdrop-blur-md" aria-hidden="true">
       <div className="mb-4 h-5 w-36 rounded bg-slate-200" />
       <div className="space-y-3">
         {[...Array(lines)].map((_, i) => (
@@ -184,14 +184,14 @@ export function TableSkeleton() {
  */
 export function DashboardSkeleton() {
   return (
-    <div className="space-y-6" role="status" aria-live="polite">
+    <div className="space-y-8" role="status" aria-live="polite">
       <span className="sr-only">Loading dashboard…</span>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Left column */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="space-y-8 lg:col-span-2">
           <ChartSkeleton />
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="mb-3 h-3 w-24 rounded bg-slate-200" />
             {[...Array(4)].map((_, i) => (
               <EntryPanelSkeleton key={i} />
@@ -200,7 +200,7 @@ export function DashboardSkeleton() {
         </div>
 
         {/* Right column */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           <SidebarCardSkeleton lines={2} />
           <SidebarCardSkeleton lines={4} />
         </div>

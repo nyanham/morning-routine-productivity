@@ -34,7 +34,7 @@ export default function SummaryCard({
   }
 
   return (
-    <div className="rounded-2xl bg-white/50 p-5 backdrop-blur-sm">
+    <div className="rounded-2xl bg-white/65 p-5 backdrop-blur-md">
       <h3 className="text-lg font-bold text-slate-800">
         Total entries <span className="font-normal text-slate-400">({totalEntries})</span>
       </h3>

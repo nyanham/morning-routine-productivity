@@ -155,7 +155,7 @@ function DashboardContent() {
   }, [routines.data]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* ── Profile banner (patient-card style) ── */}
       <ProfileBanner />
 
@@ -200,12 +200,12 @@ function DashboardContent() {
       {isLoading ? (
         <DashboardSkeleton />
       ) : (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* ═══ Left column: chart + monthly entry panels ═══ */}
-          <div className="space-y-6 lg:col-span-2">
+          <div className="space-y-8 lg:col-span-2">
             {/* Compact productivity trend chart */}
             {productivityChartData.length > 0 && (
-              <div className="rounded-2xl bg-white/40 p-5 backdrop-blur-sm">
+              <div className="rounded-2xl bg-white/60 p-5 backdrop-blur-md">
                 <ProductivityChart data={productivityChartData} title="Weekly Trends" />
               </div>
             )}
@@ -217,7 +217,7 @@ function DashboardContent() {
                   <h3 className="mb-3 text-xs font-semibold tracking-wider text-slate-400 uppercase">
                     {month}
                   </h3>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {routinesByMonth[month]
                       .sort((a, b) => b.date.localeCompare(a.date))
                       .map((routine, idx) => (
@@ -232,7 +232,7 @@ function DashboardContent() {
                 </section>
               ))
             ) : (
-              <div className="rounded-2xl bg-white/30 px-6 py-12 text-center backdrop-blur-sm">
+              <div className="rounded-2xl bg-white/50 px-6 py-12 text-center backdrop-blur-md">
                 <p className="text-sm text-slate-400">
                   No routine entries yet. Log your first morning routine!
                 </p>
@@ -241,7 +241,7 @@ function DashboardContent() {
           </div>
 
           {/* ═══ Right column: summary donut + wellness insights ═══ */}
-          <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+          <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
             <SummaryCard
               totalEntries={totalEntries}
               routineCount={routineCount}

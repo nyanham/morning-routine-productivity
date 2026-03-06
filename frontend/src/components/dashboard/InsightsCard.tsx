@@ -101,7 +101,7 @@ export default function InsightsCard({ summary }: InsightsCardProps) {
 
   if (insights.length === 0) {
     return (
-      <div className="rounded-2xl bg-white/50 p-5 backdrop-blur-sm">
+      <div className="rounded-2xl bg-white/65 p-5 backdrop-blur-md">
         <h3 className="text-lg font-bold text-slate-800">Wellness insights</h3>
         <p className="mt-3 text-sm text-slate-400">Not enough data yet to show insights.</p>
       </div>
@@ -109,7 +109,7 @@ export default function InsightsCard({ summary }: InsightsCardProps) {
   }
 
   return (
-    <div className="rounded-2xl bg-white/50 p-5 backdrop-blur-sm">
+    <div className="rounded-2xl bg-white/65 p-5 backdrop-blur-md">
       <h3 className="text-lg font-bold text-slate-800">
         Wellness insights <span className="font-normal text-slate-400">({insights.length})</span>
       </h3>

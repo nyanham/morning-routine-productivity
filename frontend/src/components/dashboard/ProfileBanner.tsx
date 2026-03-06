@@ -29,7 +29,7 @@ export default function ProfileBanner() {
       });
 
   return (
-    <div className="flex items-center gap-5 rounded-2xl bg-white/50 px-6 py-5 backdrop-blur-sm">
+    <div className="flex items-center gap-5 rounded-2xl bg-white/65 px-6 py-5 backdrop-blur-md">
       {/* Avatar */}
       <div
         className="bg-aqua-100 text-aqua-700 flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-2xl font-bold"

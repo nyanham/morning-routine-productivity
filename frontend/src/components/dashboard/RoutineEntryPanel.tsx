@@ -119,12 +119,12 @@ export default function RoutineEntryPanel({
   }
 
   return (
-    <div className="rounded-xl bg-white/30 backdrop-blur-sm transition-all">
+    <div className="rounded-xl bg-white/50 backdrop-blur-md transition-all">
       {/* Collapsed header */}
       <button
         type="button"
         onClick={() => setExpanded((prev) => !prev)}
-        className="flex w-full items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-white/20"
+        className="flex w-full items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-white/30"
         aria-expanded={expanded}
       >
         <Sun className="text-vanilla-400 h-5 w-5 shrink-0" aria-hidden="true" />
