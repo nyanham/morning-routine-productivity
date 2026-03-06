@@ -2,12 +2,18 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import StatsCard from '@/components/ui/StatsCard';
-import { ProductivityChart, RoutineBarChart, SleepDistributionChart } from '@/components/charts';
+import { ProductivityChart } from '@/components/charts';
+import {
+  ProfileBanner,
+  DashboardTabs,
+  RoutineEntryPanel,
+  SummaryCard,
+  InsightsCard,
+} from '@/components/dashboard';
 import { RequireAuth } from '@/contexts/AuthContext';
 import { useRoutines, useProductivity, useAnalyticsSummary } from '@/hooks/useApi';
 import { DashboardSkeleton } from '@/components/ui/Skeleton';
-import { Clock, Target, Zap, Moon, AlertCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
 // ── helpers ──
@@ -16,12 +22,13 @@ function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function formatTime(timeStr: string): string {
-  if (!timeStr) return '-';
-  const [hours, minutes] = timeStr.split(':');
-  const h = parseInt(hours);
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  return `${h % 12 || 12}:${minutes} ${ampm}`;
+/** Group an array of items by a key derived from each item. */
+function groupBy<T>(items: T[], keyFn: (item: T) => string): Record<string, T[]> {
+  return items.reduce<Record<string, T[]>>((acc, item) => {
+    const key = keyFn(item);
+    (acc[key] ??= []).push(item);
+    return acc;
+  }, {});
 }
 
 // ── main content ──
@@ -30,17 +37,12 @@ function DashboardContent() {
   const routines = useRoutines();
   const productivity = useProductivity();
   const summary = useAnalyticsSummary();
-  const [dateRange] = useState({ days: 7 });
+  const [dateRange] = useState({ days: 30 });
 
-  // Destructure the stable fetch callbacks so they can be listed
-  // directly in the useEffect dependency array without triggering
-  // the exhaustive-deps rule on the parent hook objects.
   const { fetch: fetchRoutines } = routines;
   const { fetch: fetchProductivity } = productivity;
   const { fetch: fetchSummary } = summary;
 
-  // Track whether the very first fetch cycle has completed so we never
-  // flash demo data before the skeleton has a chance to appear.
   const [initialLoad, setInitialLoad] = useState(true);
 
   // Fetch data on mount
@@ -53,8 +55,8 @@ function DashboardContent() {
     let cancelled = false;
 
     Promise.allSettled([
-      fetchRoutines({ pageSize: 10, startDate, endDate }),
-      fetchProductivity({ pageSize: 10, startDate, endDate }),
+      fetchRoutines({ pageSize: 30, startDate, endDate }),
+      fetchProductivity({ pageSize: 30, startDate, endDate }),
       fetchSummary(startDate, endDate),
     ]).finally(() => {
       if (!cancelled) setInitialLoad(false);
@@ -65,29 +67,20 @@ function DashboardContent() {
     };
   }, [dateRange.days, fetchRoutines, fetchProductivity, fetchSummary]);
 
-  // Transform data for charts
-  const productivityChartData = useMemo(() => {
-    if (!productivity.data?.data?.length && !routines.data?.data?.length) {
-      return [];
-    }
+  // ── Derived data ──
 
-    // Combine routine and productivity data by date
+  /** Productivity chart data: combines routine mood + productivity scores by date. */
+  const productivityChartData = useMemo(() => {
+    if (!productivity.data?.data?.length && !routines.data?.data?.length) return [];
+
     const dataByDate = new Map<
       string,
-      {
-        date: string;
-        productivity_score?: number;
-        energy_level?: number;
-        morning_mood?: number;
-      }
+      { date: string; productivity_score?: number; energy_level?: number; morning_mood?: number }
     >();
 
     routines.data?.data?.forEach((r: MorningRoutine) => {
       const existing = dataByDate.get(r.date) || { date: formatDate(r.date) };
-      dataByDate.set(r.date, {
-        ...existing,
-        morning_mood: r.morning_mood,
-      });
+      dataByDate.set(r.date, { ...existing, morning_mood: r.morning_mood });
     });
 
     productivity.data?.data?.forEach((p: ProductivityEntry) => {
@@ -99,104 +92,39 @@ function DashboardContent() {
       });
     });
 
-    // Sort by the ISO date key (chronological), then return the values
-    // whose `date` field is the formatted display string.
     return Array.from(dataByDate.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([, v]) => v);
   }, [routines.data, productivity.data]);
 
-  const routineChartData = useMemo(() => {
-    if (!routines.data?.data?.length) {
-      return [];
-    }
-
-    return routines.data.data.map((r: MorningRoutine) => ({
-      date: formatDate(r.date),
-      sleep_duration_hours: r.sleep_duration_hours,
-      exercise_minutes: r.exercise_minutes,
-      meditation_minutes: r.meditation_minutes,
-    }));
-  }, [routines.data]);
-
-  const sleepDistribution = useMemo(() => {
-    if (!routines.data?.data?.length) {
-      return [];
-    }
-
-    const distribution = { '<6': 0, '6-7': 0, '7-8': 0, '>8': 0 };
-    routines.data.data.forEach((r: MorningRoutine) => {
-      const hours = r.sleep_duration_hours;
-      if (hours < 6) distribution['<6']++;
-      else if (hours < 7) distribution['6-7']++;
-      else if (hours < 8) distribution['7-8']++;
-      else distribution['>8']++;
-    });
-
-    const total = routines.data.data.length;
-    return [
-      {
-        name: '<6 hrs',
-        value: Math.round((distribution['<6'] / total) * 100) || 0,
-        color: '#ef4444',
-      },
-      {
-        name: '6-7 hrs',
-        value: Math.round((distribution['6-7'] / total) * 100) || 0,
-        color: '#f97316',
-      },
-      {
-        name: '7-8 hrs',
-        value: Math.round((distribution['7-8'] / total) * 100) || 0,
-        color: '#22c55e',
-      },
-      {
-        name: '>8 hrs',
-        value: Math.round((distribution['>8'] / total) * 100) || 0,
-        color: '#3b82f6',
-      },
-    ];
-  }, [routines.data]);
-
-  // Recent entries for the table
-  const recentEntries = useMemo(() => {
-    if (!routines.data?.data?.length && !productivity.data?.data?.length) {
-      return [];
-    }
-
-    const routineMap = new Map(routines.data?.data?.map((r: MorningRoutine) => [r.date, r]) || []);
-    const productivityMap = new Map(
-      productivity.data?.data?.map((p: ProductivityEntry) => [p.date, p]) || []
+  /** Routine entries grouped by month (e.g. "March 2026"). */
+  const routinesByMonth = useMemo(() => {
+    const items = routines.data?.data ?? [];
+    return groupBy(items, (r: MorningRoutine) =>
+      new Date(r.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     );
+  }, [routines.data]);
 
-    // Get all unique dates
-    const allDates = new Set([
-      ...(routines.data?.data?.map((r: MorningRoutine) => r.date) || []),
-      ...(productivity.data?.data?.map((p: ProductivityEntry) => p.date) || []),
-    ]);
+  /** Lookup map: date → ProductivityEntry, for pairing with routines. */
+  const productivityByDate = useMemo(() => {
+    return new Map(productivity.data?.data?.map((p: ProductivityEntry) => [p.date, p]) ?? []);
+  }, [productivity.data]);
 
-    return Array.from(allDates)
-      .sort((a, b) => b.localeCompare(a))
-      .slice(0, 5)
-      .map((date) => {
-        const r = routineMap.get(date);
-        const p = productivityMap.get(date);
-        return {
-          date: formatDate(date),
-          wake: r ? formatTime(r.wake_time) : '-',
-          sleep: r ? `${r.sleep_duration_hours} hrs` : '-',
-          prod: p?.productivity_score ?? '-',
-          mood: r?.morning_mood ?? '-',
-        };
-      });
-  }, [routines.data, productivity.data]);
+  // Month keys sorted newest-first so recent entries appear at the top.
+  const monthKeys = useMemo(
+    () =>
+      Object.keys(routinesByMonth).sort((a, b) => {
+        const da = new Date(routinesByMonth[a][0]?.date ?? '');
+        const db = new Date(routinesByMonth[b][0]?.date ?? '');
+        return db.getTime() - da.getTime();
+      }),
+    [routinesByMonth]
+  );
 
   const isLoading = initialLoad || routines.loading || productivity.loading || summary.loading;
   const hasError = routines.error || productivity.error || summary.error;
   const hasData = routines.data?.data?.length || productivity.data?.data?.length;
 
-  // Refresh data — mirrors the initial useEffect pattern so the
-  // skeleton is shown while all three fetches are in flight.
   const handleRefresh = () => {
     const endDate = new Date().toISOString().split('T')[0];
     const startDate = new Date(Date.now() - dateRange.days * 24 * 60 * 60 * 1000)
@@ -206,23 +134,40 @@ function DashboardContent() {
     setInitialLoad(true);
 
     Promise.allSettled([
-      fetchRoutines({ pageSize: 10, startDate, endDate }),
-      fetchProductivity({ pageSize: 10, startDate, endDate }),
+      fetchRoutines({ pageSize: 30, startDate, endDate }),
+      fetchProductivity({ pageSize: 30, startDate, endDate }),
       fetchSummary(startDate, endDate),
     ]).finally(() => {
       setInitialLoad(false);
     });
   };
 
+  // ── Sidebar summary values ──
+  const routineCount = routines.data?.data?.length ?? 0;
+  const productivityCount = productivity.data?.data?.length ?? 0;
+  const totalEntries = summary.data?.total_entries ?? routineCount + productivityCount;
+
+  // Compute avg mood from routine data (not always in summary).
+  const avgMood = useMemo(() => {
+    const items = routines.data?.data ?? [];
+    if (items.length === 0) return null;
+    return items.reduce((sum: number, r: MorningRoutine) => sum + r.morning_mood, 0) / items.length;
+  }, [routines.data]);
+
   return (
     <div className="space-y-6">
-      {/* ── Page header ── */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+      {/* ── Profile banner (patient-card style) ── */}
+      <ProfileBanner />
+
+      {/* ── Tab navigation ── */}
+      <DashboardTabs />
+
+      {/* ── Refresh button ── */}
+      <div className="flex justify-end">
         <button
           onClick={handleRefresh}
           disabled={isLoading}
-          className="btn-secondary flex items-center gap-2 text-sm"
+          className="inline-flex items-center gap-2 rounded-xl bg-white/40 px-4 py-2 text-sm font-medium text-slate-600 backdrop-blur-sm transition-colors hover:bg-white/60 disabled:opacity-50"
         >
           <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           Refresh
@@ -232,7 +177,7 @@ function DashboardContent() {
       {/* ── Error banner ── */}
       {hasError && (
         <div className="flex items-start gap-3 rounded-xl bg-red-50/60 p-4 backdrop-blur-sm">
-          <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
+          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
           <div className="text-sm text-red-800">
             <p className="font-medium">Error loading data</p>
             <p>{routines.error || productivity.error || summary.error}</p>
@@ -240,10 +185,10 @@ function DashboardContent() {
         </div>
       )}
 
-      {/* ── Empty-state banner ── */}
+      {/* ── Empty state ── */}
       {!isLoading && !hasData && !hasError && (
         <div className="bg-aqua-100/30 flex items-start gap-3 rounded-xl p-4 backdrop-blur-sm">
-          <AlertCircle className="text-aqua-600 mt-0.5 h-5 w-5 flex-shrink-0" />
+          <AlertCircle className="text-aqua-600 mt-0.5 h-5 w-5 shrink-0" />
           <div className="text-aqua-800 text-sm">
             <p className="font-medium">No data yet</p>
             <p>Start by importing a CSV file or adding entries manually.</p>
@@ -255,130 +200,58 @@ function DashboardContent() {
       {isLoading ? (
         <DashboardSkeleton />
       ) : (
-        <>
-          {/* Row 1 — Stats cards (always a single row) */}
-          <div className="grid grid-cols-4 gap-4">
-            <StatsCard
-              title="Avg. Productivity"
-              value={summary.data?.avg_productivity?.toFixed(1) ?? '-'}
-              subtitle="out of 10"
-              trend={summary.data?.productivity_trend ?? undefined}
-              trendValue={
-                summary.data?.productivity_trend === 'up'
-                  ? 'trending up'
-                  : summary.data?.productivity_trend === 'down'
-                    ? 'trending down'
-                    : summary.data?.productivity_trend === 'stable'
-                      ? 'stable'
-                      : undefined
-              }
-              icon={<Target className="text-aqua-600 h-6 w-6" />}
-            />
-            <StatsCard
-              title="Avg. Sleep"
-              value={
-                summary.data?.avg_sleep != null ? `${summary.data.avg_sleep.toFixed(1)} hrs` : '-'
-              }
-              subtitle="per night"
-              icon={<Moon className="h-6 w-6 text-sky-600" />}
-            />
-            <StatsCard
-              title="Total Entries"
-              value={String(summary.data?.total_entries ?? routines.data?.total ?? 0)}
-              subtitle="this period"
-              icon={<Clock className="text-vanilla-600 h-6 w-6" />}
-            />
-            <StatsCard
-              title="Avg. Exercise"
-              value={
-                summary.data?.avg_exercise != null
-                  ? `${Math.round(summary.data.avg_exercise)} min`
-                  : '-'
-              }
-              subtitle="per day"
-              icon={<Zap className="text-blush-400 h-6 w-6" />}
-            />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {/* ═══ Left column: chart + monthly entry panels ═══ */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* Compact productivity trend chart */}
+            {productivityChartData.length > 0 && (
+              <div className="rounded-2xl bg-white/40 p-5 backdrop-blur-sm">
+                <ProductivityChart data={productivityChartData} title="Weekly Trends" />
+              </div>
+            )}
+
+            {/* Monthly entry groups (newest first) */}
+            {monthKeys.length > 0 ? (
+              monthKeys.map((month) => (
+                <section key={month}>
+                  <h3 className="mb-3 text-xs font-semibold tracking-wider text-slate-400 uppercase">
+                    {month}
+                  </h3>
+                  <div className="space-y-2">
+                    {routinesByMonth[month]
+                      .sort((a, b) => b.date.localeCompare(a.date))
+                      .map((routine, idx) => (
+                        <RoutineEntryPanel
+                          key={routine.id}
+                          routine={routine}
+                          productivity={productivityByDate.get(routine.date)}
+                          defaultExpanded={idx === 0 && month === monthKeys[0]}
+                        />
+                      ))}
+                  </div>
+                </section>
+              ))
+            ) : (
+              <div className="rounded-2xl bg-white/30 px-6 py-12 text-center backdrop-blur-sm">
+                <p className="text-sm text-slate-400">
+                  No routine entries yet. Log your first morning routine!
+                </p>
+              </div>
+            )}
           </div>
 
-          {/* Row 2 — Full-width productivity chart */}
-          <div className="rounded-2xl bg-white/40 p-6 backdrop-blur-sm">
-            <ProductivityChart data={productivityChartData} />
-          </div>
-
-          {/* Row 3 — Routine bar chart + Sleep distribution side-by-side */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <div className="rounded-2xl bg-white/40 p-6 backdrop-blur-sm lg:col-span-2">
-              <RoutineBarChart data={routineChartData} />
-            </div>
-            <div className="rounded-2xl bg-white/40 p-6 backdrop-blur-sm">
-              <SleepDistributionChart data={sleepDistribution} />
-            </div>
-          </div>
-
-          {/* Row 4 — Recent entries table */}
-          <div className="rounded-2xl bg-white/40 p-6 backdrop-blur-sm">
-            <h3 className="mb-4 text-lg font-semibold text-slate-900">Recent Entries</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-200/50">
-                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">Date</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
-                      Wake Time
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
-                      Sleep
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
-                      Productivity
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">Mood</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentEntries.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
-                        No entries yet
-                      </td>
-                    </tr>
-                  ) : (
-                    recentEntries.map((row) => (
-                      <tr
-                        key={row.date}
-                        className="border-b border-slate-100/50 transition-colors hover:bg-white/30"
-                      >
-                        <td className="px-4 py-3 font-medium text-slate-700">{row.date}</td>
-                        <td className="px-4 py-3 text-slate-600">{row.wake}</td>
-                        <td className="px-4 py-3 text-slate-600">{row.sleep}</td>
-                        <td className="px-4 py-3">
-                          {typeof row.prod === 'number' ? (
-                            <span
-                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                                row.prod >= 8
-                                  ? 'bg-green-100 text-green-800'
-                                  : row.prod >= 6
-                                    ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-red-100 text-red-800'
-                              }`}
-                            >
-                              {row.prod}/10
-                            </span>
-                          ) : (
-                            <span className="text-slate-400">{row.prod}</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-slate-600">
-                          {typeof row.mood === 'number' ? `${row.mood}/10` : row.mood}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </>
+          {/* ═══ Right column: summary donut + wellness insights ═══ */}
+          <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            <SummaryCard
+              totalEntries={totalEntries}
+              routineCount={routineCount}
+              productivityCount={productivityCount}
+              avgMood={avgMood}
+              avgSleep={summary.data?.avg_sleep ?? null}
+            />
+            <InsightsCard summary={summary.data} />
+          </aside>
+        </div>
       )}
     </div>
   );

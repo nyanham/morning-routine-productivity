@@ -42,6 +42,16 @@ jest.mock('@/components/charts', () => ({
   SleepDistributionChart: () => <div data-testid="sleep-chart" />,
 }));
 
+// Recharts — SummaryCard uses PieChart directly; stub it out.
+jest.mock('recharts', () => ({
+  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  PieChart: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="pie-chart">{children}</div>
+  ),
+  Pie: () => null,
+  Cell: () => null,
+}));
+
 // lucide-react icons — plain spans.  We use a Proxy so every named
 // import resolves to a stub component, avoiding "undefined" errors when
 // StatsCard or other components import icons we didn't list manually.
@@ -149,7 +159,7 @@ describe('DashboardPage — loading lifecycle', () => {
     expect(screen.getByText('Loading dashboard…')).toBeInTheDocument();
 
     // Real content must NOT be present yet
-    expect(screen.queryByText('Avg. Productivity')).toBeNull();
+    expect(screen.queryByText('Total entries')).toBeNull();
 
     // Cleanup: resolve the pending fetches to avoid act() warnings
     await act(async () => {
@@ -177,11 +187,9 @@ describe('DashboardPage — loading lifecycle', () => {
     // Skeleton should be gone
     expect(screen.queryByRole('status')).toBeNull();
 
-    // Stats cards should be visible
-    expect(screen.getByText('Avg. Productivity')).toBeInTheDocument();
-    expect(screen.getByText('Avg. Sleep')).toBeInTheDocument();
-    expect(screen.getByText('Total Entries')).toBeInTheDocument();
-    expect(screen.getByText('Avg. Exercise')).toBeInTheDocument();
+    // Summary card and insights should be visible
+    expect(screen.getByText('Total entries')).toBeInTheDocument();
+    expect(screen.getByText('Wellness insights')).toBeInTheDocument();
   });
 
   it('renders the "No data yet" banner when fetches resolve with no data', async () => {
@@ -237,7 +245,7 @@ describe('DashboardPage — loading lifecycle', () => {
 
     // Skeleton visible while fetches are pending
     expect(screen.getByRole('status')).toBeInTheDocument();
-    expect(screen.queryByText('Avg. Productivity')).toBeNull();
+    expect(screen.queryByText('Total entries')).toBeNull();
 
     // Simulate fetches resolving and data becoming available
     mockRoutines.data = { data: [], total: 0 };
@@ -258,8 +266,8 @@ describe('DashboardPage — loading lifecycle', () => {
 
     // Skeleton gone, real content visible
     expect(screen.queryByRole('status')).toBeNull();
-    expect(screen.getByText('Avg. Productivity')).toBeInTheDocument();
-    expect(screen.getByText('Avg. Sleep')).toBeInTheDocument();
+    expect(screen.getByText('Total entries')).toBeInTheDocument();
+    expect(screen.getByText('Wellness insights')).toBeInTheDocument();
   });
 
   it('calls all three fetch functions on mount', async () => {
@@ -290,7 +298,7 @@ describe('DashboardPage — loading lifecycle', () => {
 
     // Content should be visible, skeleton gone.
     expect(screen.queryByRole('status')).toBeNull();
-    expect(screen.getByText('Avg. Productivity')).toBeInTheDocument();
+    expect(screen.getByText('Total entries')).toBeInTheDocument();
 
     // Set up pending promises so the refresh keeps the skeleton visible.
     // Use mockImplementation on the *existing* mock references (the component
