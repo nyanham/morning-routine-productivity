@@ -2,18 +2,16 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Sun, Bell, Settings, LogOut, User, ChevronDown } from 'lucide-react';
+import { Bell, Settings, LogOut, User, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 /**
- * Full-width top header bar for the dashboard shell.
+ * Floating header pill — positioned at the top-right of the viewport.
  *
- * Left: MorningFlow logo + wordmark (links to /dashboard).
- * Right: Notification bell + profile dropdown (Profile, Settings, Sign Out).
- *
- * Matches the reference layout where the header spans the entire viewport
- * width and the narrow icon sidebar starts directly below it.
+ * Contains the notification bell and profile dropdown (Profile,
+ * Settings, Sign Out). Uses backdrop-blur for a glassmorphic look
+ * over the gradient background.
  */
 export default function DashboardHeader() {
   const { user, signOut } = useAuthContext();
@@ -35,15 +33,8 @@ export default function DashboardHeader() {
   const initial = email.charAt(0).toUpperCase() || '?';
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
-      {/* ── Left: logo ── */}
-      <Link href="/dashboard" className="flex items-center gap-2.5">
-        <Sun className="text-aqua-500 h-7 w-7" />
-        <span className="text-lg font-bold tracking-tight text-slate-900">MorningFlow</span>
-      </Link>
-
-      {/* ── Right: notifications + profile ── */}
-      <div className="flex items-center gap-2">
+    <header className="fixed top-4 right-4 z-30">
+      <div className="flex items-center gap-2 rounded-2xl bg-white/80 px-3 py-2 shadow-lg ring-1 ring-slate-200/60 backdrop-blur-sm">
         {/* Notification bell */}
         <button
           type="button"

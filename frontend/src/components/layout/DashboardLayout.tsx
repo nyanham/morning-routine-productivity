@@ -4,23 +4,25 @@ import DashboardHeader from './DashboardHeader';
 /**
  * Dashboard shell layout.
  *
- * Structure (matching the medical-dashboard reference):
- *   ┌──────────────────────────────────────┐
- *   │  DashboardHeader (full-width, fixed) │
- *   ├────────┬─────────────────────────────┤
- *   │ Sidebar│       main content          │
- *   │ (icon  │       (scrollable)          │
- *   │  rail) │                             │
- *   └────────┴─────────────────────────────┘
+ * Structure:
+ *   ┌─────────────────────────────────────────┐
+ *   │ gradient background                     │
+ *   │  ┌──┐                        ┌───────┐  │
+ *   │  │  │ floating    scrollable  │bell+av│  │
+ *   │  │  │ sidebar     main area   └───────┘  │
+ *   │  └──┘                                    │
+ *   └─────────────────────────────────────────┘
+ *
+ * Both sidebar and header float over a soft gradient background.
  */
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-50">
-      <DashboardHeader />
+    <div className="from-aqua-100/40 min-h-screen bg-gradient-to-br via-slate-50 to-sky-100/30">
       <Sidebar />
-      {/* pt-16 offsets the fixed header; pl-[72px] offsets the icon sidebar */}
-      <main className="pt-16 pl-[72px]">
-        <div className="p-6 lg:p-8">{children}</div>
+      <DashboardHeader />
+      {/* pl-20 gives breathing room past the floating sidebar capsule */}
+      <main className="pt-6 pr-4 pb-8 pl-20 lg:pr-8">
+        <div className="mx-auto max-w-[1400px]">{children}</div>
       </main>
     </div>
   );
