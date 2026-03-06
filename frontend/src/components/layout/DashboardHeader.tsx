@@ -34,7 +34,7 @@ export default function DashboardHeader() {
 
   return (
     <header className="fixed top-4 right-4 z-30">
-      <div className="flex items-center gap-2 rounded-2xl bg-white/80 px-3 py-2 shadow-lg ring-1 ring-slate-200/60 backdrop-blur-sm">
+      <div className="flex items-center gap-2 rounded-2xl bg-white/40 px-3 py-2 backdrop-blur-sm">
         {/* Notification bell */}
         <button
           type="button"
@@ -71,7 +71,7 @@ export default function DashboardHeader() {
           {menuOpen && (
             <div
               role="menu"
-              className="absolute right-0 z-50 mt-2 w-52 origin-top-right rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
+              className="absolute right-0 z-50 mt-2 w-52 origin-top-right rounded-xl bg-white/80 py-1 backdrop-blur-sm"
             >
               <Link
                 href="/dashboard/profile"

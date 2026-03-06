@@ -218,12 +218,7 @@ function DashboardContent() {
     <div className="space-y-6">
       {/* ── Page header ── */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-          <p className="text-sm text-slate-500">
-            Track your morning routine and productivity patterns
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
         <button
           onClick={handleRefresh}
           disabled={isLoading}
@@ -236,7 +231,7 @@ function DashboardContent() {
 
       {/* ── Error banner ── */}
       {hasError && (
-        <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
+        <div className="flex items-start gap-3 rounded-xl bg-red-50/60 p-4 backdrop-blur-sm">
           <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
           <div className="text-sm text-red-800">
             <p className="font-medium">Error loading data</p>
@@ -247,7 +242,7 @@ function DashboardContent() {
 
       {/* ── Empty-state banner ── */}
       {!isLoading && !hasData && !hasError && (
-        <div className="border-aqua-200 bg-aqua-100/40 flex items-start gap-3 rounded-xl border p-4">
+        <div className="bg-aqua-100/30 flex items-start gap-3 rounded-xl p-4 backdrop-blur-sm">
           <AlertCircle className="text-aqua-600 mt-0.5 h-5 w-5 flex-shrink-0" />
           <div className="text-aqua-800 text-sm">
             <p className="font-medium">No data yet</p>
@@ -261,8 +256,8 @@ function DashboardContent() {
         <DashboardSkeleton />
       ) : (
         <>
-          {/* Row 1 — Stats cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {/* Row 1 — Stats cards (always a single row) */}
+          <div className="grid grid-cols-4 gap-4">
             <StatsCard
               title="Avg. Productivity"
               value={summary.data?.avg_productivity?.toFixed(1) ?? '-'}
@@ -306,23 +301,27 @@ function DashboardContent() {
           </div>
 
           {/* Row 2 — Full-width productivity chart */}
-          <ProductivityChart data={productivityChartData} />
+          <div className="rounded-2xl bg-white/40 p-6 backdrop-blur-sm">
+            <ProductivityChart data={productivityChartData} />
+          </div>
 
           {/* Row 3 — Routine bar chart + Sleep distribution side-by-side */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2">
+            <div className="rounded-2xl bg-white/40 p-6 backdrop-blur-sm lg:col-span-2">
               <RoutineBarChart data={routineChartData} />
             </div>
-            <SleepDistributionChart data={sleepDistribution} />
+            <div className="rounded-2xl bg-white/40 p-6 backdrop-blur-sm">
+              <SleepDistributionChart data={sleepDistribution} />
+            </div>
           </div>
 
           {/* Row 4 — Recent entries table */}
-          <div className="card">
+          <div className="rounded-2xl bg-white/40 p-6 backdrop-blur-sm">
             <h3 className="mb-4 text-lg font-semibold text-slate-900">Recent Entries</h3>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-200">
+                  <tr className="border-b border-slate-200/50">
                     <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">Date</th>
                     <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
                       Wake Time
@@ -347,7 +346,7 @@ function DashboardContent() {
                     recentEntries.map((row) => (
                       <tr
                         key={row.date}
-                        className="border-b border-slate-100 transition-colors hover:bg-slate-50"
+                        className="border-b border-slate-100/50 transition-colors hover:bg-white/30"
                       >
                         <td className="px-4 py-3 font-medium text-slate-700">{row.date}</td>
                         <td className="px-4 py-3 text-slate-600">{row.wake}</td>

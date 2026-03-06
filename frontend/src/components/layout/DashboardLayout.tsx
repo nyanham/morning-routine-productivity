@@ -20,8 +20,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="from-aqua-100/40 min-h-screen bg-gradient-to-br via-slate-50 to-sky-100/30">
       <Sidebar />
       <DashboardHeader />
-      {/* pl-20 gives breathing room past the floating sidebar capsule */}
-      <main className="pt-6 pr-4 pb-8 pl-20 lg:pr-8">
+      {/* pl-22 clears the sidebar capsules; pt-18 clears the header pill */}
+      <main className="pt-18 pr-4 pb-8 pl-22 lg:pr-8">
         <div className="mx-auto max-w-[1400px]">{children}</div>
       </main>
     </div>
