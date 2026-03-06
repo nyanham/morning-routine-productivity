@@ -2,71 +2,64 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, Home, Upload, PenLine, Settings, LogOut, User } from 'lucide-react';
+import { Sun, LayoutDashboard, ClipboardList, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAuthContext } from '@/contexts/AuthContext';
+
+/**
+ * Floating sidebar — two separate translucent capsules aligned to the
+ * top-left of the viewport.
+ *
+ * 1. Logo capsule: Sun icon linking to /dashboard.
+ * 2. Navigation capsule: Overview, My Entries, Statistics icons.
+ *
+ * Both capsules use a semi-transparent background with backdrop-blur
+ * and no borders or shadows for a clean, modern aesthetic.
+ */
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/dashboard/import', label: 'Import Data', icon: Upload },
-  { href: '/dashboard/entry', label: 'Manual Entry', icon: PenLine },
-  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
+  { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+  { href: '/dashboard/entries', label: 'My Entries', icon: ClipboardList },
+  { href: '/dashboard/stats', label: 'Statistics', icon: BarChart3 },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { user, signOut } = useAuthContext();
 
   return (
-    <aside className="fixed top-0 left-0 flex h-screen w-64 flex-col bg-slate-900 text-white">
-      {/* Logo */}
-      <div className="border-b border-slate-700 p-6">
-        <Link href="/dashboard" className="flex items-center gap-3">
-          <BarChart3 className="text-primary-400 h-8 w-8" />
-          <span className="text-lg font-bold">Productivity</span>
-        </Link>
-      </div>
+    <aside className="fixed top-4 left-4 z-30 flex flex-col gap-3" aria-label="Main navigation">
+      {/* Logo capsule — sized to match the nav capsule width */}
+      <Link
+        href="/dashboard"
+        title="MorningFlow — Go to dashboard"
+        className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/60 backdrop-blur-md transition-colors hover:bg-white/80"
+      >
+        <Sun className="text-aqua-500 h-8 w-8" />
+      </Link>
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={cn(
-                    'flex items-center gap-3 rounded-lg px-4 py-3 transition-colors',
-                    isActive
-                      ? 'bg-primary-600 text-white'
-                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  )}
-                >
-                  <Icon className="h-5 w-5" />
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+      {/* Navigation capsule */}
+      <nav className="flex flex-col items-center gap-1.5 rounded-2xl bg-white/60 p-2.5 backdrop-blur-md">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive =
+            item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              title={item.label}
+              aria-current={isActive ? 'page' : undefined}
+              className={cn(
+                'flex h-11 w-11 items-center justify-center rounded-xl transition-colors',
+                isActive
+                  ? 'bg-aqua-600 text-white'
+                  : 'text-slate-400 hover:bg-white/60 hover:text-slate-600'
+              )}
+            >
+              <Icon className="h-5 w-5" />
+            </Link>
+          );
+        })}
       </nav>
-
-      {/* User section */}
-      <div className="border-t border-slate-700 p-4">
-        <div className="flex items-center gap-3 px-4 py-3 text-slate-300">
-          <User className="h-5 w-5" />
-          <span className="truncate text-sm">{user?.email}</span>
-        </div>
-        <button
-          onClick={() => signOut()}
-          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
-        >
-          <LogOut className="h-5 w-5" />
-          <span>Sign Out</span>
-        </button>
-      </div>
     </aside>
   );
 }
