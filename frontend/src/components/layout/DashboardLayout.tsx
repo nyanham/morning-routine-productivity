@@ -1,5 +1,6 @@
 import Sidebar from './Sidebar';
 import DashboardHeader from './DashboardHeader';
+import { Sun } from 'lucide-react';
 
 /**
  * Dashboard shell layout.
@@ -22,7 +23,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <DashboardHeader />
       {/* pl-24 clears the sidebar capsules; pt-20 clears the header pill */}
       <main className="pt-20 pr-6 pb-10 pl-24 lg:pr-10">
-        <div className="mx-auto max-w-[1400px]">{children}</div>
+        <div className="mx-auto max-w-[1400px]">
+          {/* Page title — scrolls with content, aligned with the logo */}
+          <div className="mb-8 flex items-center gap-3">
+            <Sun className="text-aqua-500 h-7 w-7" aria-hidden="true" />
+            <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
+          </div>
+          {children}
+        </div>
       </main>
     </div>
   );

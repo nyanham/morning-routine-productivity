@@ -31,9 +31,9 @@ export default function Sidebar() {
       <Link
         href="/dashboard"
         title="MorningFlow — Go to dashboard"
-        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/60 backdrop-blur-md transition-colors hover:bg-white/80"
+        className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/60 backdrop-blur-md transition-colors hover:bg-white/80"
       >
-        <Sun className="text-aqua-500 h-7 w-7" />
+        <Sun className="text-aqua-500 h-8 w-8" />
       </Link>
 
       {/* Navigation capsule */}

@@ -13,7 +13,7 @@ import {
 import { RequireAuth } from '@/contexts/AuthContext';
 import { useRoutines, useProductivity, useAnalyticsSummary } from '@/hooks/useApi';
 import { DashboardSkeleton } from '@/components/ui/Skeleton';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
 // ── helpers ──
@@ -125,23 +125,6 @@ function DashboardContent() {
   const hasError = routines.error || productivity.error || summary.error;
   const hasData = routines.data?.data?.length || productivity.data?.data?.length;
 
-  const handleRefresh = () => {
-    const endDate = new Date().toISOString().split('T')[0];
-    const startDate = new Date(Date.now() - dateRange.days * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split('T')[0];
-
-    setInitialLoad(true);
-
-    Promise.allSettled([
-      fetchRoutines({ pageSize: 30, startDate, endDate }),
-      fetchProductivity({ pageSize: 30, startDate, endDate }),
-      fetchSummary(startDate, endDate),
-    ]).finally(() => {
-      setInitialLoad(false);
-    });
-  };
-
   // ── Sidebar summary values ──
   const routineCount = routines.data?.data?.length ?? 0;
   const productivityCount = productivity.data?.data?.length ?? 0;
@@ -156,23 +139,11 @@ function DashboardContent() {
 
   return (
     <div className="space-y-8">
-      {/* ── Profile banner (patient-card style) ── */}
-      <ProfileBanner />
-
       {/* ── Tab navigation ── */}
       <DashboardTabs />
 
-      {/* ── Refresh button ── */}
-      <div className="flex justify-end">
-        <button
-          onClick={handleRefresh}
-          disabled={isLoading}
-          className="inline-flex items-center gap-2 rounded-xl bg-white/40 px-4 py-2 text-sm font-medium text-slate-600 backdrop-blur-sm transition-colors hover:bg-white/60 disabled:opacity-50"
-        >
-          <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
-      </div>
+      {/* ── Profile banner (overview only, below tabs) ── */}
+      <ProfileBanner />
 
       {/* ── Error banner ── */}
       {hasError && (
