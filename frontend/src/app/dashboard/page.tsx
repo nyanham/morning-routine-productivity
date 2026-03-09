@@ -4,7 +4,6 @@ import { useEffect, useState, useMemo } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { ProductivityChart } from '@/components/charts';
 import {
-  ProfileBanner,
   DashboardTabs,
   RoutineEntryPanel,
   SummaryCard,
@@ -141,9 +140,6 @@ function DashboardContent() {
     <div className="space-y-8">
       {/* ── Tab navigation ── */}
       <DashboardTabs />
-
-      {/* ── Profile banner (overview only, below tabs) ── */}
-      <ProfileBanner />
 
       {/* ── Error banner ── */}
       {hasError && (

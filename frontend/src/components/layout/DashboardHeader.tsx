@@ -7,11 +7,11 @@ import { cn } from '@/lib/utils';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 /**
- * Floating header pill — positioned at the top-right of the viewport.
+ * Header pill — fixed top-right, aligned with the content right edge.
  *
  * Contains the notification bell and profile dropdown (Profile,
  * Settings, Sign Out). Uses backdrop-blur for a glassmorphic look
- * over the gradient background.
+ * over the gradient background. Stays visible while scrolling.
  */
 export default function DashboardHeader() {
   const { user, signOut } = useAuthContext();
@@ -33,7 +33,7 @@ export default function DashboardHeader() {
   const initial = email.charAt(0).toUpperCase() || '?';
 
   return (
-    <header className="fixed top-4 right-4 z-30">
+    <header className="fixed top-4 right-6 z-30 lg:right-10">
       <div className="flex h-14 items-center gap-2 rounded-2xl bg-white/60 px-3 backdrop-blur-md">
         {/* Notification bell */}
         <button

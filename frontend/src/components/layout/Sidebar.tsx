@@ -27,7 +27,7 @@ export default function Sidebar() {
 
   return (
     <aside className="fixed top-4 left-4 z-30 flex flex-col gap-3" aria-label="Main navigation">
-      {/* Logo capsule — sized to match the nav capsule width */}
+      {/* Logo capsule — icon only */}
       <Link
         href="/dashboard"
         title="MorningFlow — Go to dashboard"
