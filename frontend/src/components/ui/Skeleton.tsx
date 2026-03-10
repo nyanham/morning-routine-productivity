@@ -143,7 +143,7 @@ export function PieChartSkeleton() {
     <div className="card animate-pulse" aria-hidden="true">
       <div className="mb-4 h-5 w-52 rounded bg-slate-200" />
       <div className="flex h-80 items-center justify-center">
-        <div className="h-48 w-48 rounded-full border-32 border-slate-200 bg-white" />
+        <div className="h-48 w-48 rounded-full border-[32px] border-slate-200 bg-white" />
       </div>
     </div>
   );

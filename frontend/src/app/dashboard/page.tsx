@@ -109,13 +109,14 @@ function DashboardContent() {
     return new Map(productivity.data?.data?.map((p: ProductivityEntry) => [p.date, p]) ?? []);
   }, [productivity.data]);
 
-  // Month keys sorted newest-first so recent entries appear at the top.
+  // Month keys sorted newest-first using the max date in each group
+  // so ordering is stable regardless of API sort order.
   const monthKeys = useMemo(
     () =>
       Object.keys(routinesByMonth).sort((a, b) => {
-        const da = new Date(routinesByMonth[a][0]?.date ?? '');
-        const db = new Date(routinesByMonth[b][0]?.date ?? '');
-        return db.getTime() - da.getTime();
+        const maxDate = (items: MorningRoutine[]) =>
+          Math.max(...items.map((r) => new Date(r.date).getTime()));
+        return maxDate(routinesByMonth[b]) - maxDate(routinesByMonth[a]);
       }),
     [routinesByMonth]
   );
@@ -124,9 +125,9 @@ function DashboardContent() {
   const hasError = routines.error || productivity.error || summary.error;
   const hasData = routines.data?.data?.length || productivity.data?.data?.length;
 
-  // ── Sidebar summary values ──
-  const routineCount = routines.data?.data?.length ?? 0;
-  const productivityCount = productivity.data?.data?.length ?? 0;
+  // ── Sidebar summary values — prefer API-level totals over current-page length ──
+  const routineCount = routines.data?.total ?? routines.data?.data?.length ?? 0;
+  const productivityCount = productivity.data?.total ?? productivity.data?.data?.length ?? 0;
   const totalEntries = summary.data?.total_entries ?? routineCount + productivityCount;
 
   // Compute avg mood from routine data (not always in summary).
@@ -227,7 +228,7 @@ function DashboardContent() {
 export default function DashboardPage() {
   return (
     <RequireAuth>
-      <DashboardLayout>
+      <DashboardLayout title="Dashboard">
         <DashboardContent />
       </DashboardLayout>
     </RequireAuth>

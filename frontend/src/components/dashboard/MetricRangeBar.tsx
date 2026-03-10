@@ -64,7 +64,7 @@ export default function MetricRangeBar({
       {/* Marker */}
       <div
         className={cn(
-          'absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border-2 border-white shadow-sm',
+          'absolute top-1/2 h-3.5 w-3.5 rounded-full border-2 border-white shadow-sm',
           isWarning ? 'bg-amber-400' : 'bg-aqua-500'
         )}
         style={{ left: `${position}%`, transform: `translate(-50%, -50%)` }}

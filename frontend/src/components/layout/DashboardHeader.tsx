@@ -69,39 +69,33 @@ export default function DashboardHeader() {
           </button>
 
           {menuOpen && (
-            <div
-              role="menu"
-              className="absolute right-0 z-50 mt-2 w-52 origin-top-right rounded-xl bg-white/90 py-1 shadow-lg shadow-slate-200/40 backdrop-blur-md"
-            >
+            <div className="absolute right-0 z-50 mt-2 w-52 origin-top-right rounded-xl bg-white/90 py-1 shadow-lg shadow-slate-200/40 backdrop-blur-md">
               <Link
-                href="/dashboard/profile"
-                role="menuitem"
+                href="/dashboard/settings"
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50"
               >
-                <User className="h-4 w-4 text-slate-400" />
+                <User className="h-4 w-4 text-slate-400" aria-hidden="true" />
                 Profile
               </Link>
               <Link
                 href="/dashboard/settings"
-                role="menuitem"
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50"
               >
-                <Settings className="h-4 w-4 text-slate-400" />
+                <Settings className="h-4 w-4 text-slate-400" aria-hidden="true" />
                 Settings
               </Link>
               <div className="my-1 border-t border-slate-100" />
               <button
                 type="button"
-                role="menuitem"
                 onClick={() => {
                   setMenuOpen(false);
                   signOut();
                 }}
                 className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-50"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-4 w-4" aria-hidden="true" />
                 Sign Out
               </button>
             </div>

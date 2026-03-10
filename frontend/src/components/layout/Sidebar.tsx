@@ -19,7 +19,8 @@ import { cn } from '@/lib/utils';
 const navItems = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
   { href: '/dashboard/entries', label: 'My Entries', icon: ClipboardList },
-  { href: '/dashboard/stats', label: 'Statistics', icon: BarChart3 },
+  // TODO: Restore to /dashboard/stats once that route is implemented.
+  { href: '/dashboard', label: 'Statistics', icon: BarChart3 },
 ];
 
 export default function Sidebar() {
@@ -30,10 +31,10 @@ export default function Sidebar() {
       {/* Logo capsule — icon only */}
       <Link
         href="/dashboard"
-        title="MorningFlow — Go to dashboard"
+        aria-label="MorningFlow — Go to dashboard"
         className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/60 backdrop-blur-md transition-colors hover:bg-white/80"
       >
-        <Sun className="text-aqua-500 h-8 w-8" />
+        <Sun className="text-aqua-500 h-8 w-8" aria-hidden="true" />
       </Link>
 
       {/* Navigation capsule */}
@@ -46,7 +47,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              title={item.label}
+              aria-label={item.label}
               aria-current={isActive ? 'page' : undefined}
               className={cn(
                 'flex h-11 w-11 items-center justify-center rounded-xl transition-colors',
@@ -55,7 +56,7 @@ export default function Sidebar() {
                   : 'text-slate-400 hover:bg-white/60 hover:text-slate-600'
               )}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-5 w-5" aria-hidden="true" />
             </Link>
           );
         })}
