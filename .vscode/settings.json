@@ -1,0 +1,9 @@
+{
+  "awesome-copilot-sync.repositories": [
+    {
+      "label": "github/awesome-copilot",
+      "repository": "github/awesome-copilot",
+      "branch": "main"
+    }
+  ]
+}
