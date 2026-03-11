@@ -36,7 +36,7 @@ export default function RoutineEntryPanel({
   const wakeTimeFormatted = (() => {
     if (!routine.wake_time) return '';
     const [h, m] = routine.wake_time.split(':');
-    const hour = parseInt(h);
+    const hour = parseInt(h, 10);
     return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'PM' : 'AM'}`;
   })();
 

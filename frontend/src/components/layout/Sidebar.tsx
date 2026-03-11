@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
  * top-left of the viewport.
  *
  * 1. Logo capsule: Sun icon linking to /dashboard.
- * 2. Navigation capsule: Overview, My Entries, Statistics icons.
+ * 2. Navigation capsule: Overview and My Entries icons (Statistics to be added later).
  *
  * Both capsules use a semi-transparent background with backdrop-blur
  * and no borders or shadows for a clean, modern aesthetic.

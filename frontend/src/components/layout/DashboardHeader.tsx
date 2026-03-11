@@ -9,9 +9,9 @@ import { useAuthContext } from '@/contexts/AuthContext';
 /**
  * Header pill — fixed top-right, aligned with the content right edge.
  *
- * Contains the notification bell and profile dropdown (Profile,
- * Settings, Sign Out). Uses backdrop-blur for a glassmorphic look
- * over the gradient background. Stays visible while scrolling.
+ * Contains the notification bell and profile dropdown (Settings,
+ * Sign Out). Uses backdrop-blur for a glassmorphic look over the
+ * gradient background. Stays visible while scrolling.
  */
 export default function DashboardHeader() {
   const { user, signOut } = useAuthContext();
@@ -84,9 +84,16 @@ export default function DashboardHeader() {
               <div className="my-1 border-t border-slate-100" />
               <button
                 type="button"
-                onClick={() => {
+                onClick={async () => {
                   setMenuOpen(false);
-                  signOut();
+                  try {
+                    await signOut();
+                  } catch (error) {
+                    // We log here to avoid silent failures and unhandled rejections.
+                    // If this becomes noisy, we can later replace with user-facing UI.
+                    // eslint-disable-next-line no-console
+                    console.error('Failed to sign out:', error);
+                  }
                 }}
                 className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-50"
               >
