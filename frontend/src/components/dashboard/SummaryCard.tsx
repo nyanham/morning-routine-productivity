@@ -50,7 +50,9 @@ export default function SummaryCard({
                 aria-hidden="true"
               />
               <span className="text-sm text-slate-600">{d.name}</span>
-              <span className="ml-auto text-sm font-semibold text-slate-700">{d.value}</span>
+              <span className="ml-auto text-sm font-semibold text-slate-700">
+                {d.name === 'No data' ? 0 : d.value}
+              </span>
             </div>
           ))}
         </div>

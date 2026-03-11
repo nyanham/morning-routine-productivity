@@ -11,33 +11,12 @@
  * are marked `aria-hidden` to avoid noisy per-card announcements.
  *
  * Components:
- * - `ProfileBannerSkeleton` — replaces the top profile banner
  * - `TabsSkeleton`          — replaces the dashboard tab bar
  * - `ChartSkeleton`         — replaces a chart card (line, bar, or pie)
  * - `EntryPanelSkeleton`    — replaces a single routine entry panel
  * - `SidebarCardSkeleton`   — replaces a right-sidebar card
  * - `DashboardSkeleton`     — composes all of the above into the full layout
  */
-
-// ——————————————————————————————————————————
-// Profile banner skeleton
-// ——————————————————————————————————————————
-
-export function ProfileBannerSkeleton() {
-  return (
-    <div
-      className="flex animate-pulse items-center gap-5 rounded-2xl bg-white/65 px-6 py-5 backdrop-blur-md"
-      aria-hidden="true"
-    >
-      <div className="h-16 w-16 shrink-0 rounded-full bg-slate-200" />
-      <div className="flex-1 space-y-2">
-        <div className="h-5 w-40 rounded bg-slate-200" />
-        <div className="h-3 w-28 rounded bg-slate-200" />
-      </div>
-      <div className="h-10 w-44 rounded-xl bg-slate-200" />
-    </div>
-  );
-}
 
 // ——————————————————————————————————————————
 // Tabs skeleton
@@ -57,7 +36,7 @@ export function TabsSkeleton() {
 // Chart skeleton
 // ——————————————————————————————————————————
 
-/** A pulsing placeholder that mirrors a chart card (title bar + 20rem (h-80) chart area). */
+/** A pulsing placeholder that mirrors a chart card (title bar + 15rem (h-60) chart area). */
 export function ChartSkeleton() {
   return (
     <div className="animate-pulse rounded-2xl bg-white/60 p-5 backdrop-blur-md" aria-hidden="true">
