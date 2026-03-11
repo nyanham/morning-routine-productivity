@@ -18,7 +18,7 @@ interface InsightItem {
  * progress ring — mirroring the "Potential risks" card from the
  * reference design.
  */
-function deriveInsights(summary: AnalyticsSummary | null): InsightItem[] {
+export function deriveInsights(summary: AnalyticsSummary | null): InsightItem[] {
   if (!summary) return [];
 
   const insights: InsightItem[] = [];
