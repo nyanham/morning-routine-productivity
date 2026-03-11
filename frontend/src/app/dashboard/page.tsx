@@ -173,9 +173,7 @@ function DashboardContent() {
           <div className="space-y-8 lg:col-span-2">
             {/* Compact productivity trend chart */}
             {productivityChartData.length > 0 && (
-              <div className="rounded-2xl bg-white/60 p-5 backdrop-blur-md">
-                <ProductivityChart data={productivityChartData} title="Weekly Trends" />
-              </div>
+              <ProductivityChart data={productivityChartData} title="Weekly Trends" />
             )}
 
             {/* Monthly entry groups (newest first) */}

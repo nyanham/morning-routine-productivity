@@ -81,7 +81,7 @@ describe('StatsCard', () => {
   it('applies correct CSS classes to the card', () => {
     const { container } = render(<StatsCard title="Test" value="1" />);
 
-    expect(container.firstChild).toHaveClass('card');
+    expect(container.firstChild).toHaveClass('card-glass');
   });
 
   it('renders title with correct styling', () => {

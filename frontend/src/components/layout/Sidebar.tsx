@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sun, LayoutDashboard, ClipboardList, BarChart3 } from 'lucide-react';
+import { Sun, LayoutDashboard, ClipboardList } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
@@ -19,8 +19,7 @@ import { cn } from '@/lib/utils';
 const navItems = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
   { href: '/dashboard/entries', label: 'My Entries', icon: ClipboardList },
-  // TODO: Restore to /dashboard/stats once that route is implemented.
-  { href: '/dashboard', label: 'Statistics', icon: BarChart3 },
+  // TODO: Add Statistics item once /dashboard/stats route is implemented.
 ];
 
 export default function Sidebar() {

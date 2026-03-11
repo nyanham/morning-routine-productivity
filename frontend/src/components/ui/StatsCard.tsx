@@ -41,7 +41,7 @@ export default function StatsCard({
   };
 
   return (
-    <div className="card rounded-2xl bg-white/40 p-6 backdrop-blur-sm">
+    <div className="card-glass bg-white/40 p-6 backdrop-blur-sm">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm font-medium text-slate-500">{title}</p>

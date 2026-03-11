@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Bell, Settings, LogOut, User, ChevronDown } from 'lucide-react';
+import { Bell, Settings, LogOut, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthContext } from '@/contexts/AuthContext';
 
@@ -42,7 +42,10 @@ export default function DashboardHeader() {
           className="relative rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
         >
           <Bell className="h-5 w-5" />
-          <span className="bg-blush-500 absolute top-1.5 right-1.5 h-2 w-2 rounded-full" />
+          <span
+            className="bg-blush-500 absolute top-1.5 right-1.5 h-2 w-2 rounded-full"
+            aria-hidden="true"
+          />
         </button>
 
         {/* Profile dropdown */}
@@ -70,14 +73,6 @@ export default function DashboardHeader() {
 
           {menuOpen && (
             <div className="absolute right-0 z-50 mt-2 w-52 origin-top-right rounded-xl bg-white/90 py-1 shadow-lg shadow-slate-200/40 backdrop-blur-md">
-              <Link
-                href="/dashboard/settings"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50"
-              >
-                <User className="h-4 w-4 text-slate-400" aria-hidden="true" />
-                Profile
-              </Link>
               <Link
                 href="/dashboard/settings"
                 onClick={() => setMenuOpen(false)}
