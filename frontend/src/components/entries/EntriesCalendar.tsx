@@ -1,5 +1,7 @@
+import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { cn, formatDate } from '@/lib/utils';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Upload } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
 import EntryDetail from './EntryDetail';
@@ -26,10 +28,25 @@ interface EntriesCalendarProps {
 /** Day-of-week header labels. */
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
 
+/** Short month names for the picker grid. */
+const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+] as const;
+
 /**
  * Maps a productivity score (1-10) to a background + text colour pair.
  *
- * Uses the project palette where possible:
  * - 1-2  → red   (poor)
  * - 3-4  → amber (below average)
  * - 5-6  → yellow (average)
@@ -45,9 +62,10 @@ function scoreColors(score: number): string {
 }
 
 /**
- * Renders a monthly calendar grid where each day with data is
- * colour-coded by productivity score. Clicking a day opens the
- * detail panel for that entry.
+ * Monthly calendar grid where each day is colour-coded by
+ * productivity score. Compact cells expand on hover to reveal
+ * the score; clicking opens the detail panel. Empty days link
+ * to the new-entry page for that date.
  */
 export default function EntriesCalendar({
   entries,
@@ -59,6 +77,28 @@ export default function EntriesCalendar({
   onSelect,
   onDelete,
 }: EntriesCalendarProps) {
+  /* ---- month-year picker state ---- */
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerYear, setPickerYear] = useState(year);
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  // Close picker on click outside
+  useEffect(() => {
+    if (!pickerOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [pickerOpen]);
+
+  // Keep pickerYear in sync when the parent changes the year
+  useEffect(() => {
+    setPickerYear(year);
+  }, [year]);
+
   /* ---- derived data ---- */
   const entriesByDate = new Map(entries.map((r) => [r.date, r]));
 
@@ -97,45 +137,136 @@ export default function EntriesCalendar({
     onMonthChange(now.getFullYear(), now.getMonth());
   };
 
-  /* ---- build calendar cells ---- */
+  /* ---- build calendar rows (groups of 7 for proper grid semantics) ---- */
   const cells: (number | null)[] = [];
   for (let i = 0; i < startDow; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+  // Pad trailing cells so the last row is complete
+  while (cells.length % 7 !== 0) cells.push(null);
+  const rows: (number | null)[][] = [];
+  for (let i = 0; i < cells.length; i += 7) rows.push(cells.slice(i, i + 7));
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
       {/* Calendar grid */}
       <div className={cn(selectedRoutine ? 'lg:col-span-3' : 'lg:col-span-5')}>
-        {/* Month navigation */}
+        {/* Header — month nav + action buttons */}
         <div className="mb-4 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={goToPrevMonth}
-            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-white/50"
-            aria-label="Previous month"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={goToPrevMonth}
+              className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-white/50"
+              aria-label="Previous month"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
 
-          <div className="flex items-center gap-3">
-            <h2 className="text-lg font-semibold text-slate-800">{monthLabel}</h2>
+            {/* Clickable month-year label + picker dropdown */}
+            <div className="relative" ref={pickerRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setPickerOpen((o) => !o);
+                  setPickerYear(year);
+                }}
+                className="rounded-lg px-3 py-1.5 text-lg font-semibold text-slate-800 transition-colors hover:bg-white/50"
+                aria-expanded={pickerOpen ? 'true' : 'false'}
+                aria-haspopup="dialog"
+              >
+                {monthLabel}
+              </button>
+
+              {pickerOpen && (
+                <div
+                  className="absolute left-1/2 z-20 mt-1 w-56 -translate-x-1/2 rounded-xl border border-slate-200 bg-white p-3 shadow-lg"
+                  role="dialog"
+                  aria-label="Select month and year"
+                >
+                  {/* Year row */}
+                  <div className="mb-2 flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={() => setPickerYear((y) => y - 1)}
+                      className="rounded-md p-1 text-slate-500 hover:bg-slate-100"
+                      aria-label="Previous year"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <span className="text-sm font-semibold text-slate-700">{pickerYear}</span>
+                    <button
+                      type="button"
+                      onClick={() => setPickerYear((y) => y + 1)}
+                      className="rounded-md p-1 text-slate-500 hover:bg-slate-100"
+                      aria-label="Next year"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  {/* Month grid */}
+                  <div className="grid grid-cols-3 gap-1">
+                    {MONTHS.map((m, i) => {
+                      const isCurrent = i === month && pickerYear === year;
+                      return (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => {
+                            onMonthChange(pickerYear, i);
+                            setPickerOpen(false);
+                          }}
+                          className={cn(
+                            'rounded-lg px-2 py-1.5 text-xs font-medium transition-colors',
+                            isCurrent
+                              ? 'bg-aqua-600 text-white'
+                              : 'text-slate-600 hover:bg-slate-100'
+                          )}
+                        >
+                          {m}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={goToNextMonth}
+              className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-white/50"
+              aria-label="Next month"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+
             <button
               type="button"
               onClick={goToToday}
-              className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-200"
+              className="ml-1 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-200"
             >
               Today
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={goToNextMonth}
-            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-white/50"
-            aria-label="Next month"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
+          {/* Action buttons */}
+          <div className="flex items-center gap-2">
+            <Link
+              href="/dashboard/import"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-white/50 px-3 py-2 text-sm font-medium text-slate-600 backdrop-blur-md transition-colors hover:bg-white/70"
+            >
+              <Upload className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">Import CSV</span>
+            </Link>
+            <Link
+              href="/dashboard/entry"
+              className="bg-aqua-600 hover:bg-aqua-700 focus-visible:ring-aqua-400 inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+            >
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">New Entry</span>
+            </Link>
+          </div>
         </div>
 
         {/* Weekday headers */}
@@ -147,62 +278,80 @@ export default function EntriesCalendar({
           ))}
         </div>
 
-        {/* Day cells */}
-        <div
-          className="grid grid-cols-7 gap-1"
-          role="grid"
-          aria-label={`Calendar for ${monthLabel}`}
-        >
-          {cells.map((day, idx) => {
-            if (day === null) {
-              return <div key={`empty-${idx}`} className="aspect-square" role="gridcell" />;
-            }
+        {/* Day cells — grouped into rows for correct grid semantics */}
+        <div role="grid" aria-label={`Calendar for ${monthLabel}`}>
+          {rows.map((row, rowIdx) => (
+            <div key={rowIdx} role="row" className="grid grid-cols-7 gap-1">
+              {row.map((day, colIdx) => {
+                if (day === null) {
+                  return (
+                    <div
+                      key={`empty-${rowIdx}-${colIdx}`}
+                      className="aspect-square"
+                      role="gridcell"
+                    />
+                  );
+                }
 
-            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            const routine = entriesByDate.get(dateStr);
-            const prod = productivityByDate.get(dateStr);
-            const score = prod?.productivity_score;
-            const hasEntry = !!routine;
-            const isSelected = routine?.id === selectedId && selectedId !== null;
-            const isToday = String(day) === todayStr;
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const routine = entriesByDate.get(dateStr);
+                const prod = productivityByDate.get(dateStr);
+                const score = prod?.productivity_score;
+                const hasEntry = !!routine;
+                const isSelected = routine?.id === selectedId && selectedId !== null;
+                const isToday = String(day) === todayStr;
 
-            return (
-              <button
-                key={dateStr}
-                type="button"
-                role="gridcell"
-                aria-label={`${formatDate(dateStr)}${score ? `, productivity score ${score} out of 10` : ''}${hasEntry ? '' : ', no entry'}`}
-                aria-selected={isSelected}
-                disabled={!hasEntry}
-                onClick={() => {
-                  if (!routine) return;
-                  onSelect(routine.id === selectedId ? null : routine.id);
-                }}
-                className={cn(
-                  'relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm transition-all',
-                  // base styling
-                  hasEntry
-                    ? 'hover:ring-aqua-400/50 cursor-pointer hover:ring-2'
-                    : 'cursor-default opacity-60',
-                  // score-based colour
-                  hasEntry && score ? scoreColors(score) : !hasEntry && 'bg-slate-100/40',
-                  // entry exists but no productivity score
-                  hasEntry && !score && 'bg-slate-200/60 text-slate-700',
-                  // today ring
-                  isToday && 'ring-aqua-600 ring-2',
-                  // selected highlight
-                  isSelected && 'ring-aqua-400 ring-2 ring-offset-2'
-                )}
-              >
-                <span className={cn('font-medium', isToday && !hasEntry && 'text-aqua-600')}>
-                  {day}
-                </span>
-                {hasEntry && score && (
-                  <span className="text-[10px] leading-none opacity-80">{score}/10</span>
-                )}
-              </button>
-            );
-          })}
+                /* Day WITH an entry — show detail on click */
+                if (hasEntry) {
+                  return (
+                    <div key={dateStr} role="gridcell">
+                      <button
+                        type="button"
+                        aria-label={`${formatDate(dateStr)}${score ? `, productivity ${score} out of 10` : ''}`}
+                        aria-pressed={isSelected ? 'true' : 'false'}
+                        onClick={() => onSelect(routine.id === selectedId ? null : routine.id)}
+                        className={cn(
+                          'group relative flex aspect-square w-full items-center justify-center rounded-lg text-xs font-medium transition-all duration-150',
+                          'cursor-pointer hover:z-10 hover:scale-110 hover:shadow-md',
+                          score ? scoreColors(score) : 'bg-slate-200/60 text-slate-700',
+                          isToday && 'ring-aqua-600 ring-2',
+                          isSelected && 'ring-aqua-400 ring-2 ring-offset-2'
+                        )}
+                      >
+                        {day}
+                        {score != null && (
+                          <span className="absolute inset-x-0 bottom-0.5 text-center text-[9px] leading-none opacity-0 transition-opacity group-hover:opacity-80">
+                            {score}/10
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  );
+                }
+
+                /* Day WITHOUT an entry — link to add one */
+                return (
+                  <div key={dateStr} role="gridcell">
+                    <Link
+                      href={`/dashboard/entry?date=${dateStr}`}
+                      aria-label={`${formatDate(dateStr)}, add entry`}
+                      className={cn(
+                        'group relative flex aspect-square w-full items-center justify-center rounded-lg text-xs font-medium transition-all duration-150',
+                        'bg-slate-50/40 text-slate-400 hover:bg-slate-100/60 hover:text-slate-600',
+                        isToday && 'ring-aqua-600 text-aqua-600 ring-2'
+                      )}
+                    >
+                      {day}
+                      <Plus
+                        className="absolute bottom-0.5 h-2.5 w-2.5 opacity-0 transition-opacity group-hover:opacity-60"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
 
         {/* Legend */}
@@ -232,6 +381,13 @@ export default function EntriesCalendar({
             No score
           </span>
         </div>
+
+        {/* Hint for an empty month */}
+        {entries.length === 0 && (
+          <p className="mt-3 text-center text-sm text-slate-400">
+            Click any day to log your first entry.
+          </p>
+        )}
       </div>
 
       {/* Detail panel (slides in on select) */}

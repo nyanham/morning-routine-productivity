@@ -3,14 +3,7 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { DashboardTabs } from '@/components/dashboard';
-import {
-  CalendarSkeleton,
-  DeleteDialog,
-  EmptyState,
-  EntriesCalendar,
-  EntriesToolbar,
-  ErrorBanner,
-} from '@/components/entries';
+import { CalendarSkeleton, DeleteDialog, EntriesCalendar, ErrorBanner } from '@/components/entries';
 import { RequireAuth } from '@/contexts/AuthContext';
 import { useRoutines, useProductivity } from '@/hooks/useApi';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
@@ -72,7 +65,6 @@ function EntriesContent() {
 
   const isLoading = routines.loading || productivity.loading;
   const hasError = routines.error || productivity.error;
-  const isEmpty = !isLoading && entries.length === 0 && !hasError;
 
   /* ---- month navigation ---- */
   const handleMonthChange = (newYear: number, newMonth: number) => {
@@ -109,19 +101,6 @@ function EntriesContent() {
     <div className="space-y-8">
       <DashboardTabs />
 
-      <EntriesToolbar
-        searchDate=""
-        onSearchDateChange={(date) => {
-          if (!date) return;
-          const d = new Date(date + 'T00:00:00');
-          handleMonthChange(d.getFullYear(), d.getMonth());
-        }}
-        onClearFilter={() => {
-          const today = new Date();
-          handleMonthChange(today.getFullYear(), today.getMonth());
-        }}
-      />
-
       {hasError && (
         <ErrorBanner
           title="Error loading entries"
@@ -133,9 +112,7 @@ function EntriesContent() {
 
       {isLoading && <CalendarSkeleton />}
 
-      {isEmpty && <EmptyState hasFilter={false} />}
-
-      {!isLoading && entries.length > 0 && (
+      {!isLoading && (
         <EntriesCalendar
           entries={entries}
           productivityByDate={productivityByDate}
