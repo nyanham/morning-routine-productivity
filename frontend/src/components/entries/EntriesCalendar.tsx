@@ -71,20 +71,17 @@ const MONTHS = [
 ] as const;
 
 /**
- * Maps a productivity score (1-10) to a background + text colour pair.
+ * Maps a productivity score (1-10) to a single teal/primary palette.
  *
- * - 1-2  → red   (poor)
- * - 3-4  → amber (below average)
- * - 5-6  → yellow (average)
- * - 7-8  → teal  (good)
- * - 9-10 → green (excellent)
+ * Lighter shades for low scores, darker for high — a cohesive
+ * gradient that reads as "more colour = more productive".
  */
 function scoreColors(score: number): string {
-  if (score <= 2) return 'bg-red-500/80 text-white';
-  if (score <= 4) return 'bg-amber-400/80 text-slate-900';
-  if (score <= 6) return 'bg-yellow-300/70 text-slate-900';
-  if (score <= 8) return 'bg-emerald-400/70 text-slate-900';
-  return 'bg-emerald-600/80 text-white';
+  if (score <= 2) return 'bg-primary-100/80 text-primary-800';
+  if (score <= 4) return 'bg-primary-200/80 text-primary-800';
+  if (score <= 6) return 'bg-primary-400/70 text-primary-900';
+  if (score <= 8) return 'bg-primary-600/80 text-white';
+  return 'bg-primary-800/90 text-white';
 }
 
 /**
@@ -360,26 +357,29 @@ export default function EntriesCalendar({
                         className={cn(
                           'group relative flex aspect-square w-full items-center justify-center rounded-lg text-xs font-medium transition-all duration-150',
                           'cursor-pointer hover:z-10 hover:scale-110 hover:shadow-md',
-                          score ? scoreColors(score) : 'bg-slate-200/60 text-slate-700',
+                          score
+                            ? scoreColors(score)
+                            : 'border border-dashed border-slate-300 bg-slate-50/50 text-slate-500',
                           isToday && 'ring-aqua-600 ring-2',
                           isSelected && 'ring-aqua-400 ring-2 ring-offset-2'
                         )}
                       >
-                        {day}
+                        <span
+                          className={cn(
+                            'flex h-6 w-6 items-center justify-center rounded-full',
+                            isHoliday
+                              ? 'ring-blush-400 ring-2'
+                              : isWeekend
+                                ? 'ring-2 ring-red-400'
+                                : ''
+                          )}
+                        >
+                          {day}
+                        </span>
                         {score != null && (
                           <span className="absolute inset-x-0 bottom-0.5 text-center text-[9px] leading-none opacity-0 transition-opacity group-hover:opacity-80">
                             {score}/10
                           </span>
-                        )}
-                        {/* Weekend / holiday dot indicator */}
-                        {(isWeekend || isHoliday) && (
-                          <span
-                            className={cn(
-                              'absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full',
-                              isHoliday ? 'bg-blush-400' : 'bg-sky-400'
-                            )}
-                            aria-hidden="true"
-                          />
                         )}
                       </button>
                     </div>
@@ -399,28 +399,27 @@ export default function EntriesCalendar({
                       }}
                       className={cn(
                         'group relative flex aspect-square w-full items-center justify-center rounded-lg text-xs font-medium transition-all duration-150',
-                        isWeekend || isHoliday
-                          ? 'bg-slate-100/50 text-slate-500 hover:bg-slate-200/60 hover:text-slate-700'
-                          : 'bg-slate-50/40 text-slate-400 hover:bg-slate-100/60 hover:text-slate-600',
+                        'bg-slate-50/40 text-slate-400 hover:bg-slate-100/60 hover:text-slate-600',
                         isToday && 'ring-aqua-600 text-aqua-600 ring-2',
                         isDateSelected && 'ring-aqua-400 ring-2 ring-offset-2'
                       )}
                     >
-                      {day}
+                      <span
+                        className={cn(
+                          'flex h-6 w-6 items-center justify-center rounded-full',
+                          isHoliday
+                            ? 'ring-blush-400 ring-2'
+                            : isWeekend
+                              ? 'ring-2 ring-red-400'
+                              : ''
+                        )}
+                      >
+                        {day}
+                      </span>
                       <Plus
                         className="absolute bottom-0.5 h-2.5 w-2.5 opacity-0 transition-opacity group-hover:opacity-60"
                         aria-hidden="true"
                       />
-                      {/* Weekend / holiday dot indicator */}
-                      {(isWeekend || isHoliday) && (
-                        <span
-                          className={cn(
-                            'absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full',
-                            isHoliday ? 'bg-blush-400' : 'bg-sky-400'
-                          )}
-                          aria-hidden="true"
-                        />
-                      )}
                     </button>
                   </div>
                 );
@@ -432,36 +431,42 @@ export default function EntriesCalendar({
         {/* Legend */}
         <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-500">
           <span className="flex items-center gap-1.5">
-            <span className="inline-block h-3 w-3 rounded bg-red-500/80" aria-hidden="true" />
+            <span className="bg-primary-100/80 inline-block h-3 w-3 rounded" aria-hidden="true" />
             1-2
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="inline-block h-3 w-3 rounded bg-amber-400/80" aria-hidden="true" />
+            <span className="bg-primary-200/80 inline-block h-3 w-3 rounded" aria-hidden="true" />
             3-4
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="inline-block h-3 w-3 rounded bg-yellow-300/70" aria-hidden="true" />
+            <span className="bg-primary-400/70 inline-block h-3 w-3 rounded" aria-hidden="true" />
             5-6
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="inline-block h-3 w-3 rounded bg-emerald-400/70" aria-hidden="true" />
+            <span className="bg-primary-600/80 inline-block h-3 w-3 rounded" aria-hidden="true" />
             7-8
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="inline-block h-3 w-3 rounded bg-emerald-600/80" aria-hidden="true" />
+            <span className="bg-primary-800/90 inline-block h-3 w-3 rounded" aria-hidden="true" />
             9-10
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="inline-block h-3 w-3 rounded bg-slate-200/60" aria-hidden="true" />
+            <span
+              className="inline-block h-3 w-3 rounded border border-dashed border-slate-300 bg-slate-50/50"
+              aria-hidden="true"
+            />
             No score
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-sky-400" aria-hidden="true" />
+            <span
+              className="inline-block h-3 w-3 rounded-full ring-2 ring-red-400"
+              aria-hidden="true"
+            />
             Weekend
           </span>
           <span className="flex items-center gap-1.5">
             <span
-              className="bg-blush-400 inline-block h-1.5 w-1.5 rounded-full"
+              className="ring-blush-400 inline-block h-3 w-3 rounded-full ring-2"
               aria-hidden="true"
             />
             Holiday
@@ -476,8 +481,8 @@ export default function EntriesCalendar({
         )}
       </div>
 
-      {/* Detail panel — always visible */}
-      <div className="lg:sticky lg:top-24 lg:col-span-2 lg:self-start">
+      {/* Detail panel — always visible, stable height */}
+      <div className="lg:sticky lg:top-24 lg:col-span-2 lg:min-h-[420px] lg:self-start">
         {/* Edit mode: inline form for an existing entry */}
         {editMode && selectedRoutine && (
           <EntryForm
@@ -519,10 +524,23 @@ export default function EntriesCalendar({
 
         {/* Nothing selected: placeholder banner */}
         {!selectedRoutine && !selectedDate && (
-          <div className="flex flex-col items-center justify-center rounded-2xl bg-white/65 px-6 py-16 text-center backdrop-blur-md">
-            <Calendar className="mb-4 h-10 w-10 text-slate-300" aria-hidden="true" />
-            <h2 className="text-lg font-semibold text-slate-600">No day selected</h2>
-            <p className="mt-1 max-w-xs text-sm text-slate-400">
+          <div className="from-primary-50/80 to-accent-50/60 relative flex min-h-[420px] flex-col items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br via-white/70 px-6 py-16 text-center backdrop-blur-md">
+            {/* Decorative background circles */}
+            <div
+              className="bg-primary-200/30 pointer-events-none absolute -top-10 -right-10 h-40 w-40 rounded-full"
+              aria-hidden="true"
+            />
+            <div
+              className="bg-accent-100/30 pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full"
+              aria-hidden="true"
+            />
+            <div
+              className="bg-primary-100/20 pointer-events-none absolute top-1/2 left-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full"
+              aria-hidden="true"
+            />
+            <Calendar className="text-primary-300 relative mb-4 h-12 w-12" aria-hidden="true" />
+            <h2 className="relative text-lg font-semibold text-slate-700">No day selected</h2>
+            <p className="relative mt-2 max-w-xs text-sm text-slate-500">
               Pick a day on the calendar to view your entry or add a new one.
             </p>
           </div>

@@ -71,7 +71,13 @@ function EntriesContent() {
     [productivity.data]
   );
 
-  const isLoading = routines.loading || productivity.loading;
+  /* Show skeleton only on the very first load (no data yet).
+   * Subsequent refreshes (month nav, CRUD) keep the calendar
+   * mounted so it doesn't flash or lose scroll position. */
+  const isInitialLoad =
+    routines.data === null &&
+    productivity.data === null &&
+    (routines.loading || productivity.loading);
   const hasError = routines.error || productivity.error;
 
   /* ---- month navigation ---- */
@@ -107,11 +113,12 @@ function EntriesContent() {
     }
   };
 
-  /** Called after inline create / update to refresh the month data. */
+  /** Called after inline create / update to refresh the month data.
+   *  We keep selections stable and background-refresh so the
+   *  calendar never unmounts or flashes a skeleton. */
   const handleSaved = () => {
     setEditMode(false);
     setSelectedDate(null);
-    setSelectedId(null);
     loadEntries();
   };
 
@@ -126,9 +133,9 @@ function EntriesContent() {
 
       {deleteError && <ErrorBanner title="Delete failed" message={deleteError} />}
 
-      {isLoading && <CalendarSkeleton />}
+      {isInitialLoad && <CalendarSkeleton />}
 
-      {!isLoading && (
+      {!isInitialLoad && (
         <EntriesCalendar
           entries={entries}
           productivityByDate={productivityByDate}
