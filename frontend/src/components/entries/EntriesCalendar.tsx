@@ -1,10 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { cn, formatDate } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, Plus, Upload } from 'lucide-react';
+import { getHolidays } from '@/lib/holidays';
+import { ChevronLeft, ChevronRight, Plus, Upload, Calendar } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
 import EntryDetail from './EntryDetail';
+import EntryForm from './EntryForm';
 
 interface EntriesCalendarProps {
   /** All routine entries for the current month. */
@@ -17,12 +19,36 @@ interface EntriesCalendarProps {
   month: number;
   /** Navigate to a different month. */
   onMonthChange: (year: number, month: number) => void;
-  /** Currently selected entry id. */
+  /** Currently selected entry id (view / edit). */
   selectedId: string | null;
   /** Select or deselect an entry. */
   onSelect: (id: string | null) => void;
   /** Request deletion for an entry. */
   onDelete: (routine: MorningRoutine) => void;
+  /** Currently selected empty date (for "add" mode). */
+  selectedDate: string | null;
+  /** Select an empty date to add an entry. */
+  onSelectDate: (date: string | null) => void;
+  /** Whether the detail panel is in edit mode. */
+  editMode: boolean;
+  /** Toggle between view and edit. */
+  onEditModeChange: (editing: boolean) => void;
+  /** User locale for holiday detection (e.g. 'en-US'). */
+  locale?: string;
+  /** CRUD callbacks for inline forms. */
+  onCreateRoutine: (
+    data: Omit<MorningRoutine, 'id' | 'user_id' | 'created_at' | 'updated_at'>
+  ) => Promise<MorningRoutine>;
+  onCreateProductivity: (
+    data: Omit<ProductivityEntry, 'id' | 'user_id' | 'created_at' | 'updated_at'>
+  ) => Promise<ProductivityEntry>;
+  onUpdateRoutine: (id: string, data: Partial<MorningRoutine>) => Promise<MorningRoutine>;
+  onUpdateProductivity: (
+    id: string,
+    data: Partial<ProductivityEntry>
+  ) => Promise<ProductivityEntry>;
+  /** Called after a successful create/update so the parent can refresh. */
+  onSaved: () => void;
 }
 
 /** Day-of-week header labels. */
@@ -76,6 +102,16 @@ export default function EntriesCalendar({
   selectedId,
   onSelect,
   onDelete,
+  selectedDate,
+  onSelectDate,
+  editMode,
+  onEditModeChange,
+  locale,
+  onCreateRoutine,
+  onCreateProductivity,
+  onUpdateRoutine,
+  onUpdateProductivity,
+  onSaved,
 }: EntriesCalendarProps) {
   /* ---- month-year picker state ---- */
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -115,6 +151,9 @@ export default function EntriesCalendar({
   const todayStr =
     today.getFullYear() === year && today.getMonth() === month ? String(today.getDate()) : null;
 
+  /* ---- holidays for this month ---- */
+  const holidays = useMemo(() => getHolidays(year, locale), [year, locale]);
+
   /* ---- selected entry ---- */
   const selectedRoutine = entries.find((r) => r.id === selectedId) ?? null;
   const selectedProductivity = selectedRoutine
@@ -148,8 +187,8 @@ export default function EntriesCalendar({
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
-      {/* Calendar grid */}
-      <div className={cn(selectedRoutine ? 'lg:col-span-3' : 'lg:col-span-5')}>
+      {/* Calendar grid — always takes 3 columns */}
+      <div className="lg:col-span-3">
         {/* Header — month nav + action buttons */}
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-1">
@@ -279,7 +318,7 @@ export default function EntriesCalendar({
         </div>
 
         {/* Day cells — grouped into rows for correct grid semantics */}
-        <div role="grid" aria-label={`Calendar for ${monthLabel}`}>
+        <div role="grid" aria-label={`Calendar for ${monthLabel}`} className="space-y-1">
           {rows.map((row, rowIdx) => (
             <div key={rowIdx} role="row" className="grid grid-cols-7 gap-1">
               {row.map((day, colIdx) => {
@@ -299,7 +338,11 @@ export default function EntriesCalendar({
                 const score = prod?.productivity_score;
                 const hasEntry = !!routine;
                 const isSelected = routine?.id === selectedId && selectedId !== null;
+                const isDateSelected = dateStr === selectedDate;
                 const isToday = String(day) === todayStr;
+                const dow = new Date(year, month, day).getDay();
+                const isWeekend = dow === 0 || dow === 6;
+                const isHoliday = holidays.has(dateStr);
 
                 /* Day WITH an entry — show detail on click */
                 if (hasEntry) {
@@ -307,9 +350,13 @@ export default function EntriesCalendar({
                     <div key={dateStr} role="gridcell">
                       <button
                         type="button"
-                        aria-label={`${formatDate(dateStr)}${score ? `, productivity ${score} out of 10` : ''}`}
+                        aria-label={`${formatDate(dateStr)}${score ? `, productivity ${score} out of 10` : ''}${isWeekend ? ', weekend' : ''}${isHoliday ? ', holiday' : ''}`}
                         aria-pressed={isSelected ? 'true' : 'false'}
-                        onClick={() => onSelect(routine.id === selectedId ? null : routine.id)}
+                        onClick={() => {
+                          onSelectDate(null);
+                          onEditModeChange(false);
+                          onSelect(routine.id === selectedId ? null : routine.id);
+                        }}
                         className={cn(
                           'group relative flex aspect-square w-full items-center justify-center rounded-lg text-xs font-medium transition-all duration-150',
                           'cursor-pointer hover:z-10 hover:scale-110 hover:shadow-md',
@@ -324,21 +371,39 @@ export default function EntriesCalendar({
                             {score}/10
                           </span>
                         )}
+                        {/* Weekend / holiday dot indicator */}
+                        {(isWeekend || isHoliday) && (
+                          <span
+                            className={cn(
+                              'absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full',
+                              isHoliday ? 'bg-blush-400' : 'bg-sky-400'
+                            )}
+                            aria-hidden="true"
+                          />
+                        )}
                       </button>
                     </div>
                   );
                 }
 
-                /* Day WITHOUT an entry — link to add one */
+                /* Day WITHOUT an entry — button to add inline */
                 return (
                   <div key={dateStr} role="gridcell">
-                    <Link
-                      href={`/dashboard/entry?date=${dateStr}`}
-                      aria-label={`${formatDate(dateStr)}, add entry`}
+                    <button
+                      type="button"
+                      aria-label={`${formatDate(dateStr)}, add entry${isWeekend ? ', weekend' : ''}${isHoliday ? ', holiday' : ''}`}
+                      onClick={() => {
+                        onSelect(null);
+                        onEditModeChange(false);
+                        onSelectDate(dateStr === selectedDate ? null : dateStr);
+                      }}
                       className={cn(
                         'group relative flex aspect-square w-full items-center justify-center rounded-lg text-xs font-medium transition-all duration-150',
-                        'bg-slate-50/40 text-slate-400 hover:bg-slate-100/60 hover:text-slate-600',
-                        isToday && 'ring-aqua-600 text-aqua-600 ring-2'
+                        isWeekend || isHoliday
+                          ? 'bg-slate-100/50 text-slate-500 hover:bg-slate-200/60 hover:text-slate-700'
+                          : 'bg-slate-50/40 text-slate-400 hover:bg-slate-100/60 hover:text-slate-600',
+                        isToday && 'ring-aqua-600 text-aqua-600 ring-2',
+                        isDateSelected && 'ring-aqua-400 ring-2 ring-offset-2'
                       )}
                     >
                       {day}
@@ -346,7 +411,17 @@ export default function EntriesCalendar({
                         className="absolute bottom-0.5 h-2.5 w-2.5 opacity-0 transition-opacity group-hover:opacity-60"
                         aria-hidden="true"
                       />
-                    </Link>
+                      {/* Weekend / holiday dot indicator */}
+                      {(isWeekend || isHoliday) && (
+                        <span
+                          className={cn(
+                            'absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full',
+                            isHoliday ? 'bg-blush-400' : 'bg-sky-400'
+                          )}
+                          aria-hidden="true"
+                        />
+                      )}
+                    </button>
                   </div>
                 );
               })}
@@ -380,6 +455,17 @@ export default function EntriesCalendar({
             <span className="inline-block h-3 w-3 rounded bg-slate-200/60" aria-hidden="true" />
             No score
           </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-sky-400" aria-hidden="true" />
+            Weekend
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span
+              className="bg-blush-400 inline-block h-1.5 w-1.5 rounded-full"
+              aria-hidden="true"
+            />
+            Holiday
+          </span>
         </div>
 
         {/* Hint for an empty month */}
@@ -390,17 +476,58 @@ export default function EntriesCalendar({
         )}
       </div>
 
-      {/* Detail panel (slides in on select) */}
-      {selectedRoutine && (
-        <div className="lg:sticky lg:top-24 lg:col-span-2 lg:self-start">
+      {/* Detail panel — always visible */}
+      <div className="lg:sticky lg:top-24 lg:col-span-2 lg:self-start">
+        {/* Edit mode: inline form for an existing entry */}
+        {editMode && selectedRoutine && (
+          <EntryForm
+            date={selectedRoutine.date}
+            routine={selectedRoutine}
+            productivity={selectedProductivity}
+            onCreateRoutine={onCreateRoutine}
+            onCreateProductivity={onCreateProductivity}
+            onUpdateRoutine={onUpdateRoutine}
+            onUpdateProductivity={onUpdateProductivity}
+            onSaved={onSaved}
+            onClose={() => onEditModeChange(false)}
+          />
+        )}
+
+        {/* View mode: read-only detail */}
+        {!editMode && selectedRoutine && (
           <EntryDetail
             routine={selectedRoutine}
             productivity={selectedProductivity}
             onClose={() => onSelect(null)}
             onDelete={() => onDelete(selectedRoutine)}
+            onEdit={() => onEditModeChange(true)}
           />
-        </div>
-      )}
+        )}
+
+        {/* Add mode: inline form for an empty date */}
+        {!selectedRoutine && selectedDate && (
+          <EntryForm
+            date={selectedDate}
+            onCreateRoutine={onCreateRoutine}
+            onCreateProductivity={onCreateProductivity}
+            onUpdateRoutine={onUpdateRoutine}
+            onUpdateProductivity={onUpdateProductivity}
+            onSaved={onSaved}
+            onClose={() => onSelectDate(null)}
+          />
+        )}
+
+        {/* Nothing selected: placeholder banner */}
+        {!selectedRoutine && !selectedDate && (
+          <div className="flex flex-col items-center justify-center rounded-2xl bg-white/65 px-6 py-16 text-center backdrop-blur-md">
+            <Calendar className="mb-4 h-10 w-10 text-slate-300" aria-hidden="true" />
+            <h2 className="text-lg font-semibold text-slate-600">No day selected</h2>
+            <p className="mt-1 max-w-xs text-sm text-slate-400">
+              Pick a day on the calendar to view your entry or add a new one.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

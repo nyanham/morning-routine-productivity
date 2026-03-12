@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { formatDate } from '@/lib/utils';
 import { Pencil, Trash2, X } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
@@ -8,6 +7,8 @@ interface EntryDetailProps {
   productivity?: ProductivityEntry;
   onClose: () => void;
   onDelete: () => void;
+  /** Switch to inline edit mode. */
+  onEdit: () => void;
 }
 
 /**
@@ -21,6 +22,7 @@ export default function EntryDetail({
   productivity,
   onClose,
   onDelete,
+  onEdit,
 }: EntryDetailProps) {
   const dateFormatted = formatDate(routine.date);
 
@@ -40,13 +42,14 @@ export default function EntryDetail({
           <p className="mt-0.5 text-sm text-slate-500">Entry details</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link
-            href={`/dashboard/entries/${routine.id}/edit`}
+          <button
+            type="button"
+            onClick={onEdit}
             className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
             title="Edit entry"
           >
             <Pencil className="h-4 w-4" />
-          </Link>
+          </button>
           <button
             type="button"
             onClick={onDelete}

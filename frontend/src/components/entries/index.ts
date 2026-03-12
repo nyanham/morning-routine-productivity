@@ -6,4 +6,5 @@ export { default as EntriesList } from './EntriesList';
 export { default as EntriesListSkeleton } from './EntriesListSkeleton';
 export { default as EntriesToolbar } from './EntriesToolbar';
 export { default as EntryDetail } from './EntryDetail';
+export { default as EntryForm } from './EntryForm';
 export { default as ErrorBanner } from './ErrorBanner';

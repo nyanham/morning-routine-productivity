@@ -2,10 +2,9 @@
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { DashboardTabs } from '@/components/dashboard';
 import { CalendarSkeleton, DeleteDialog, EntriesCalendar, ErrorBanner } from '@/components/entries';
 import { RequireAuth } from '@/contexts/AuthContext';
-import { useRoutines, useProductivity } from '@/hooks/useApi';
+import { useRoutines, useProductivity, useUserProfile } from '@/hooks/useApi';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
 /** Fetch all entries for the visible month (generous page size). */
@@ -32,11 +31,14 @@ function monthRange(year: number, month: number) {
 function EntriesContent() {
   const routines = useRoutines();
   const productivity = useProductivity();
+  const profile = useUserProfile();
 
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [editMode, setEditMode] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<MorningRoutine | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -55,6 +57,12 @@ function EntriesContent() {
     loadEntries();
   }, [loadEntries]);
 
+  // Fetch user profile for locale-based holidays
+  const { fetch: fetchProfile } = profile;
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
   /* ---- derived data ---- */
   const entries = routines.data?.data ?? [];
 
@@ -71,6 +79,8 @@ function EntriesContent() {
     setYear(newYear);
     setMonth(newMonth);
     setSelectedId(null);
+    setSelectedDate(null);
+    setEditMode(false);
   };
 
   /* ---- delete handler ---- */
@@ -97,10 +107,16 @@ function EntriesContent() {
     }
   };
 
+  /** Called after inline create / update to refresh the month data. */
+  const handleSaved = () => {
+    setEditMode(false);
+    setSelectedDate(null);
+    setSelectedId(null);
+    loadEntries();
+  };
+
   return (
     <div className="space-y-8">
-      <DashboardTabs />
-
       {hasError && (
         <ErrorBanner
           title="Error loading entries"
@@ -122,6 +138,16 @@ function EntriesContent() {
           selectedId={selectedId}
           onSelect={setSelectedId}
           onDelete={setDeleteTarget}
+          selectedDate={selectedDate}
+          onSelectDate={setSelectedDate}
+          editMode={editMode}
+          onEditModeChange={setEditMode}
+          locale={profile.data?.locale}
+          onCreateRoutine={routines.create}
+          onCreateProductivity={productivity.create}
+          onUpdateRoutine={routines.update}
+          onUpdateProductivity={productivity.update}
+          onSaved={handleSaved}
         />
       )}
 

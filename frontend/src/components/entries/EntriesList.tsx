@@ -69,6 +69,7 @@ export default function EntriesList({
               productivity={selectedProductivity}
               onClose={() => onSelect(null)}
               onDelete={() => onDelete(selectedRoutine)}
+              onEdit={() => {}}
             />
           </div>
         )}
