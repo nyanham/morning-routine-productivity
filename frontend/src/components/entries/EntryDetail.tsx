@@ -98,17 +98,17 @@ export default function EntryDetail({
             type="button"
             onClick={onEdit}
             className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
-            title="Edit entry"
+            aria-label="Edit entry"
           >
-            <Pencil className="h-4 w-4" />
+            <Pencil className="h-4 w-4" aria-hidden="true" />
           </button>
           <button
             type="button"
             onClick={onDelete}
             className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
-            title="Delete entry"
+            aria-label="Delete entry"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-4 w-4" aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -116,7 +116,7 @@ export default function EntryDetail({
             className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
             aria-label="Close detail"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
       </div>

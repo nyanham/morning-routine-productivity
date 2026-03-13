@@ -1,3 +1,4 @@
+import { useEffect, useRef, useCallback } from 'react';
 import { formatDate } from '@/lib/utils';
 
 interface DeleteDialogProps {
@@ -10,17 +11,58 @@ interface DeleteDialogProps {
 /**
  * Confirmation dialog shown before permanently deleting an entry.
  *
- * Uses `role="alertdialog"` so screen readers announce it immediately.
+ * Uses `role="alertdialog"` with `aria-modal` so screen readers
+ * announce it immediately. Traps focus inside the dialog, moves
+ * initial focus to Cancel, and closes on Escape.
  */
 export default function DeleteDialog({ date, onConfirm, onCancel, deleting }: DeleteDialogProps) {
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  /* Move initial focus to the Cancel button on mount */
+  useEffect(() => {
+    cancelRef.current?.focus();
+  }, []);
+
+  /* Close on Escape key */
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape' && !deleting) {
+        onCancel();
+        return;
+      }
+
+      /* Trap focus inside the dialog */
+      if (e.key === 'Tab' && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    },
+    [deleting, onCancel]
+  );
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
       role="alertdialog"
+      aria-modal="true"
       aria-labelledby="delete-title"
       aria-describedby="delete-desc"
+      onKeyDown={handleKeyDown}
     >
-      <div className="mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+      <div ref={dialogRef} className="mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
         <h2 id="delete-title" className="text-lg font-bold text-slate-800">
           Delete entry?
         </h2>
@@ -30,6 +72,7 @@ export default function DeleteDialog({ date, onConfirm, onCancel, deleting }: De
         </p>
         <div className="mt-6 flex justify-end gap-3">
           <button
+            ref={cancelRef}
             type="button"
             onClick={onCancel}
             disabled={deleting}

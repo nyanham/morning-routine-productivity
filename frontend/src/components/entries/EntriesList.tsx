@@ -43,12 +43,19 @@ export default function EntriesList({
             .slice()
             .sort((a, b) => b.date.localeCompare(a.date))
             .map((routine) => (
-              <button
+              <div
                 key={routine.id}
-                type="button"
+                role="button"
+                tabIndex={0}
                 onClick={() => onSelect(routine.id === selectedId ? null : routine.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onSelect(routine.id === selectedId ? null : routine.id);
+                  }
+                }}
                 className={cn(
-                  'w-full text-left transition-all',
+                  'w-full cursor-pointer text-left transition-all',
                   routine.id === selectedId && 'ring-aqua-400 rounded-xl ring-2'
                 )}
               >
@@ -57,7 +64,7 @@ export default function EntriesList({
                   productivity={productivityByDate.get(routine.date)}
                   defaultExpanded={false}
                 />
-              </button>
+              </div>
             ))}
         </div>
 
@@ -69,7 +76,7 @@ export default function EntriesList({
               productivity={selectedProductivity}
               onClose={() => onSelect(null)}
               onDelete={() => onDelete(selectedRoutine)}
-              onEdit={() => {}}
+              onEdit={() => onSelect(null)}
             />
           </div>
         )}

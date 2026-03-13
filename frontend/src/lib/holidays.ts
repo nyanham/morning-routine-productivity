@@ -3,7 +3,7 @@
  *
  * Extracts the country code from the user's locale string and
  * returns a Set of 'YYYY-MM-DD' date strings for national holidays.
- * Currently supports US, GB, BR, and CA ? extend the switch in
+ * Currently supports US, GB, BR, and CA — extend the switch in
  * `getHolidays` to add more countries.
  */
 

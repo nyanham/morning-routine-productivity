@@ -19,7 +19,7 @@ A full-stack application for tracking morning routines and analyzing productivit
 ![Entry Form](docs/images/landing.png)
 _learn about the app and how to use it_
 
-### Loging Page
+### Login Page
 
 ![Analytics](docs/images/login-page.png)
 _Enter Your credentials and start a good day_

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { cn, formatDate } from '@/lib/utils';
 import { getHolidays } from '@/lib/holidays';
 import { ChevronLeft, ChevronRight, Plus, Calendar } from 'lucide-react';
@@ -116,6 +116,8 @@ export default function EntriesCalendar({
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerYear, setPickerYear] = useState(year);
   const pickerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   // Close picker on click outside
   useEffect(() => {
@@ -128,6 +130,26 @@ export default function EntriesCalendar({
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [pickerOpen]);
+
+  // Move focus into picker on open, return focus on close
+  useEffect(() => {
+    if (pickerOpen) {
+      // Focus first focusable element inside the picker panel
+      requestAnimationFrame(() => {
+        const first = panelRef.current?.querySelector<HTMLElement>('button');
+        first?.focus();
+      });
+    }
+  }, [pickerOpen]);
+
+  // Close picker on Escape
+  const handlePickerKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.stopPropagation();
+      setPickerOpen(false);
+      triggerRef.current?.focus();
+    }
+  }, []);
 
   // Keep pickerYear in sync when the parent changes the year
   useEffect(() => {
@@ -204,22 +226,25 @@ export default function EntriesCalendar({
             <div className="relative" ref={pickerRef}>
               <button
                 type="button"
+                ref={triggerRef}
                 onClick={() => {
                   setPickerOpen((o) => !o);
                   setPickerYear(year);
                 }}
                 className="rounded-lg px-3 py-1.5 text-lg font-semibold text-slate-800 transition-colors hover:bg-white/50"
                 aria-expanded={pickerOpen ? 'true' : 'false'}
-                aria-haspopup="dialog"
+                aria-haspopup="true"
               >
                 {monthLabel}
               </button>
 
               {pickerOpen && (
                 <div
+                  ref={panelRef}
                   className="absolute left-1/2 z-20 mt-1 w-56 -translate-x-1/2 rounded-xl border border-slate-200 bg-white p-3 shadow-lg"
-                  role="dialog"
+                  role="group"
                   aria-label="Select month and year"
+                  onKeyDown={handlePickerKeyDown}
                 >
                   {/* Year row */}
                   <div className="mb-2 flex items-center justify-between">
@@ -253,6 +278,7 @@ export default function EntriesCalendar({
                           onClick={() => {
                             onMonthChange(pickerYear, i);
                             setPickerOpen(false);
+                            triggerRef.current?.focus();
                           }}
                           className={cn(
                             'rounded-lg px-2 py-1.5 text-xs font-medium transition-colors',
