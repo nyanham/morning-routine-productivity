@@ -30,7 +30,7 @@ describe('getHolidays', () => {
     it('is case-insensitive for country code', () => {
       const upper = getHolidays(2026, 'en-US');
       const lower = getHolidays(2026, 'en-us');
-      // Both should resolve  EUS holidays are identified by uppercase conversion
+      // Both should resolve — US holidays are identified by uppercase conversion
       expect(upper).toEqual(lower);
     });
 
@@ -151,11 +151,11 @@ describe('getHolidays', () => {
       expect(holidays.has('2026-01-01')).toBe(true);
     });
 
-    it('includes Carnival (Easter - 47 and - 46 days)', () => {
+    it('includes Carnival (Easter - 48 and - 47 days)', () => {
       // Easter 2026 is April 5
       // Carnival Monday: Feb 16, Carnival Tuesday: Feb 17
+      expect(holidays.has('2026-02-16')).toBe(true);
       expect(holidays.has('2026-02-17')).toBe(true);
-      expect(holidays.has('2026-02-18')).toBe(true);
     });
 
     it('includes Good Friday', () => {

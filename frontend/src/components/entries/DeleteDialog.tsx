@@ -18,10 +18,17 @@ interface DeleteDialogProps {
 export default function DeleteDialog({ date, onConfirm, onCancel, deleting }: DeleteDialogProps) {
   const cancelRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  /* Move initial focus to the Cancel button on mount */
+  /* Capture the previously focused element, move focus to Cancel,
+   * and restore focus when the dialog unmounts. */
   useEffect(() => {
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
     cancelRef.current?.focus();
+
+    return () => {
+      previousFocusRef.current?.focus();
+    };
   }, []);
 
   /* Close on Escape key */

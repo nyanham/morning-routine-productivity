@@ -89,8 +89,8 @@ function brHolidays(year: number): Set<string> {
   const s = new Set<string>();
   const e = easter(year);
   s.add(`${year}-01-01`);
-  s.add(fmt(addDays(e, -47)));
-  s.add(fmt(addDays(e, -46)));
+  s.add(fmt(addDays(e, -48))); // Carnival Monday
+  s.add(fmt(addDays(e, -47))); // Carnival Tuesday
   s.add(fmt(addDays(e, -2)));
   s.add(`${year}-04-21`);
   s.add(`${year}-05-01`);

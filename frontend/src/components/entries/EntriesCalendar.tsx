@@ -88,8 +88,8 @@ function scoreColors(score: number): string {
 /**
  * Monthly calendar grid where each day is colour-coded by
  * productivity score. Compact cells expand on hover to reveal
- * the score; clicking opens the detail panel. Empty days link
- * to the new-entry page for that date.
+ * the score; clicking opens the detail panel. Empty days open
+ * the inline entry form in the side panel.
  */
 export default function EntriesCalendar({
   entries,
@@ -125,6 +125,7 @@ export default function EntriesCalendar({
     const handler = (e: MouseEvent) => {
       if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
         setPickerOpen(false);
+        triggerRef.current?.focus();
       }
     };
     document.addEventListener('mousedown', handler);

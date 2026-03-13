@@ -16,17 +16,17 @@ A full-stack application for tracking morning routines and analyzing productivit
 
 ### Landing Page
 
-![Entry Form](docs/images/landing.png)
+![Landing Page](docs/images/landing.png)
 _learn about the app and how to use it_
 
 ### Login Page
 
-![Analytics](docs/images/login-page.png)
+![Login Page](docs/images/login-page.png)
 _Enter Your credentials and start a good day_
 
 ### Dashboard Overview
 
-![Dashboard](docs/images/dashboard.png)
+![Dashboard Overview](docs/images/dashboard.png)
 _Interactive dashboard with productivity charts and statistics_
 
 </div>
