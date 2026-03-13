@@ -366,12 +366,8 @@ export default function EntriesCalendar({
                       >
                         <span
                           className={cn(
-                            'flex h-6 w-6 items-center justify-center rounded-full',
-                            isHoliday
-                              ? 'ring-blush-400 ring-2'
-                              : isWeekend
-                                ? 'ring-2 ring-red-400'
-                                : ''
+                            'text-xs font-semibold',
+                            isHoliday ? 'text-accent-500' : isWeekend ? 'text-red-400' : ''
                           )}
                         >
                           {day}
@@ -406,12 +402,8 @@ export default function EntriesCalendar({
                     >
                       <span
                         className={cn(
-                          'flex h-6 w-6 items-center justify-center rounded-full',
-                          isHoliday
-                            ? 'ring-blush-400 ring-2'
-                            : isWeekend
-                              ? 'ring-2 ring-red-400'
-                              : ''
+                          'text-xs font-medium',
+                          isHoliday ? 'text-accent-500' : isWeekend ? 'text-red-400' : ''
                         )}
                       >
                         {day}
@@ -428,51 +420,6 @@ export default function EntriesCalendar({
           ))}
         </div>
 
-        {/* Legend */}
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-500">
-          <span className="flex items-center gap-1.5">
-            <span className="bg-primary-100/80 inline-block h-3 w-3 rounded" aria-hidden="true" />
-            1-2
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="bg-primary-200/80 inline-block h-3 w-3 rounded" aria-hidden="true" />
-            3-4
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="bg-primary-400/70 inline-block h-3 w-3 rounded" aria-hidden="true" />
-            5-6
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="bg-primary-600/80 inline-block h-3 w-3 rounded" aria-hidden="true" />
-            7-8
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="bg-primary-800/90 inline-block h-3 w-3 rounded" aria-hidden="true" />
-            9-10
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span
-              className="inline-block h-3 w-3 rounded border border-dashed border-slate-300 bg-slate-50/50"
-              aria-hidden="true"
-            />
-            No score
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span
-              className="inline-block h-3 w-3 rounded-full ring-2 ring-red-400"
-              aria-hidden="true"
-            />
-            Weekend
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span
-              className="ring-blush-400 inline-block h-3 w-3 rounded-full ring-2"
-              aria-hidden="true"
-            />
-            Holiday
-          </span>
-        </div>
-
         {/* Hint for an empty month */}
         {entries.length === 0 && (
           <p className="mt-3 text-center text-sm text-slate-400">
@@ -481,50 +428,56 @@ export default function EntriesCalendar({
         )}
       </div>
 
-      {/* Detail panel — always visible, stable height */}
-      <div className="lg:sticky lg:top-24 lg:col-span-2 lg:min-h-[420px] lg:self-start">
+      {/* Detail panel — always visible, fixed height with internal scroll */}
+      <div className="lg:sticky lg:top-24 lg:col-span-2 lg:h-[calc(100vh-8rem)] lg:self-start">
         {/* Edit mode: inline form for an existing entry */}
         {editMode && selectedRoutine && (
-          <EntryForm
-            date={selectedRoutine.date}
-            routine={selectedRoutine}
-            productivity={selectedProductivity}
-            onCreateRoutine={onCreateRoutine}
-            onCreateProductivity={onCreateProductivity}
-            onUpdateRoutine={onUpdateRoutine}
-            onUpdateProductivity={onUpdateProductivity}
-            onSaved={onSaved}
-            onClose={() => onEditModeChange(false)}
-          />
+          <div className="h-full overflow-y-auto">
+            <EntryForm
+              date={selectedRoutine.date}
+              routine={selectedRoutine}
+              productivity={selectedProductivity}
+              onCreateRoutine={onCreateRoutine}
+              onCreateProductivity={onCreateProductivity}
+              onUpdateRoutine={onUpdateRoutine}
+              onUpdateProductivity={onUpdateProductivity}
+              onSaved={onSaved}
+              onClose={() => onEditModeChange(false)}
+            />
+          </div>
         )}
 
         {/* View mode: read-only detail */}
         {!editMode && selectedRoutine && (
-          <EntryDetail
-            routine={selectedRoutine}
-            productivity={selectedProductivity}
-            onClose={() => onSelect(null)}
-            onDelete={() => onDelete(selectedRoutine)}
-            onEdit={() => onEditModeChange(true)}
-          />
+          <div className="h-full overflow-y-auto">
+            <EntryDetail
+              routine={selectedRoutine}
+              productivity={selectedProductivity}
+              onClose={() => onSelect(null)}
+              onDelete={() => onDelete(selectedRoutine)}
+              onEdit={() => onEditModeChange(true)}
+            />
+          </div>
         )}
 
         {/* Add mode: inline form for an empty date */}
         {!selectedRoutine && selectedDate && (
-          <EntryForm
-            date={selectedDate}
-            onCreateRoutine={onCreateRoutine}
-            onCreateProductivity={onCreateProductivity}
-            onUpdateRoutine={onUpdateRoutine}
-            onUpdateProductivity={onUpdateProductivity}
-            onSaved={onSaved}
-            onClose={() => onSelectDate(null)}
-          />
+          <div className="h-full overflow-y-auto">
+            <EntryForm
+              date={selectedDate}
+              onCreateRoutine={onCreateRoutine}
+              onCreateProductivity={onCreateProductivity}
+              onUpdateRoutine={onUpdateRoutine}
+              onUpdateProductivity={onUpdateProductivity}
+              onSaved={onSaved}
+              onClose={() => onSelectDate(null)}
+            />
+          </div>
         )}
 
         {/* Nothing selected: placeholder banner */}
         {!selectedRoutine && !selectedDate && (
-          <div className="from-primary-50/80 to-accent-50/60 relative flex min-h-[420px] flex-col items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br via-white/70 px-6 py-16 text-center backdrop-blur-md">
+          <div className="from-primary-50/80 to-accent-50/60 relative flex h-full flex-col items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br via-white/70 px-6 py-16 text-center backdrop-blur-md">
             {/* Decorative background circles */}
             <div
               className="bg-primary-200/30 pointer-events-none absolute -top-10 -right-10 h-40 w-40 rounded-full"

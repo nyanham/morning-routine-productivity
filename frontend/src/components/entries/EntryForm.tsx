@@ -1,6 +1,49 @@
 import { useState, useEffect } from 'react';
-import { Save, CheckCircle, AlertCircle, X } from 'lucide-react';
+import {
+  Save,
+  CheckCircle,
+  AlertCircle,
+  X,
+  Clock,
+  Moon,
+  Dumbbell,
+  Brain,
+  Utensils,
+  Smile,
+  Coffee,
+  Droplets,
+  Smartphone,
+  Gauge,
+  ClipboardList,
+  CheckSquare,
+  Crosshair,
+  AlertTriangle,
+  Zap,
+  Frown,
+  FileText,
+} from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
+import type { LucideIcon } from 'lucide-react';
+
+/**
+ * Label with a small icon prefix — mirrors the icon layout in EntryDetail.
+ */
+function IconLabel({
+  icon: Icon,
+  htmlFor,
+  children,
+}: {
+  icon: LucideIcon;
+  htmlFor: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label htmlFor={htmlFor} className="label flex items-center gap-1.5">
+      <Icon className="h-3.5 w-3.5 text-slate-400" aria-hidden="true" />
+      {children}
+    </label>
+  );
+}
 
 interface FormData {
   date: string;
@@ -241,9 +284,9 @@ export default function EntryForm({
           </legend>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="ef-wake_time" className="label">
+              <IconLabel icon={Clock} htmlFor="ef-wake_time">
                 Wake Time
-              </label>
+              </IconLabel>
               <input
                 id="ef-wake_time"
                 type="time"
@@ -254,9 +297,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-sleep" className="label">
+              <IconLabel icon={Moon} htmlFor="ef-sleep">
                 Sleep (hrs)
-              </label>
+              </IconLabel>
               <input
                 id="ef-sleep"
                 type="number"
@@ -270,9 +313,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-exercise" className="label">
+              <IconLabel icon={Dumbbell} htmlFor="ef-exercise">
                 Exercise (min)
-              </label>
+              </IconLabel>
               <input
                 id="ef-exercise"
                 type="number"
@@ -284,9 +327,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-meditation" className="label">
+              <IconLabel icon={Brain} htmlFor="ef-meditation">
                 Meditation (min)
-              </label>
+              </IconLabel>
               <input
                 id="ef-meditation"
                 type="number"
@@ -298,9 +341,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-breakfast" className="label">
+              <IconLabel icon={Utensils} htmlFor="ef-breakfast">
                 Breakfast
-              </label>
+              </IconLabel>
               <select
                 id="ef-breakfast"
                 name="breakfast_quality"
@@ -315,9 +358,9 @@ export default function EntryForm({
               </select>
             </div>
             <div>
-              <label htmlFor="ef-mood" className="label">
+              <IconLabel icon={Smile} htmlFor="ef-mood">
                 Mood ({formData.morning_mood}/10)
-              </label>
+              </IconLabel>
               <input
                 id="ef-mood"
                 type="range"
@@ -330,9 +373,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-caffeine" className="label">
+              <IconLabel icon={Coffee} htmlFor="ef-caffeine">
                 Caffeine (mg)
-              </label>
+              </IconLabel>
               <input
                 id="ef-caffeine"
                 type="number"
@@ -344,9 +387,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-water" className="label">
+              <IconLabel icon={Droplets} htmlFor="ef-water">
                 Water (ml)
-              </label>
+              </IconLabel>
               <input
                 id="ef-water"
                 type="number"
@@ -359,9 +402,9 @@ export default function EntryForm({
               />
             </div>
             <div className="col-span-2">
-              <label htmlFor="ef-screen" className="label">
+              <IconLabel icon={Smartphone} htmlFor="ef-screen">
                 Screen Before Bed (min)
-              </label>
+              </IconLabel>
               <input
                 id="ef-screen"
                 type="number"
@@ -382,9 +425,9 @@ export default function EntryForm({
           </legend>
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
-              <label htmlFor="ef-score" className="label">
+              <IconLabel icon={Gauge} htmlFor="ef-score">
                 Score ({formData.productivity_score}/10)
-              </label>
+              </IconLabel>
               <input
                 id="ef-score"
                 type="range"
@@ -397,9 +440,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-tasks-planned" className="label">
+              <IconLabel icon={ClipboardList} htmlFor="ef-tasks-planned">
                 Tasks Planned
-              </label>
+              </IconLabel>
               <input
                 id="ef-tasks-planned"
                 type="number"
@@ -411,9 +454,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-tasks-done" className="label">
+              <IconLabel icon={CheckSquare} htmlFor="ef-tasks-done">
                 Tasks Completed
-              </label>
+              </IconLabel>
               <input
                 id="ef-tasks-done"
                 type="number"
@@ -425,9 +468,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-focus" className="label">
+              <IconLabel icon={Crosshair} htmlFor="ef-focus">
                 Focus (hrs)
-              </label>
+              </IconLabel>
               <input
                 id="ef-focus"
                 type="number"
@@ -440,9 +483,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-distractions" className="label">
+              <IconLabel icon={AlertTriangle} htmlFor="ef-distractions">
                 Distractions
-              </label>
+              </IconLabel>
               <input
                 id="ef-distractions"
                 type="number"
@@ -454,9 +497,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-energy" className="label">
+              <IconLabel icon={Zap} htmlFor="ef-energy">
                 Energy ({formData.energy_level}/10)
-              </label>
+              </IconLabel>
               <input
                 id="ef-energy"
                 type="range"
@@ -469,9 +512,9 @@ export default function EntryForm({
               />
             </div>
             <div>
-              <label htmlFor="ef-stress" className="label">
+              <IconLabel icon={Frown} htmlFor="ef-stress">
                 Stress ({formData.stress_level}/10)
-              </label>
+              </IconLabel>
               <input
                 id="ef-stress"
                 type="range"
@@ -488,9 +531,9 @@ export default function EntryForm({
 
         {/* Notes */}
         <div>
-          <label htmlFor="ef-notes" className="label">
+          <IconLabel icon={FileText} htmlFor="ef-notes">
             Notes
-          </label>
+          </IconLabel>
           <textarea
             id="ef-notes"
             name="notes"
