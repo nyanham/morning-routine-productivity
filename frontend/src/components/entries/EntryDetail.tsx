@@ -130,21 +130,74 @@ export default function EntryDetail({
           </h3>
           <dl className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
             <Metric icon={Clock} label="Wake" value={wakeFormatted} />
-            <Metric icon={Moon} label="Sleep" value={`${routine.sleep_duration_hours} h`} />
-            <Metric icon={Dumbbell} label="Exercise" value={`${routine.exercise_minutes} min`} />
-            <Metric icon={Brain} label="Meditate" value={`${routine.meditation_minutes} min`} />
+            <Metric
+              icon={Moon}
+              label="Sleep"
+              value={
+                <span>
+                  {routine.sleep_duration_hours} <span className="text-xs text-slate-400">h</span>
+                </span>
+              }
+            />
+            <Metric
+              icon={Dumbbell}
+              label="Exercise"
+              value={
+                <span>
+                  {routine.exercise_minutes} <span className="text-xs text-slate-400">min</span>
+                </span>
+              }
+            />
+            <Metric
+              icon={Brain}
+              label="Meditate"
+              value={
+                <span>
+                  {routine.meditation_minutes} <span className="text-xs text-slate-400">min</span>
+                </span>
+              }
+            />
             <Metric
               icon={Utensils}
               label="Breakfast"
               value={breakfastLabel[routine.breakfast_quality] ?? routine.breakfast_quality}
             />
-            <Metric icon={Smile} label="Mood" value={`${routine.morning_mood}/10`} />
-            <Metric icon={Coffee} label="Caffeine" value={`${routine.caffeine_intake} mg`} />
-            <Metric icon={Droplets} label="Water" value={`${routine.water_intake_ml} ml`} />
+            <Metric
+              icon={Smile}
+              label="Mood"
+              value={
+                <span>
+                  {routine.morning_mood} <span className="text-xs text-slate-400">/10</span>
+                </span>
+              }
+            />
+            <Metric
+              icon={Coffee}
+              label="Caffeine"
+              value={
+                <span>
+                  {routine.caffeine_intake} <span className="text-xs text-slate-400">mg</span>
+                </span>
+              }
+            />
+            <Metric
+              icon={Droplets}
+              label="Water"
+              value={
+                <span>
+                  {routine.water_intake_ml} <span className="text-xs text-slate-400">ml</span>
+                </span>
+              }
+            />
             <Metric
               icon={Smartphone}
               label="Screen"
-              value={`${routine.screen_time_before_bed} min`}
+              value={
+                <span>
+                  {routine.screen_time_before_bed}{' '}
+                  <span className="text-xs text-slate-400">min</span>
+                </span>
+              }
             />
           </dl>
         </div>
@@ -156,17 +209,50 @@ export default function EntryDetail({
               Productivity
             </h3>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
-              <Metric icon={Gauge} label="Score" value={`${productivity.productivity_score}/10`} />
+              <Metric
+                icon={Gauge}
+                label="Score"
+                value={
+                  <span>
+                    {productivity.productivity_score}{' '}
+                    <span className="text-xs text-slate-400">/10</span>
+                  </span>
+                }
+              />
               <Metric icon={ClipboardList} label="Planned" value={productivity.tasks_planned} />
               <Metric icon={CheckSquare} label="Done" value={productivity.tasks_completed} />
-              <Metric icon={Crosshair} label="Focus" value={`${productivity.focus_hours} h`} />
+              <Metric
+                icon={Crosshair}
+                label="Focus"
+                value={
+                  <span>
+                    {productivity.focus_hours} <span className="text-xs text-slate-400">h</span>
+                  </span>
+                }
+              />
               <Metric
                 icon={AlertTriangle}
                 label="Distractions"
                 value={productivity.distractions_count}
               />
-              <Metric icon={Zap} label="Energy" value={`${productivity.energy_level}/10`} />
-              <Metric icon={Frown} label="Stress" value={`${productivity.stress_level}/10`} />
+              <Metric
+                icon={Zap}
+                label="Energy"
+                value={
+                  <span>
+                    {productivity.energy_level} <span className="text-xs text-slate-400">/10</span>
+                  </span>
+                }
+              />
+              <Metric
+                icon={Frown}
+                label="Stress"
+                value={
+                  <span>
+                    {productivity.stress_level} <span className="text-xs text-slate-400">/10</span>
+                  </span>
+                }
+              />
             </dl>
             {productivity.notes && (
               <div className="mt-3 flex items-start gap-2 text-sm">

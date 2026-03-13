@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import Link from 'next/link';
 import { cn, formatDate } from '@/lib/utils';
 import { getHolidays } from '@/lib/holidays';
-import { ChevronLeft, ChevronRight, Plus, Upload, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Calendar } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
 import EntryDetail from './EntryDetail';
@@ -287,24 +286,6 @@ export default function EntriesCalendar({
             >
               Today
             </button>
-          </div>
-
-          {/* Action buttons */}
-          <div className="flex items-center gap-2">
-            <Link
-              href="/dashboard/import"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-white/50 px-3 py-2 text-sm font-medium text-slate-600 backdrop-blur-md transition-colors hover:bg-white/70"
-            >
-              <Upload className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Import CSV</span>
-            </Link>
-            <Link
-              href="/dashboard/entry"
-              className="bg-aqua-600 hover:bg-aqua-700 focus-visible:ring-aqua-400 inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-            >
-              <Plus className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">New Entry</span>
-            </Link>
           </div>
         </div>
 
