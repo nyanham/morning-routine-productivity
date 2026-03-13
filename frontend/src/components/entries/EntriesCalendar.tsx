@@ -308,17 +308,6 @@ export default function EntriesCalendar({
           </div>
         </div>
 
-        {/* Loading indicator */}
-        {loading && (
-          <div
-            className="bg-primary-100 h-0.5 w-full overflow-hidden rounded"
-            role="status"
-            aria-label="Loading entries"
-          >
-            <div className="bg-primary-400 h-full w-1/3 animate-pulse rounded" />
-          </div>
-        )}
-
         {/* Weekday headers */}
         <div className="grid grid-cols-7 text-center text-xs font-semibold tracking-wider text-slate-400 uppercase">
           {WEEKDAYS.map((d) => (

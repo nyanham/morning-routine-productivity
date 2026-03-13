@@ -25,11 +25,11 @@ import {
 import type { MorningRoutine, ProductivityEntry } from '@/types';
 
 /**
- * Compact inline input classes matching EntryDetail's Metric value position.
- * Applied to number, time, and select inputs for a tight icon → label → input row.
+ * Borderless inline input classes matching EntryDetail's plain-text Metric values.
+ * A dotted underline signals editability; solid accent underline on focus.
  */
 const INPUT_CLS =
-  'ml-auto rounded-md border border-slate-200 bg-white/80 px-2 py-0.5 text-right text-sm font-medium text-slate-800 outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400';
+  'ml-auto bg-transparent px-0 py-0 text-right text-sm font-medium text-slate-800 outline-none border-b border-dotted border-slate-300 focus:border-solid focus:border-primary-400';
 
 interface FormData {
   date: string;
@@ -262,7 +262,7 @@ export default function EntryForm({
       )}
 
       {/* Form — compact inline rows matching EntryDetail's Metric layout */}
-      <form onSubmit={handleSubmit} className="flex-1 space-y-5 p-5">
+      <form onSubmit={handleSubmit} className="flex-1 space-y-4 p-5">
         {/* Morning Routine */}
         <fieldset>
           <legend className="mb-3 text-xs font-semibold tracking-wider text-slate-400 uppercase">
@@ -565,7 +565,7 @@ export default function EntryForm({
                 onChange={handleChange}
                 rows={2}
                 placeholder="Any notes about your day..."
-                className="focus:ring-primary-400 w-full rounded-lg bg-slate-50/60 p-2 text-slate-700 outline-none focus:bg-white focus:ring-1"
+                className="focus:border-primary-400 w-full resize-none border-b border-dotted border-slate-300 bg-transparent p-1 text-sm text-slate-700 outline-none focus:border-solid"
               />
             </div>
           </div>
