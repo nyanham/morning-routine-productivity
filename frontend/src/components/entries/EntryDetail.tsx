@@ -86,7 +86,7 @@ export default function EntryDetail({
     : '—';
 
   return (
-    <div className="rounded-2xl bg-white/65 backdrop-blur-md">
+    <div className="flex min-h-full flex-col rounded-2xl bg-white/65 backdrop-blur-md">
       {/* Header — matches EntryForm header structure */}
       <div className="flex items-center justify-between border-b border-slate-200/30 px-5 py-4">
         <div>
@@ -122,7 +122,7 @@ export default function EntryDetail({
       </div>
 
       {/* Body — same padding and spacing as EntryForm */}
-      <div className="space-y-5 p-5">
+      <div className="flex-1 space-y-5 p-5">
         {/* Morning Routine — field order matches EntryForm */}
         <div>
           <h3 className="mb-3 text-xs font-semibold tracking-wider text-slate-400 uppercase">
@@ -141,13 +141,11 @@ export default function EntryDetail({
             <Metric icon={Smile} label="Mood" value={`${routine.morning_mood}/10`} />
             <Metric icon={Coffee} label="Caffeine" value={`${routine.caffeine_intake} mg`} />
             <Metric icon={Droplets} label="Water" value={`${routine.water_intake_ml} ml`} />
-            <div className="col-span-2">
-              <Metric
-                icon={Smartphone}
-                label="Screen"
-                value={`${routine.screen_time_before_bed} min`}
-              />
-            </div>
+            <Metric
+              icon={Smartphone}
+              label="Screen"
+              value={`${routine.screen_time_before_bed} min`}
+            />
           </dl>
         </div>
 
@@ -158,13 +156,7 @@ export default function EntryDetail({
               Productivity
             </h3>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
-              <div className="col-span-2">
-                <Metric
-                  icon={Gauge}
-                  label="Score"
-                  value={`${productivity.productivity_score}/10`}
-                />
-              </div>
+              <Metric icon={Gauge} label="Score" value={`${productivity.productivity_score}/10`} />
               <Metric icon={ClipboardList} label="Planned" value={productivity.tasks_planned} />
               <Metric icon={CheckSquare} label="Done" value={productivity.tasks_completed} />
               <Metric icon={Crosshair} label="Focus" value={`${productivity.focus_hours} h`} />

@@ -49,6 +49,8 @@ interface EntriesCalendarProps {
   ) => Promise<ProductivityEntry>;
   /** Called after a successful create/update so the parent can refresh. */
   onSaved: () => void;
+  /** Whether entries are being fetched (for visual feedback). */
+  loading?: boolean;
 }
 
 /** Day-of-week header labels. */
@@ -109,6 +111,7 @@ export default function EntriesCalendar({
   onUpdateRoutine,
   onUpdateProductivity,
   onSaved,
+  loading,
 }: EntriesCalendarProps) {
   /* ---- month-year picker state ---- */
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -183,7 +186,7 @@ export default function EntriesCalendar({
   for (let i = 0; i < cells.length; i += 7) rows.push(cells.slice(i, i + 7));
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
+    <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-5">
       {/* Calendar grid — always takes 3 columns */}
       <div className="lg:col-span-3">
         {/* Header — month nav + action buttons */}
@@ -305,6 +308,17 @@ export default function EntriesCalendar({
           </div>
         </div>
 
+        {/* Loading indicator */}
+        {loading && (
+          <div
+            className="bg-primary-100 h-0.5 w-full overflow-hidden rounded"
+            role="status"
+            aria-label="Loading entries"
+          >
+            <div className="bg-primary-400 h-full w-1/3 animate-pulse rounded" />
+          </div>
+        )}
+
         {/* Weekday headers */}
         <div className="grid grid-cols-7 text-center text-xs font-semibold tracking-wider text-slate-400 uppercase">
           {WEEKDAYS.map((d) => (
@@ -315,7 +329,11 @@ export default function EntriesCalendar({
         </div>
 
         {/* Day cells — grouped into rows for correct grid semantics */}
-        <div role="grid" aria-label={`Calendar for ${monthLabel}`} className="space-y-1">
+        <div
+          role="grid"
+          aria-label={`Calendar for ${monthLabel}`}
+          className={cn('space-y-1', loading && 'opacity-50 transition-opacity')}
+        >
           {rows.map((row, rowIdx) => (
             <div key={rowIdx} role="row" className="grid grid-cols-7 gap-1">
               {row.map((day, colIdx) => {
@@ -429,7 +447,7 @@ export default function EntriesCalendar({
       </div>
 
       {/* Detail panel — always visible, fixed height with internal scroll */}
-      <div className="lg:sticky lg:top-24 lg:col-span-2 lg:h-[calc(100vh-8rem)] lg:self-start">
+      <div className="min-h-[24rem] lg:sticky lg:top-24 lg:col-span-2 lg:h-[calc(100vh-8rem)] lg:self-start">
         {/* Edit mode: inline form for an existing entry */}
         {editMode && selectedRoutine && (
           <div className="h-full overflow-y-auto">

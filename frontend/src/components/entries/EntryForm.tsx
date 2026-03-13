@@ -23,27 +23,13 @@ import {
   FileText,
 } from 'lucide-react';
 import type { MorningRoutine, ProductivityEntry } from '@/types';
-import type { LucideIcon } from 'lucide-react';
 
 /**
- * Label with a small icon prefix — mirrors the icon layout in EntryDetail.
+ * Compact inline input classes matching EntryDetail's Metric value position.
+ * Applied to number, time, and select inputs for a tight icon → label → input row.
  */
-function IconLabel({
-  icon: Icon,
-  htmlFor,
-  children,
-}: {
-  icon: LucideIcon;
-  htmlFor: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label htmlFor={htmlFor} className="label flex items-center gap-1.5">
-      <Icon className="h-3.5 w-3.5 text-slate-400" aria-hidden="true" />
-      {children}
-    </label>
-  );
-}
+const INPUT_CLS =
+  'ml-auto rounded-md border border-slate-200 bg-white/80 px-2 py-0.5 text-right text-sm font-medium text-slate-800 outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400';
 
 interface FormData {
   date: string;
@@ -236,7 +222,7 @@ export default function EntryForm({
   };
 
   return (
-    <div className="rounded-2xl bg-white/65 backdrop-blur-md">
+    <div className="flex min-h-full flex-col rounded-2xl bg-white/65 backdrop-blur-md">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-200/30 px-5 py-4">
         <div>
@@ -275,31 +261,33 @@ export default function EntryForm({
         </div>
       )}
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-5 p-5">
+      {/* Form — compact inline rows matching EntryDetail's Metric layout */}
+      <form onSubmit={handleSubmit} className="flex-1 space-y-5 p-5">
         {/* Morning Routine */}
         <fieldset>
           <legend className="mb-3 text-xs font-semibold tracking-wider text-slate-400 uppercase">
             Morning Routine
           </legend>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <IconLabel icon={Clock} htmlFor="ef-wake_time">
-                Wake Time
-              </IconLabel>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
+            <div className="flex items-center gap-2">
+              <Clock className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+              <label htmlFor="ef-wake_time" className="text-slate-500">
+                Wake
+              </label>
               <input
                 id="ef-wake_time"
                 type="time"
                 name="wake_time"
                 value={formData.wake_time}
                 onChange={handleChange}
-                className="input"
+                className={`${INPUT_CLS} w-24`}
               />
             </div>
-            <div>
-              <IconLabel icon={Moon} htmlFor="ef-sleep">
-                Sleep (hrs)
-              </IconLabel>
+            <div className="flex items-center gap-2">
+              <Moon className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+              <label htmlFor="ef-sleep" className="text-slate-500">
+                Sleep
+              </label>
               <input
                 id="ef-sleep"
                 type="number"
@@ -309,13 +297,15 @@ export default function EntryForm({
                 step="0.5"
                 min="0"
                 max="24"
-                className="input"
+                className={`${INPUT_CLS} w-14`}
               />
+              <span className="text-xs text-slate-400">h</span>
             </div>
-            <div>
-              <IconLabel icon={Dumbbell} htmlFor="ef-exercise">
-                Exercise (min)
-              </IconLabel>
+            <div className="flex items-center gap-2">
+              <Dumbbell className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+              <label htmlFor="ef-exercise" className="text-slate-500">
+                Exercise
+              </label>
               <input
                 id="ef-exercise"
                 type="number"
@@ -323,13 +313,15 @@ export default function EntryForm({
                 value={formData.exercise_minutes}
                 onChange={handleChange}
                 min="0"
-                className="input"
+                className={`${INPUT_CLS} w-14`}
               />
+              <span className="text-xs text-slate-400">min</span>
             </div>
-            <div>
-              <IconLabel icon={Brain} htmlFor="ef-meditation">
-                Meditation (min)
-              </IconLabel>
+            <div className="flex items-center gap-2">
+              <Brain className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+              <label htmlFor="ef-meditation" className="text-slate-500">
+                Meditate
+              </label>
               <input
                 id="ef-meditation"
                 type="number"
@@ -337,19 +329,21 @@ export default function EntryForm({
                 value={formData.meditation_minutes}
                 onChange={handleChange}
                 min="0"
-                className="input"
+                className={`${INPUT_CLS} w-14`}
               />
+              <span className="text-xs text-slate-400">min</span>
             </div>
-            <div>
-              <IconLabel icon={Utensils} htmlFor="ef-breakfast">
+            <div className="flex items-center gap-2">
+              <Utensils className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+              <label htmlFor="ef-breakfast" className="text-slate-500">
                 Breakfast
-              </IconLabel>
+              </label>
               <select
                 id="ef-breakfast"
                 name="breakfast_quality"
                 value={formData.breakfast_quality}
                 onChange={handleChange}
-                className="input"
+                className={`${INPUT_CLS} w-24`}
               >
                 <option value="poor">Poor</option>
                 <option value="fair">Fair</option>
@@ -357,10 +351,11 @@ export default function EntryForm({
                 <option value="excellent">Excellent</option>
               </select>
             </div>
-            <div>
-              <IconLabel icon={Smile} htmlFor="ef-mood">
-                Mood ({formData.morning_mood}/10)
-              </IconLabel>
+            <div className="flex items-center gap-2">
+              <Smile className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+              <label htmlFor="ef-mood" className="text-slate-500">
+                Mood
+              </label>
               <input
                 id="ef-mood"
                 type="range"
@@ -369,13 +364,17 @@ export default function EntryForm({
                 onChange={handleChange}
                 min="1"
                 max="10"
-                className="w-full"
+                className="ml-auto w-16"
               />
+              <span className="w-8 text-right font-medium text-slate-800">
+                {formData.morning_mood}/10
+              </span>
             </div>
-            <div>
-              <IconLabel icon={Coffee} htmlFor="ef-caffeine">
-                Caffeine (mg)
-              </IconLabel>
+            <div className="flex items-center gap-2">
+              <Coffee className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+              <label htmlFor="ef-caffeine" className="text-slate-500">
+                Caffeine
+              </label>
               <input
                 id="ef-caffeine"
                 type="number"
@@ -383,13 +382,15 @@ export default function EntryForm({
                 value={formData.caffeine_intake}
                 onChange={handleChange}
                 min="0"
-                className="input"
+                className={`${INPUT_CLS} w-14`}
               />
+              <span className="text-xs text-slate-400">mg</span>
             </div>
-            <div>
-              <IconLabel icon={Droplets} htmlFor="ef-water">
-                Water (ml)
-              </IconLabel>
+            <div className="flex items-center gap-2">
+              <Droplets className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+              <label htmlFor="ef-water" className="text-slate-500">
+                Water
+              </label>
               <input
                 id="ef-water"
                 type="number"
@@ -398,13 +399,15 @@ export default function EntryForm({
                 onChange={handleChange}
                 min="0"
                 step="100"
-                className="input"
+                className={`${INPUT_CLS} w-16`}
               />
+              <span className="text-xs text-slate-400">ml</span>
             </div>
-            <div className="col-span-2">
-              <IconLabel icon={Smartphone} htmlFor="ef-screen">
-                Screen Before Bed (min)
-              </IconLabel>
+            <div className="flex items-center gap-2">
+              <Smartphone className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+              <label htmlFor="ef-screen" className="text-slate-500">
+                Screen
+              </label>
               <input
                 id="ef-screen"
                 type="number"
@@ -412,137 +415,160 @@ export default function EntryForm({
                 value={formData.screen_time_before_bed}
                 onChange={handleChange}
                 min="0"
-                className="input"
+                className={`${INPUT_CLS} w-14`}
               />
+              <span className="text-xs text-slate-400">min</span>
             </div>
           </div>
         </fieldset>
 
         {/* Productivity */}
-        <fieldset>
-          <legend className="mb-3 text-xs font-semibold tracking-wider text-slate-400 uppercase">
-            Productivity
-          </legend>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2">
-              <IconLabel icon={Gauge} htmlFor="ef-score">
-                Score ({formData.productivity_score}/10)
-              </IconLabel>
-              <input
-                id="ef-score"
-                type="range"
-                name="productivity_score"
-                value={formData.productivity_score}
-                onChange={handleChange}
-                min="1"
-                max="10"
-                className="w-full"
-              />
+        <div className="border-t border-slate-200/30 pt-5">
+          <fieldset>
+            <legend className="mb-3 text-xs font-semibold tracking-wider text-slate-400 uppercase">
+              Productivity
+            </legend>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
+              <div className="flex items-center gap-2">
+                <Gauge className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                <label htmlFor="ef-score" className="text-slate-500">
+                  Score
+                </label>
+                <input
+                  id="ef-score"
+                  type="range"
+                  name="productivity_score"
+                  value={formData.productivity_score}
+                  onChange={handleChange}
+                  min="1"
+                  max="10"
+                  className="ml-auto w-16"
+                />
+                <span className="w-8 text-right font-medium text-slate-800">
+                  {formData.productivity_score}/10
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <ClipboardList className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                <label htmlFor="ef-tasks-planned" className="text-slate-500">
+                  Planned
+                </label>
+                <input
+                  id="ef-tasks-planned"
+                  type="number"
+                  name="tasks_planned"
+                  value={formData.tasks_planned}
+                  onChange={handleChange}
+                  min="0"
+                  className={`${INPUT_CLS} w-14`}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckSquare className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                <label htmlFor="ef-tasks-done" className="text-slate-500">
+                  Done
+                </label>
+                <input
+                  id="ef-tasks-done"
+                  type="number"
+                  name="tasks_completed"
+                  value={formData.tasks_completed}
+                  onChange={handleChange}
+                  min="0"
+                  className={`${INPUT_CLS} w-14`}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Crosshair className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                <label htmlFor="ef-focus" className="text-slate-500">
+                  Focus
+                </label>
+                <input
+                  id="ef-focus"
+                  type="number"
+                  name="focus_hours"
+                  value={formData.focus_hours}
+                  onChange={handleChange}
+                  min="0"
+                  step="0.5"
+                  className={`${INPUT_CLS} w-14`}
+                />
+                <span className="text-xs text-slate-400">h</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                <label htmlFor="ef-distractions" className="text-slate-500">
+                  Distractions
+                </label>
+                <input
+                  id="ef-distractions"
+                  type="number"
+                  name="distractions_count"
+                  value={formData.distractions_count}
+                  onChange={handleChange}
+                  min="0"
+                  className={`${INPUT_CLS} w-14`}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Zap className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                <label htmlFor="ef-energy" className="text-slate-500">
+                  Energy
+                </label>
+                <input
+                  id="ef-energy"
+                  type="range"
+                  name="energy_level"
+                  value={formData.energy_level}
+                  onChange={handleChange}
+                  min="1"
+                  max="10"
+                  className="ml-auto w-16"
+                />
+                <span className="w-8 text-right font-medium text-slate-800">
+                  {formData.energy_level}/10
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Frown className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                <label htmlFor="ef-stress" className="text-slate-500">
+                  Stress
+                </label>
+                <input
+                  id="ef-stress"
+                  type="range"
+                  name="stress_level"
+                  value={formData.stress_level}
+                  onChange={handleChange}
+                  min="1"
+                  max="10"
+                  className="ml-auto w-16"
+                />
+                <span className="w-8 text-right font-medium text-slate-800">
+                  {formData.stress_level}/10
+                </span>
+              </div>
             </div>
-            <div>
-              <IconLabel icon={ClipboardList} htmlFor="ef-tasks-planned">
-                Tasks Planned
-              </IconLabel>
-              <input
-                id="ef-tasks-planned"
-                type="number"
-                name="tasks_planned"
-                value={formData.tasks_planned}
+          </fieldset>
+
+          {/* Notes — positioned inside Productivity, matching EntryDetail */}
+          <div className="mt-3 flex items-start gap-2 text-sm">
+            <FileText className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+            <div className="flex-1">
+              <label htmlFor="ef-notes" className="mb-1 block text-slate-500">
+                Notes
+              </label>
+              <textarea
+                id="ef-notes"
+                name="notes"
+                value={formData.notes}
                 onChange={handleChange}
-                min="0"
-                className="input"
-              />
-            </div>
-            <div>
-              <IconLabel icon={CheckSquare} htmlFor="ef-tasks-done">
-                Tasks Completed
-              </IconLabel>
-              <input
-                id="ef-tasks-done"
-                type="number"
-                name="tasks_completed"
-                value={formData.tasks_completed}
-                onChange={handleChange}
-                min="0"
-                className="input"
-              />
-            </div>
-            <div>
-              <IconLabel icon={Crosshair} htmlFor="ef-focus">
-                Focus (hrs)
-              </IconLabel>
-              <input
-                id="ef-focus"
-                type="number"
-                name="focus_hours"
-                value={formData.focus_hours}
-                onChange={handleChange}
-                min="0"
-                step="0.5"
-                className="input"
-              />
-            </div>
-            <div>
-              <IconLabel icon={AlertTriangle} htmlFor="ef-distractions">
-                Distractions
-              </IconLabel>
-              <input
-                id="ef-distractions"
-                type="number"
-                name="distractions_count"
-                value={formData.distractions_count}
-                onChange={handleChange}
-                min="0"
-                className="input"
-              />
-            </div>
-            <div>
-              <IconLabel icon={Zap} htmlFor="ef-energy">
-                Energy ({formData.energy_level}/10)
-              </IconLabel>
-              <input
-                id="ef-energy"
-                type="range"
-                name="energy_level"
-                value={formData.energy_level}
-                onChange={handleChange}
-                min="1"
-                max="10"
-                className="w-full"
-              />
-            </div>
-            <div>
-              <IconLabel icon={Frown} htmlFor="ef-stress">
-                Stress ({formData.stress_level}/10)
-              </IconLabel>
-              <input
-                id="ef-stress"
-                type="range"
-                name="stress_level"
-                value={formData.stress_level}
-                onChange={handleChange}
-                min="1"
-                max="10"
-                className="w-full"
+                rows={2}
+                placeholder="Any notes about your day..."
+                className="focus:ring-primary-400 w-full rounded-lg bg-slate-50/60 p-2 text-slate-700 outline-none focus:bg-white focus:ring-1"
               />
             </div>
           </div>
-        </fieldset>
-
-        {/* Notes */}
-        <div>
-          <IconLabel icon={FileText} htmlFor="ef-notes">
-            Notes
-          </IconLabel>
-          <textarea
-            id="ef-notes"
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            rows={3}
-            placeholder="Any notes about your day..."
-            className="input"
-          />
         </div>
 
         {/* Actions */}

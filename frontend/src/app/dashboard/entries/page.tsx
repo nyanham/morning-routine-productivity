@@ -79,6 +79,7 @@ function EntriesContent() {
     productivity.data === null &&
     (routines.loading || productivity.loading);
   const hasError = routines.error || productivity.error;
+  const isFetching = !isInitialLoad && (routines.loading || productivity.loading);
 
   /* ---- month navigation ---- */
   const handleMonthChange = (newYear: number, newMonth: number) => {
@@ -137,6 +138,7 @@ function EntriesContent() {
 
       {!isInitialLoad && (
         <EntriesCalendar
+          loading={isFetching}
           entries={entries}
           productivityByDate={productivityByDate}
           year={year}
