@@ -1,0 +1,102 @@
+import { useEffect, useRef, useCallback } from 'react';
+import { formatDate } from '@/lib/utils';
+
+interface DeleteDialogProps {
+  date: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  deleting: boolean;
+}
+
+/**
+ * Confirmation dialog shown before permanently deleting an entry.
+ *
+ * Uses `role="alertdialog"` with `aria-modal` so screen readers
+ * announce it immediately. Traps focus inside the dialog, moves
+ * initial focus to Cancel, and closes on Escape.
+ */
+export default function DeleteDialog({ date, onConfirm, onCancel, deleting }: DeleteDialogProps) {
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  /* Capture the previously focused element, move focus to Cancel,
+   * and restore focus when the dialog unmounts. */
+  useEffect(() => {
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    cancelRef.current?.focus();
+
+    return () => {
+      previousFocusRef.current?.focus();
+    };
+  }, []);
+
+  /* Close on Escape key */
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape' && !deleting) {
+        onCancel();
+        return;
+      }
+
+      /* Trap focus inside the dialog */
+      if (e.key === 'Tab' && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    },
+    [deleting, onCancel]
+  );
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="delete-title"
+      aria-describedby="delete-desc"
+      onKeyDown={handleKeyDown}
+    >
+      <div ref={dialogRef} className="mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+        <h2 id="delete-title" className="text-lg font-bold text-slate-800">
+          Delete entry?
+        </h2>
+        <p id="delete-desc" className="mt-2 text-sm text-slate-600">
+          This will permanently delete the routine {date ? `for ${formatDate(date)}` : ''} and its
+          linked productivity entry. This action cannot be undone.
+        </p>
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            ref={cancelRef}
+            type="button"
+            onClick={onCancel}
+            disabled={deleting}
+            className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-200 disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={deleting}
+            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+          >
+            {deleting ? 'Deleting…' : 'Delete'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
