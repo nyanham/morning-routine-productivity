@@ -44,14 +44,12 @@ jobs:
           virtualenvs-in-project: true
 
       - name: Load cached venv
-        id: cached-poetry-dependencies
         uses: actions/cache@v5
         with:
           path: backend/.venv
           key: venv-${{ runner.os }}-${{ inputs.python-version }}-${{ hashFiles('backend/poetry.lock') }}
 
       - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
 
       - name: Run Ruff linter
@@ -84,14 +82,12 @@ jobs:
           virtualenvs-in-project: true
 
       - name: Load cached venv
-        id: cached-poetry-dependencies
         uses: actions/cache@v5
         with:
           path: backend/.venv
           key: venv-${{ runner.os }}-${{ inputs.python-version }}-${{ hashFiles('backend/poetry.lock') }}
 
       - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
 
       - name: Run tests
