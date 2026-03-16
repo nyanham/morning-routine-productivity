@@ -16,6 +16,15 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Default to read-only; jobs override only what they need.
+permissions:
+  contents: read
+
+# Prevent concurrent deployments — never cancel a deploy in progress.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   NODE_VERSION: "22"
   PYTHON_VERSION: "3.12"
@@ -106,5 +115,5 @@ jobs:
               Environment=development \
               SupabaseUrl=${{ secrets.SUPABASE_URL }} \
               SupabaseKey=${{ secrets.SUPABASE_KEY }} \
-              CorsOrigins="${{ secrets.CORS_ORIGINS }}"
+              CorsOrigins="${{ secrets.CORS_ORIGINS }}" \
               CorsOriginRegex="${{ secrets.CORS_ORIGIN_REGEX }}"

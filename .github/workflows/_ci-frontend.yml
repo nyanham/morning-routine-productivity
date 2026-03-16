@@ -17,6 +17,9 @@ name: Frontend CI
         type: string
         default: '22'
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Lint & Type Check

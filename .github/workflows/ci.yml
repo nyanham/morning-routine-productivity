@@ -7,9 +7,17 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
+
+# Default to read-only; individual jobs inherit this.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   # ==========================================
@@ -28,33 +36,5 @@ jobs:
     uses: ./.github/workflows/_ci-backend.yml
     secrets: inherit
 
-  # ==========================================
-  # Security Scanning
-  # ==========================================
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    # Skipped for fork PRs — GitHub does not grant `security-events: write`
-    # in that context, which would cause SARIF upload to fail.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    permissions:
-      security-events: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.34.2
-        with:
-          scan-type: "fs"
-          scan-ref: "."
-          severity: "CRITICAL,HIGH"
-          format: "sarif"
-          output: "trivy-results.sarif"
-
-      - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: "trivy-results.sarif"
+  # Security scanning lives in ci-dependabot.yml so that code-scanning
+  # tracks a single SARIF baseline across push / PR / Dependabot events.
