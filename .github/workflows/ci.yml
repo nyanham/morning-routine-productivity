@@ -2,14 +2,24 @@
 #
 # Frontend and backend CI logic lives in reusable workflows
 # (_ci-frontend.yml, _ci-backend.yml) to keep things DRY.
+# Security scanning and Dependabot auto-merge also live here so that
+# code-scanning tracks a single SARIF baseline in one workflow file.
 
 name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
+
+# Default to read-only; individual jobs override only what they need.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   # ==========================================
@@ -29,16 +39,21 @@ jobs:
     secrets: inherit
 
   # ==========================================
-  # Security Scanning
+  # Trivy filesystem vulnerability scan
   # ==========================================
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    # Skipped for fork PRs — GitHub does not grant `security-events: write`
-    # in that context, which would cause SARIF upload to fail.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+
+    # Skip for fork PRs — GitHub does not grant security-events: write
+    # in that context, which would cause the SARIF upload to fail.
+    if: >-
+      github.event_name != 'pull_request'
+      || github.event.pull_request.head.repo.full_name == github.repository
+
     permissions:
       security-events: write
+      contents: read
 
     steps:
       - name: Checkout code
@@ -53,8 +68,37 @@ jobs:
           format: "sarif"
           output: "trivy-results.sarif"
 
-      - name: Upload Trivy scan results
+      - name: Upload Trivy scan results to GitHub Security
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: "trivy-results.sarif"
+
+  # ==========================================
+  # Auto-merge Dependabot minor / patch PRs
+  # ==========================================
+  dependabot-auto-merge:
+    name: Dependabot Auto-Merge
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    needs: security-scan
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Auto-merge minor and patch updates
+        if: >-
+          steps.metadata.outputs.update-type == 'version-update:semver-minor'
+          || steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
