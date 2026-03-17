@@ -3,7 +3,6 @@
 import { Globe } from 'lucide-react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { RequireAuth } from '@/contexts/AuthContext';
-import { StatsNav } from '@/components/statistics';
 
 /**
  * Community Statistics — placeholder page.
@@ -14,8 +13,6 @@ import { StatsNav } from '@/components/statistics';
 function CommunityStatsContent() {
   return (
     <div className="space-y-8">
-      <StatsNav />
-
       <div className="flex flex-col items-center justify-center rounded-2xl bg-white/60 px-6 py-20 text-center backdrop-blur-md">
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-sky-400 to-sky-600 text-white">
           <Globe className="h-8 w-8" aria-hidden="true" />

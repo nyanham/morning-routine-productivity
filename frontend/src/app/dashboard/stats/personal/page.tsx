@@ -16,7 +16,7 @@ import {
 import { Download, AlertCircle } from 'lucide-react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { RequireAuth } from '@/contexts/AuthContext';
-import { StatsNav, StatsFilterPanel, METRIC_OPTIONS } from '@/components/statistics';
+import { StatsFilterPanel, METRIC_OPTIONS } from '@/components/statistics';
 import type { StatsFilters, MetricKey } from '@/components/statistics';
 import { useRoutines, useProductivity, useAnalyticsSummary } from '@/hooks/useApi';
 import StatsCard from '@/components/ui/StatsCard';
@@ -237,8 +237,6 @@ function PersonalStatsContent() {
 
   return (
     <div className="space-y-8">
-      <StatsNav />
-
       {/* Filters row */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <StatsFilterPanel filters={filters} onChange={setFilters} />

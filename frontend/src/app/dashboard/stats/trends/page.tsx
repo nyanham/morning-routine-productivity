@@ -3,7 +3,6 @@
 import { Flame } from 'lucide-react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { RequireAuth } from '@/contexts/AuthContext';
-import { StatsNav } from '@/components/statistics';
 
 /**
  * Trends & Streaks — placeholder page.
@@ -14,8 +13,6 @@ import { StatsNav } from '@/components/statistics';
 function TrendsContent() {
   return (
     <div className="space-y-8">
-      <StatsNav />
-
       <div className="flex flex-col items-center justify-center rounded-2xl bg-white/60 px-6 py-20 text-center backdrop-blur-md">
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-amber-400 to-orange-500 text-white">
           <Flame className="h-8 w-8" aria-hidden="true" />

@@ -3,8 +3,7 @@
 import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { RequireAuth } from '@/contexts/AuthContext';
-import { StatsNav } from '@/components/statistics';
-import { BarChart3, Globe, GitCompareArrows, Waypoints, Flame, ArrowRight } from 'lucide-react';
+import { BarChart3, Globe, GitCompareArrows, Waypoints, Flame } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ── Hub card definitions ──
@@ -13,11 +12,8 @@ interface HubCard {
   href: string;
   icon: React.ElementType;
   title: string;
-  description: string;
-  /** Gradient pair for the icon badge. */
+  /** Gradient classes for the fully-colored card background. */
   gradient: string;
-  /** Accent text color for the arrow. */
-  accent: string;
 }
 
 const HUB_CARDS: HubCard[] = [
@@ -25,49 +21,35 @@ const HUB_CARDS: HubCard[] = [
     href: '/dashboard/stats/personal',
     icon: BarChart3,
     title: 'Your Statistics',
-    description:
-      'Dive into your personal metrics — filter by date, group by day or week, and export data.',
     gradient: 'from-aqua-400 to-aqua-600',
-    accent: 'text-aqua-600',
   },
   {
     href: '/dashboard/stats/community',
     icon: Globe,
-    title: 'Community Statistics',
-    description:
-      'See how the community is doing — aggregate trends by age group, occupation, and more.',
+    title: 'Community',
     gradient: 'from-sky-400 to-sky-600',
-    accent: 'text-sky-600',
   },
   {
     href: '/dashboard/stats/compare',
     icon: GitCompareArrows,
     title: 'Compare Periods',
-    description:
-      'Pick two time periods and compare them side by side to spot improvements or regressions.',
     gradient: 'from-indigo-400 to-indigo-600',
-    accent: 'text-indigo-600',
   },
   {
     href: '/dashboard/stats/correlations',
     icon: Waypoints,
-    title: 'Correlations Explorer',
-    description:
-      'Plot any two metrics against each other to discover hidden relationships in your data.',
+    title: 'Correlations',
     gradient: 'from-violet-400 to-violet-600',
-    accent: 'text-violet-600',
   },
   {
     href: '/dashboard/stats/trends',
     icon: Flame,
     title: 'Trends & Streaks',
-    description: 'Track your streaks, spot long-term trends, and celebrate consistency milestones.',
     gradient: 'from-amber-400 to-orange-500',
-    accent: 'text-orange-600',
   },
 ];
 
-// ── Hub card component ──
+// ── Hub card component — fully colored, icon centered, title on hover ──
 
 function HubCardLink({ card }: { card: HubCard }) {
   const Icon = card.icon;
@@ -76,37 +58,18 @@ function HubCardLink({ card }: { card: HubCard }) {
     <Link
       href={card.href}
       className={cn(
-        'group relative flex flex-col gap-4 rounded-2xl bg-white/60 p-6 backdrop-blur-md',
-        'border border-white/40 transition-all',
-        'hover:-translate-y-0.5 hover:bg-white/80 hover:shadow-lg',
-        'focus-visible:ring-aqua-400 focus-visible:ring-2 focus-visible:outline-none'
+        'group relative flex aspect-square items-center justify-center rounded-2xl bg-linear-to-br text-white shadow-md',
+        'transition-all hover:-translate-y-1 hover:shadow-xl',
+        'focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:outline-none',
+        card.gradient
       )}
     >
-      {/* Icon badge */}
-      <div
-        className={cn(
-          'flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br text-white',
-          card.gradient
-        )}
-        aria-hidden="true"
-      >
-        <Icon className="h-6 w-6" />
-      </div>
+      <Icon className="h-10 w-10 transition-transform group-hover:scale-110" aria-hidden="true" />
 
-      {/* Text */}
-      <div className="flex-1">
-        <h2 className="text-lg font-semibold text-slate-800">{card.title}</h2>
-        <p className="mt-1 text-sm leading-relaxed text-slate-500">{card.description}</p>
-      </div>
-
-      {/* Arrow */}
-      <div className={cn('flex items-center gap-1 text-sm font-medium', card.accent)}>
-        Explore
-        <ArrowRight
-          className="h-4 w-4 transition-transform group-hover:translate-x-1"
-          aria-hidden="true"
-        />
-      </div>
+      {/* Title overlay — appears on hover */}
+      <span className="absolute inset-x-0 bottom-0 rounded-b-2xl bg-black/25 px-3 py-2 text-center text-sm font-semibold text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+        {card.title}
+      </span>
     </Link>
   );
 }
@@ -116,8 +79,6 @@ function HubCardLink({ card }: { card: HubCard }) {
 function StatsHubContent() {
   return (
     <div className="space-y-8">
-      <StatsNav />
-
       {/* Intro */}
       <div>
         <p className="max-w-2xl text-sm leading-relaxed text-slate-500">
@@ -127,7 +88,7 @@ function StatsHubContent() {
       </div>
 
       {/* Card grid */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
         {HUB_CARDS.map((card) => (
           <HubCardLink key={card.href} card={card} />
         ))}
