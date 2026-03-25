@@ -3,6 +3,10 @@
 # Deploys the frontend to Vercel and the backend to AWS Lambda via SAM.
 # Both jobs run in parallel since they are independent.
 #
+# Prerequisites:
+#   Backend: Poetry (installed via pipx in CI) is used to generate
+#            requirements.txt from poetry.lock at build time.
+#
 # Required GitHub Secrets:
 #   Frontend: VERCEL_TOKEN
 #   Backend:  AWS_ROLE_TO_ASSUME (OIDC role ARN),
@@ -86,6 +90,12 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Export requirements.txt from Poetry lock
+        run: poetry export -f requirements.txt --without-hashes -o requirements.txt
 
       - name: Install AWS SAM CLI
         uses: aws-actions/setup-sam@v2
