@@ -1237,9 +1237,9 @@ rich==14.3.3 ; python_version >= "3.12" and python_version < "4.0" \
 six==1.17.0 ; python_version >= "3.12" and python_version < "4.0" \
     --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 \
     --hash=sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81
-starlette==0.52.1 ; python_version >= "3.12" and python_version < "4.0" \
-    --hash=sha256:0029d43eb3d273bc4f83a08720b4912ea4b071087a3b48db01b7c839f7954d74 \
-    --hash=sha256:834edd1b0a23167694292e94f597773bc3f89f362be6effee198165a35d62933
+starlette==1.0.0 ; python_version >= "3.12" and python_version < "4.0" \
+    --hash=sha256:6a4beaf1f81bb472fd19ea9b918b50dc3a77a6f2e190a12954b25e6ed5eea149 \
+    --hash=sha256:d3ec55e0bb321692d275455ddfd3df75fff145d009685eb40dc91fc66b03d38b
 storage3==2.28.3 ; python_version >= "3.12" and python_version < "4.0" \
     --hash=sha256:2b3f843cbd44c4a3b483ec076a12c27de88c0ad5358a43067ed44ef08292353f \
     --hash=sha256:bac35c5087619174448fdef6a337db4e3dfebf3de69f685bd706de93ddcdad69
