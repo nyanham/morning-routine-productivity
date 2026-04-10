@@ -26,6 +26,9 @@ updates:
           - "patch"
 
   # Backend (pip/poetry)
+  # `requirements.txt` is generated at build time via `poetry export`.
+  # Restrict updates to direct dependencies in pyproject.toml/poetry.lock only,
+  # so Dependabot does not patch the generated requirements.txt directly.
   - package-ecosystem: "pip"
     directory: "/backend"
     target-branch: "main"
@@ -38,6 +41,8 @@ updates:
       - "backend"
     commit-message:
       prefix: "chore(deps)"
+    allow:
+      - dependency-type: "direct"
     groups:
       minor-and-patch:
         patterns:
