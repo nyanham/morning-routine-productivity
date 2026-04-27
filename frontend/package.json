@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
-    "@supabase/supabase-js": "^2.104.0",
-    "@tailwindcss/postcss": "^4.2.2",
+    "@supabase/supabase-js": "^2.105.0",
+    "@tailwindcss/postcss": "^4.2.4",
     "clsx": "^2.1.1",
     "lucide-react": "^0.577.0",
     "next": "^16.2.4",
@@ -49,12 +49,12 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
-    "postcss": "^8.5.10",
+    "postcss": "^8.5.12",
     "prettier": "^3.8.3",
-    "prettier-plugin-tailwindcss": "^0.7.2",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4.1.18",
     "ts-jest": "^29.4.9",
     "typescript": "^5.7.0",
-    "typescript-eslint": "^8.59.0"
+    "typescript-eslint": "^8.59.1"
   }
 }
