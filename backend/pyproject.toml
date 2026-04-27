@@ -8,12 +8,12 @@ package-mode = false
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = ">=0.135.3,<0.137.0"
-uvicorn = {extras = ["standard"], version = "^0.44.0"}
+uvicorn = {extras = ["standard"], version = ">=0.44,<0.47"}
 python-dotenv = "^1.0.1"
 supabase = "^2.28.3"
 pydantic = {extras = ["email"], version = "^2.13.0"}
 pydantic-settings = "^2.13.1"
-python-multipart = "^0.0.26"
+python-multipart = ">=0.0.26,<0.0.28"
 pandas = "^3.0.2"
 kagglehub = "^1.0.0"
 mangum = "^0.21.0"
