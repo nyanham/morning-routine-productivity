@@ -98,7 +98,7 @@ jobs:
         run: poetry export -f requirements.txt --without-hashes -o requirements.txt
 
       - name: Install AWS SAM CLI
-        uses: aws-actions/setup-sam@v2
+        uses: aws-actions/setup-sam@v3
         with:
           use-installer: true
 
