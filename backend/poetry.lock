@@ -778,18 +778,18 @@ files = [
 
 [[package]]
 name = "kagglehub"
-version = "1.0.0"
+version = "1.0.1"
 description = "Access Kaggle resources anywhere"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "kagglehub-1.0.0-py3-none-any.whl", hash = "sha256:9397f0c6af04cdefa6fa8734c31b42863e8741aad5832c6f3af52f1ecf8fe509"},
-    {file = "kagglehub-1.0.0.tar.gz", hash = "sha256:21dc25d0279e2071f8b97cd9e1393d003ea5e054ea48f1e8139a39e4771e9a8d"},
+    {file = "kagglehub-1.0.1-py3-none-any.whl", hash = "sha256:003b7f725cbd64cc852a84fd840cf1e1594c2aa13d72f8090ed6e4e178a65166"},
+    {file = "kagglehub-1.0.1.tar.gz", hash = "sha256:eae33eba423de222cf3993d99f5b33c5ff25f33d9ee8efe64236b479462c3c54"},
 ]
 
 [package.dependencies]
-kagglesdk = ">=0.1.14,<1.0"
+kagglesdk = ">=0.1.22,<1.0"
 packaging = "*"
 pyyaml = "*"
 requests = "*"
@@ -803,14 +803,14 @@ signing = ["betterproto (>=2.0.0b6)", "model-signing", "sigstore (>=3.6.1)"]
 
 [[package]]
 name = "kagglesdk"
-version = "0.1.16"
+version = "0.1.23"
 description = "Bindings to access kaggle's external-facing APIs"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "kagglesdk-0.1.16-py3-none-any.whl", hash = "sha256:a26ba7a754866f8eef1e327e78101f2960b6fe9b1b323183f2f61170abdb11ff"},
-    {file = "kagglesdk-0.1.16.tar.gz", hash = "sha256:4a20da4ac6f4085e64b976a313ee136d4698737dc5be7c0f13009fadd41d5540"},
+    {file = "kagglesdk-0.1.23-py3-none-any.whl", hash = "sha256:8966f7d99f59f2b769681e19a2cf52192b23be053de6875c06e66cd85c4f1dd1"},
+    {file = "kagglesdk-0.1.23.tar.gz", hash = "sha256:62e89ae21ae29495e7e597d6160f378efcb0c8734a8c10eaf7f7607a60ac1f25"},
 ]
 
 [package.dependencies]
